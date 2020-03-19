@@ -36356,7 +36356,7 @@ function () {
           throw error;
         }
       }).then(function (resp) {
-        if (resp.code === 200) {
+        if (resp.code === 200 || resp.code === 0) {
           _this2.map[url].data = resp.data;
           _this2.map[url].pendding = false;
 
@@ -36395,7 +36395,7 @@ function () {
 
           loading.then(function (newPagesData) {
             // ok 
-            console.log('Finish newPagesData', KEY, newPagesData, pagesData);
+            console.info('Finish newPagesData', KEY, newPagesData, pagesData);
             setPagesData(newPagesData);
           }).catch(function (err) {
             console.error('PagesPageError', err);
@@ -46689,21 +46689,160 @@ function Back2Top() {
 }
 
 exports.Back2Top = Back2Top;
-},{"react":"../../node_modules/react/index.js","@fortawesome/react-fontawesome":"../../node_modules/@fortawesome/react-fontawesome/index.es.js","@fortawesome/free-solid-svg-icons":"../../node_modules/@fortawesome/free-solid-svg-icons/index.es.js","./back-2-top.less":"components/Back2Top/back-2-top.less","../../../public/utils":"../public/utils.ts"}],"components/RArticle/rally-article.less":[function(require,module,exports) {
-var reloadCSS = require('_css_loader');
-
-module.hot.dispose(reloadCSS);
-module.hot.accept(reloadCSS);
-},{"_css_loader":"../../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"components/RArticle/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","@fortawesome/react-fontawesome":"../../node_modules/@fortawesome/react-fontawesome/index.es.js","@fortawesome/free-solid-svg-icons":"../../node_modules/@fortawesome/free-solid-svg-icons/index.es.js","./back-2-top.less":"components/Back2Top/back-2-top.less","../../../public/utils":"../public/utils.ts"}],"components/RArticle/query-by-id.tsx":[function(require,module,exports) {
 "use strict";
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * 在 nodes 里按 id 搜索匹配
+ * @param nodes   RallyNode 节点, 是个数组
+ * @param nodeId  id, 想要搜索的 id
+ */
 
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+function rallyQueryId(nodes, nodeId) {
+  // 非法 id 直接返回 null
+  if (!nodeId) return null;
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
 
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+  try {
+    for (var _iterator = nodes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var node = _step.value;
+      // 忽略文本和注释
+      if (node.type === 'text' || node.type === 'comment') continue;
 
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+      if (node.attribs.id === nodeId) {
+        // 匹配
+        return node;
+      } else {
+        // 递归地处理
+        if (node.type === 'tag') {
+          var res = rallyQueryId(node.children, nodeId);
+          if (res) return res;
+        } else {
+          continue;
+        }
+      }
+    } // 找不到时候返回 null
+
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return != null) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  return null;
+}
+
+exports.rallyQueryId = rallyQueryId;
+},{}],"components/RArticle/html-decode.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+}); // https://stackoverflow.com/questions/44195322/a-plain-javascript-way-to-decode-html-entities-works-on-both-browsers-and-node
+// it is a good way to decode html in pure js without any browser/node api
+
+function htmlDecode(encodedString) {
+  var translate_re = /&(nbsp|amp|quot|lt|gt);/g;
+  var translate = {
+    "nbsp": " ",
+    "amp": "&",
+    "quot": "\"",
+    "lt": "<",
+    "gt": ">"
+  };
+  return encodedString.replace(translate_re, function (match, entity) {
+    return translate[entity];
+  }).replace(/&#(\d+);/gi, function (match, numStr) {
+    var num = parseInt(numStr, 10);
+    return String.fromCharCode(num);
+  });
+}
+
+exports.htmlDecode = htmlDecode;
+},{}],"components/RArticle/use-rect-style.tsx":[function(require,module,exports) {
+"use strict";
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var react_1 = __importDefault(require("react"));
+/**
+ * DOMRect 默认值
+ */
+
+
+exports.NULL_RECT = {
+  height: 0,
+  width: 0,
+  x: 0,
+  y: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+  top: 0,
+  toJSON: function toJSON() {
+    return '{}';
+  }
+};
+/**
+ * 用于获取某元素的 ref, DOMRect, CSSStyleDeclaration
+ */
+
+function useRectStyle() {
+  var $ref = react_1.default.createRef();
+
+  var _react_1$default$useS = react_1.default.useState(exports.NULL_RECT),
+      _react_1$default$useS2 = _slicedToArray(_react_1$default$useS, 2),
+      rect = _react_1$default$useS2[0],
+      setRect = _react_1$default$useS2[1];
+
+  var _react_1$default$useS3 = react_1.default.useState({}),
+      _react_1$default$useS4 = _slicedToArray(_react_1$default$useS3, 2),
+      styleMap = _react_1$default$useS4[0],
+      setStyleMap = _react_1$default$useS4[1];
+
+  react_1.default.useEffect(function () {
+    // debug code
+    // console.log('When useRectStyle ... ');
+    if (!$ref.current) return;
+    setRect($ref.current.getBoundingClientRect());
+    setStyleMap(window.getComputedStyle($ref.current));
+  }, []);
+  return [$ref, rect, styleMap];
+}
+
+exports.useRectStyle = useRectStyle;
+},{"react":"../../node_modules/react/index.js"}],"components/RArticle/rally-ref-sup.tsx":[function(require,module,exports) {
+"use strict";
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
@@ -46725,11 +46864,167 @@ Object.defineProperty(exports, "__esModule", {
 
 var react_1 = __importDefault(require("react"));
 
-require("./rally-article.less");
+var use_rect_style_1 = require("./use-rect-style");
+
+var html_decode_1 = require("./html-decode");
+/**
+ * 引用区域的 padding y
+ */
+
+
+exports.PADDING_Y = 16;
+/**
+ * Rally 引用渲染
+ * @param props
+ */
+
+function RallyRefSup(props) {
+  var node = props.node,
+      $ = props.$;
+  var children = node.children,
+      attribs = node.attribs;
+
+  var _children = _slicedToArray(children, 1),
+      tagA = _children[0]; // 非法值错误处理
+
+
+  if (!(tagA && tagA.type === 'tag' && tagA.name === 'a')) {
+    return react_1.default.createElement("sup", Object.assign({}, attribs), "[REF_LINK_ERROR]");
+  } // 因为一般 href 是 #xxx 这里 slice(1) 拿掉 #
+
+
+  var TARGET_NODE = $(tagA.attribs.href.slice(1));
+
+  try {
+    var _react_1$default$useS = react_1.default.useState(false),
+        _react_1$default$useS2 = _slicedToArray(_react_1$default$useS, 2),
+        open = _react_1$default$useS2[0],
+        setOpen = _react_1$default$useS2[1];
+
+    var _use_rect_style_1$use = use_rect_style_1.useRectStyle(),
+        _use_rect_style_1$use2 = _slicedToArray(_use_rect_style_1$use, 3),
+        $refLink = _use_rect_style_1$use2[0],
+        $refLinkRect = _use_rect_style_1$use2[1],
+        $refLinkStyle = _use_rect_style_1$use2[2];
+
+    var _use_rect_style_1$use3 = use_rect_style_1.useRectStyle(),
+        _use_rect_style_1$use4 = _slicedToArray(_use_rect_style_1$use3, 3),
+        $refContent = _use_rect_style_1$use4[0],
+        $refContentRect = _use_rect_style_1$use4[1],
+        $refContentStyle = _use_rect_style_1$use4[2];
+
+    var _use_rect_style_1$use5 = use_rect_style_1.useRectStyle(),
+        _use_rect_style_1$use6 = _slicedToArray(_use_rect_style_1$use5, 3),
+        $refWarp = _use_rect_style_1$use6[0],
+        $refWarpRect = _use_rect_style_1$use6[1],
+        $refWarpStyle = _use_rect_style_1$use6[2];
+
+    var _use_rect_style_1$use7 = use_rect_style_1.useRectStyle(),
+        _use_rect_style_1$use8 = _slicedToArray(_use_rect_style_1$use7, 3),
+        $refSup = _use_rect_style_1$use8[0],
+        $refSupRect = _use_rect_style_1$use8[1],
+        $refSupStyle = _use_rect_style_1$use8[2];
+
+    var _use_rect_style_1$use9 = use_rect_style_1.useRectStyle(),
+        _use_rect_style_1$use10 = _slicedToArray(_use_rect_style_1$use9, 3),
+        $refOutter = _use_rect_style_1$use10[0],
+        $refOutterRect = _use_rect_style_1$use10[1],
+        $refOutterStyle = _use_rect_style_1$use10[2]; // 这里设置为 any 并用 try catch 拿出对应值
+
+
+    var TAG_P = TARGET_NODE.children[0];
+    var TEXT = TAG_P.children[0];
+    var CONTENT = TEXT.data;
+    return react_1.default.createElement(react_1.default.Fragment, null, react_1.default.createElement("sup", Object.assign({}, attribs, {
+      ref: $refSup
+    }), react_1.default.createElement("span", {
+      ref: $refLink,
+      className: "ref-link",
+      onClick: function onClick() {
+        return setOpen(!open);
+      }
+    }, html_decode_1.htmlDecode(tagA.children[0].data)), react_1.default.createElement("span", {
+      className: "ref-warp",
+      ref: $refWarp,
+      style: {
+        height: open ? parseInt($refLinkStyle.lineHeight || '0px', 10) + parseInt($refContentStyle.height) + 4 : parseInt($refLinkStyle.lineHeight || '0px', 10) + 4
+      }
+    }), react_1.default.createElement("span", {
+      className: "ref-content",
+      style: Object.assign({
+        width: '100vw',
+        left: -$refSupRect.x,
+        clear: 'both',
+        top: "calc(\n                            ".concat($refLinkStyle.lineHeight, " -\n                            ((").concat($refLinkStyle.lineHeight, " - ").concat($refLinkStyle.fontSize, ") / 2)\n                        )")
+      }, open ? {
+        height: $refContentStyle.height
+      } : {
+        height: '0px'
+      })
+    }, react_1.default.createElement("span", {
+      style: Object.assign({}, $refContentRect.height === 0 ? // 还未初始化的时候不应该混入任何 css
+      {
+        width: $refOutterStyle.width
+      } : {
+        width: $refOutterStyle.width,
+        paddingTop: exports.PADDING_Y,
+        paddingBottom: exports.PADDING_Y
+      }),
+      ref: $refContent
+    }, CONTENT))), react_1.default.createElement("span", {
+      ref: $refOutter,
+      style: {
+        position: 'absolute',
+        width: '100%',
+        top: '0%',
+        left: '0%',
+        display: 'block'
+      },
+      className: "PLEASE_IGNORE_ME"
+    }));
+  } catch (err) {
+    console.error('[REF_INNER_ERROR]', TARGET_NODE);
+    return react_1.default.createElement("pre", null, "[REF_INNER_ERROR]:", JSON.stringify(TARGET_NODE, function (k, v) {
+      return v;
+    }, '  '));
+  }
+}
+
+exports.RallyRefSup = RallyRefSup;
+},{"react":"../../node_modules/react/index.js","./use-rect-style":"components/RArticle/use-rect-style.tsx","./html-decode":"components/RArticle/html-decode.tsx"}],"components/RArticle/code-preview-window.tsx":[function(require,module,exports) {
+"use strict";
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var react_1 = __importDefault(require("react"));
+
+var render_tag_1 = require("./render-tag");
+/**
+ * 代码预览窗口
+ * @param props
+ */
+
 
 function CodePreviewWindow(props) {
   var node = props.node,
-      blogId = props.blogId;
+      blogId = props.blogId,
+      $ = props.$;
 
   var _react_1$default$useS = react_1.default.useState(false),
       _react_1$default$useS2 = _slicedToArray(_react_1$default$useS, 2),
@@ -46745,7 +47040,7 @@ function CodePreviewWindow(props) {
     className: "page-route",
     href: previewLink,
     about: "\u9884\u89C8\u94FE\u63A5\uFF0C\u9ED8\u8BA4\u9690\u85CF"
-  }) : null, react_1.default.createElement("pre", Object.assign({}, node.attribs), renderTag(node.children, blogId)), filename ? react_1.default.createElement("div", {
+  }) : null, react_1.default.createElement("pre", Object.assign({}, node.attribs), render_tag_1.renderTag(node.children, blogId, $)), filename ? react_1.default.createElement("div", {
     className: "code-preview"
   }, opened ? react_1.default.createElement("div", {
     className: "_preview"
@@ -46757,45 +47052,138 @@ function CodePreviewWindow(props) {
     onClick: function onClick() {
       return setOpened(!opened);
     }
-  }, opened ? 'Close' : 'Run !')) : null);
+  }, opened ? 'Close' : 'Run !')) : react_1.default.createElement("div", {
+    className: "code-preview"
+  }));
 }
 
-function renderTag(nodes, blogId) {
+exports.CodePreviewWindow = CodePreviewWindow;
+},{"react":"../../node_modules/react/index.js","./render-tag":"components/RArticle/render-tag.tsx"}],"components/RArticle/render-tag.tsx":[function(require,module,exports) {
+"use strict";
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var react_1 = __importDefault(require("react"));
+
+var html_decode_1 = require("./html-decode");
+
+var rally_ref_sup_1 = require("./rally-ref-sup");
+
+var code_preview_window_1 = require("./code-preview-window");
+/**
+ * 博文渲染
+ * RallyNode[] 递归渲染入口
+ * @param nodes  RallyNode[]
+ * @param blogId blog meta 里的 id
+ * @param $      针对 nodes 的选择器
+ */
+
+
+function renderTag(nodes, blogId, $) {
   return nodes.map(function (node, idx) {
     var _react_1$default;
 
-    if (node.type === 'comment') return null;
+    // 忽略注释
+    if (node.type === 'comment') {
+      return null;
+    } // 纯文本渲染
+
+
+    if (node.type === 'text') {
+      return html_decode_1.htmlDecode(node.data);
+    } // style & script 的处理
+
 
     if (node.type === 'style' || node.type === 'script') {
       var child = node.children[0];
       return react_1.default.createElement(node.type, Object.assign(Object.assign({}, node.attribs), {
         key: idx
       }), child ? child.data : null);
-    }
+    } // 代码渲染 codepreivew
 
-    if (node.type === 'text') {
-      // return node.data.replace(/\&lt;/g, '<').replace();
-      return react_1.default.createElement("span", {
-        key: idx,
-        dangerouslySetInnerHTML: {
-          __html: node.data
-        }
-      });
-    }
 
     if (node.name === 'pre') {
-      return react_1.default.createElement(CodePreviewWindow, {
+      return react_1.default.createElement(code_preview_window_1.CodePreviewWindow, {
         key: idx,
         node: node,
-        blogId: blogId
+        blogId: blogId,
+        "$": $
       });
-    }
+    } // 引用渲染 sup
+
+
+    if (node.name === 'sup' && node.attribs.className === 'footnote-ref') {
+      return react_1.default.createElement(rally_ref_sup_1.RallyRefSup, {
+        key: idx,
+        node: node,
+        "$": $
+      });
+    } // 其他情况递归地处理即可
+
 
     return (_react_1$default = react_1.default).createElement.apply(_react_1$default, [node.name, Object.assign(Object.assign({}, node.attribs), {
       key: idx
-    })].concat(_toConsumableArray(renderTag(node.children, blogId))));
+    })].concat(_toConsumableArray(renderTag(node.children, blogId, $))));
   });
 }
+
+exports.renderTag = renderTag;
+},{"react":"../../node_modules/react/index.js","./html-decode":"components/RArticle/html-decode.tsx","./rally-ref-sup":"components/RArticle/rally-ref-sup.tsx","./code-preview-window":"components/RArticle/code-preview-window.tsx"}],"components/RArticle/rally-article.less":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"components/RArticle/rally-ref.less":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"components/RArticle/index.tsx":[function(require,module,exports) {
+"use strict";
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var react_1 = __importDefault(require("react"));
+
+var query_by_id_1 = require("./query-by-id");
+
+var render_tag_1 = require("./render-tag");
+
+require("./rally-article.less");
+
+require("./rally-ref.less");
 
 function RArticle(props) {
   var blog = props.blog;
@@ -46804,16 +47192,98 @@ function RArticle(props) {
       metaInfo = _blog[0],
       rallyNodes = _blog[1];
 
-  console.log('!', rallyNodes);
-  var lists = renderTag(rallyNodes, metaInfo.id);
-  console.log('!!!!!');
+  var $ = function $(nodeId) {
+    return query_by_id_1.rallyQueryId(rallyNodes, nodeId);
+  };
+
+  var _react_1$default$useS = react_1.default.useState(Date.now()),
+      _react_1$default$useS2 = _slicedToArray(_react_1$default$useS, 1),
+      START = _react_1$default$useS2[0];
+
+  var lists = render_tag_1.renderTag(rallyNodes, metaInfo.id, $);
+  react_1.default.useEffect(function () {
+    console.log('Rally Blog Render Time ::::', Date.now() - START, 'ms');
+  }, []);
   return react_1.default.createElement("article", {
     className: "content"
   }, lists);
 }
 
 exports.RArticle = RArticle;
-},{"react":"../../node_modules/react/index.js","./rally-article.less":"components/RArticle/rally-article.less"}],"pages/Blog/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","./query-by-id":"components/RArticle/query-by-id.tsx","./render-tag":"components/RArticle/render-tag.tsx","./rally-article.less":"components/RArticle/rally-article.less","./rally-ref.less":"components/RArticle/rally-ref.less"}],"components/BlogComment/index.tsx":[function(require,module,exports) {
+"use strict";
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var react_1 = __importDefault(require("react"));
+
+var DISQUS_SHORTNAME = 'rally-1';
+
+function urlNormalize(u) {
+  return u[u.length - 1] === '/' ? u.slice(0, -1) : u;
+}
+
+function initDisqusConfig(identifier, url, title) {
+  return function () {
+    this.page.identifier = identifier;
+    this.page.url = urlNormalize(url);
+    this.page.title = title;
+  };
+}
+
+function loadDisqusScript() {
+  var nowTs = Date.now().toString();
+  var $script = document.createElement('script');
+  $script.src = "https://".concat(DISQUS_SHORTNAME, ".disqus.com/embed.js");
+  $script.setAttribute('data-timestamp', nowTs);
+  return $script;
+}
+
+function BlogComment(props) {
+  var blog = props.blog;
+
+  var _blog = _slicedToArray(blog, 1),
+      meta = _blog[0]; // return null
+  // 这里写在副作用里，因此服务端渲染不受影响
+
+
+  react_1.default.useEffect(function () {
+    console.log('INIT');
+    var conf = initDisqusConfig(meta.id, location.href, meta.title);
+    window.disqus_config = conf;
+    var $script = loadDisqusScript();
+    var $parent = document.head || document.body;
+    $parent.appendChild($script);
+    return function () {
+      $script.remove();
+      delete window.disqus_config;
+    };
+  }, []);
+  return react_1.default.createElement("div", {
+    className: "rally-comments-main"
+  }, react_1.default.createElement("div", {
+    id: "disqus_thread"
+  }));
+}
+
+exports.BlogComment = BlogComment;
+},{"react":"../../node_modules/react/index.js"}],"pages/Blog/index.tsx":[function(require,module,exports) {
 "use strict";
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
@@ -46864,6 +47334,8 @@ var Back2Top_1 = require("../../components/Back2Top");
 
 var RArticle_1 = require("../../components/RArticle");
 
+var BlogComment_1 = require("../../components/BlogComment");
+
 var getBlogApiUrl = function getBlogApiUrl(id) {
   return "/api/blog/".concat(id);
 };
@@ -46880,7 +47352,7 @@ function BlogPage(props) {
       setPagesData = _index_1$store$create3[1],
       whenMountedLoading = _index_1$store$create2[1];
 
-  react_1.default.useEffect(whenMountedLoading, [props]);
+  react_1.default.useEffect(whenMountedLoading, []);
 
   if (pagesData) {
     var _pagesData$data = pagesData.data,
@@ -46907,7 +47379,13 @@ function BlogPage(props) {
       className: "footer-hr"
     }), react_1.default.createElement("hr", {
       className: "footer-hr"
-    }), react_1.default.createElement(Back2Top_1.Back2Top, null));
+    }), react_1.default.createElement(Back2Top_1.Back2Top, null), react_1.default.createElement("hr", {
+      className: "footer-hr"
+    }), react_1.default.createElement("hr", {
+      className: "footer-hr"
+    }), react_1.default.createElement(BlogComment_1.BlogComment, {
+      blog: blog
+    }));
   } else {
     return react_1.default.createElement(index_2.DefaultLoading, null);
   }
@@ -46940,7 +47418,7 @@ function BlogPageHeader(props) {
 }
 
 exports.BlogPageHeader = BlogPageHeader;
-},{"react":"../../node_modules/react/index.js","../../store/index":"store/index.tsx","../../components/Loading/index":"components/Loading/index.tsx","@fortawesome/free-solid-svg-icons":"../../node_modules/@fortawesome/free-solid-svg-icons/index.es.js","../../components/IconWord/index":"components/IconWord/index.tsx","../../../public/utils":"../public/utils.ts","./blog.less":"pages/Blog/blog.less","../../components/BlogFooter":"components/BlogFooter/index.tsx","../../components/Back2Top":"components/Back2Top/index.tsx","../../components/RArticle":"components/RArticle/index.tsx"}],"RootComponent.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","../../store/index":"store/index.tsx","../../components/Loading/index":"components/Loading/index.tsx","@fortawesome/free-solid-svg-icons":"../../node_modules/@fortawesome/free-solid-svg-icons/index.es.js","../../components/IconWord/index":"components/IconWord/index.tsx","../../../public/utils":"../public/utils.ts","./blog.less":"pages/Blog/blog.less","../../components/BlogFooter":"components/BlogFooter/index.tsx","../../components/Back2Top":"components/Back2Top/index.tsx","../../components/RArticle":"components/RArticle/index.tsx","../../components/BlogComment":"components/BlogComment/index.tsx"}],"RootComponent.tsx":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -47046,6 +47524,8 @@ var eventemitter3_1 = __importDefault(require("eventemitter3"));
 
 require("./code-preview.less");
 
+var store_1 = require("../../store");
+
 exports.$bus = new eventemitter3_1.default();
 var originLog = console.log;
 
@@ -47077,8 +47557,6 @@ function PrintLine(props) {
 }
 
 function CodePreview(props) {
-  var url = props.url;
-
   var _react_1$default$useS = react_1.default.useState([]),
       _react_1$default$useS2 = _slicedToArray(_react_1$default$useS, 2),
       lines = _react_1$default$useS2[0],
@@ -47089,15 +47567,18 @@ function CodePreview(props) {
       showConsole = _react_1$default$useS4[0],
       setShowConsole = _react_1$default$useS4[1];
 
+  var _store_1$store$create = store_1.store.createHooks("/api/".concat(location.pathname), function (err) {}),
+      _store_1$store$create2 = _slicedToArray(_store_1$store$create, 2),
+      _store_1$store$create3 = _slicedToArray(_store_1$store$create2[0], 2),
+      codeData = _store_1$store$create3[0],
+      setCodeData = _store_1$store$create3[1],
+      whenMountedLoading = _store_1$store$create2[1];
+
+  react_1.default.useEffect(whenMountedLoading, []);
   react_1.default.useEffect(function () {
-    var $s = document.createElement('script');
-    $s.src = url;
-    document.body.append($s);
-    return function () {
-      $s.remove();
-      setLines([]);
-    };
-  }, []);
+    if (!codeData) return;
+    eval(codeData.data.script);
+  }, [codeData]);
   react_1.default.useEffect(function () {
     var QUEUE = [];
     var TIMER;
@@ -47152,7 +47633,7 @@ function CodePreview(props) {
 }
 
 exports.CodePreview = CodePreview;
-},{"react":"../../node_modules/react/index.js","eventemitter3":"../../node_modules/eventemitter3/index.js","./code-preview.less":"components/CodePreview/code-preview.less"}],"main.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","eventemitter3":"../../node_modules/eventemitter3/index.js","./code-preview.less":"components/CodePreview/code-preview.less","../../store":"store/index.tsx"}],"main.tsx":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -47173,20 +47654,19 @@ var App_1 = require("./App");
 
 var index_1 = require("./store/index");
 
-var CodePreview_1 = require("./components/CodePreview"); // @ts-ignore
+var CodePreview_1 = require("./components/CodePreview"); // Set Flag
 
+
+window.IS_SERVER = false; // @ts-ignore
 
 index_1.store.map = window.__INIT_STORE_MAP__ || {};
 
 if (location.pathname.indexOf('code-preview') === -1) {
   react_dom_1.default.render(react_1.default.createElement(App_1.BrowserAppEntry, null), document.getElementById('app'));
 } else {
-  var TARGET = location.pathname.replace('/code-preview/', '');
-  var url = "/@/RALLY_CODE/OUTPUT/".concat(TARGET);
-  ;
-  react_dom_1.default.render(react_1.default.createElement(CodePreview_1.CodePreview, {
-    url: url
-  }), document.getElementById('app'));
+  // const TARGET = location.pathname.replace('/code-preview/', '');
+  // const url = `/@/RALLY_CODE/OUTPUT/${ TARGET }`;;
+  react_dom_1.default.render(react_1.default.createElement(CodePreview_1.CodePreview, null), document.getElementById('app'));
 }
 },{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","./App":"App.tsx","./store/index":"store/index.tsx","./components/CodePreview":"components/CodePreview/index.tsx"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -47216,7 +47696,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60591" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54272" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
