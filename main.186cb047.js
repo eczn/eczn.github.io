@@ -85780,9 +85780,9 @@ function SiteHomePage() {
     cates: cates
   })), react_1.default.createElement("div", {
     className: "site-story"
-  }, react_1.default.createElement("div", null, react_1.default.createElement(SiteState_1.SiteState, {
+  }, react_1.default.createElement(SiteState_1.SiteState, {
     stat: stat
-  }))));
+  })));
 }
 
 exports.SiteHomePage = SiteHomePage;
