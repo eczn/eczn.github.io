@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CSS选择器</title>
+	<!-- 适配移动端 -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<!-- ========== -->
+	<link rel="stylesheet" href="css/basic.css">
+	<link rel="stylesheet" href="css/aside.css">
+	<link rel="stylesheet" href="css/footer.css">
+	<link rel="stylesheet" href="css/article.css">
+</head>
+<body>
+	<div>
+		<div>no class</div>
+	</div>
+
+	<div class="red">
+		<p>red</p>
+	</div>
+	<div class="green">
+		<p>green</p>
+	</div>
+	<div class="blue" test="not-hello">
+		<p>blue</p>
+	</div>
+
+	<div class="pink" test="hello">
+		<p>pink</p>
+	</div>
+	
+	<aside>
+		<h1><a href="index.html">&lt; Return</a></h1>
+		<h1>JavaScript 入门 => 放弃</h1>
+		<ul>
+			<li>1.0 变量</li>
+			<ul>
+				<li>1.1 基本数据类型</li>
+				<li>1.2 引用数据类型</li>
+			</ul>
+			<li>2.0 语法</li>
+			<ul>
+				<li>2.1 if, else</li>
+				<li>2.2 for, while</li>
+				<li>2.3 switch</li>
+				<li>2.4 函数</li>
+			</ul>
+			
+			<li>3.0 JSON</li>
+			<ul>
+				<li>3.1 JSON.strinify</li>
+				<li>3.2 JSON.parse</li>
+			</ul>
+		</ul>
+	</aside>
+
+	<article>
+		<h1>1.0 变量</h1>
+		<p>JS变量很特殊 跟C的有较大差别。</p>
+		<p>这个差别主要体现在变量的值类型上面</p>
+
+		<h2>1.1 基本数据类型</h2>
+		<p>常见的，比如boolean型，number型都是基本数据类型</p>
+		<h2>1.2 引用数据类型</h2>
+		<p>比如一个对象：</p>
+		<p>
+			<code>var f = { hello: 'world' }</code>
+		</p>
+		<p>这个f里面存有后面那个“hello”的引用，即用 f.hello 可以得到 'world'</p>
+
+		<h1>2.0 语法</h1>
+		<p>JS语法是偏C的、偏Java的。</p>
+
+		<h2>2.1 if, else</h2>
+		<p>按照程序基本执行流程来</p>
+		<p>
+			<code>
+			if (some_position){ <br />
+				// to do something. <br />
+			} <br />
+			</code>
+		</p>
+
+		<h2>2.2 for, while</h2>
+		<p>
+			<code>
+				var i; <br />
+				for (i=0;i<5;i++){ <br />
+				    console.log(i); <br />
+				} <br />
+			</code>
+		</p>
+
+		<h2>2.3 switch</h2>
+		<p>略</p>
+		<h2>2.4 函数</h2>
+		<p>略</p>
+
+		<h1>3.0 JSON</h1>
+		<p>略</p>
+		<h2>3.1 JSON.strinify</h2>
+		<p>略</p>
+		<h2>3.2 JSON.parse</h2>
+		<p>略</p>
+	</article>
+
+	<footer>JS.Book V0.01</footer>
+
+
+		<!-- 为移动端优化 可以不看 -->
+	<script type="text/javascript" src="js/fastclick.min.js">
+	<script>
+	document.addEventListener('DOMContentLoaded', function(){FastClick.attach(document.body);console.info('Fastclick Ready');}, false);
+	</script>
+</body>
+</html>

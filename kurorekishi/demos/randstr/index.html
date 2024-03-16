@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="intro.css">
+	<title>rand demo</title>
+
+	<script src="./rand_number_v3.js"></script>
+	<script src="/kurorekishi/@public/jquery.min.js"></script>
+
+	<script>
+		function _random_string(x){
+			var i=0,str="";
+			var table = "abcdefghijklmnopqrstuvwxyz1234567890~!@#$%^&*()_+-={}[]|/?;:,."
+			for (i=0;i<x;i++){
+				str += table.charAt(parseInt(Math.random()*table.length)); 
+			}
+			return str;
+		}
+
+		$(document).ready(function(){
+			var LEN = "这个样例主要搞了随机字符的特效</br>              哗啦啦啦啦啦啦                    </br>需要的朋友可以参考一下。。</br>(下方输入后敲击回车即可)</br> hello,world. i am ezcn ,</br>nice to meet you"
+			var str = _random_string(LEN.length);
+			var word_buf;
+			$("#shelter").fadeTo(1800,0.90)
+//				.fadeTo(1800,0.45,shelter_loop);
+			$("#02").html(str);
+			word_buf = str;
+
+			word_dis("#02",LEN,20,0);
+
+			setTimeout("input_pop()",2200); 
+			setTimeout(function(){
+				word_dis("#03","I am fine,thank you!",20,0);
+			},3000);
+		});
+
+		function word_dis(se,LEN,time,i){
+			var str = _random_string(LEN.length);
+			var count=0;
+			var obj="";
+			for (count=0;count<i;count++){
+				obj += LEN.charAt(count);
+			}
+			var c = Math.random() * 2;
+			for (count=i;count<i+c+3;count++){
+				obj += str.charAt(count);
+			}
+			if (i++==LEN.length+2){
+				return; 
+			}
+			$(se).html(obj);
+			setTimeout(function(){
+				word_dis(se,LEN,time,i);
+			},time);
+		}
+
+		function when_input(){
+			var input = document.getElementById('input2display');
+         	word_dis("#03",input.value,20,0); 
+		}
+
+		function input_pop(){
+			$("#input2display").animate({opacity:'0.8'},600);
+		}
+
+		function img_change(event){
+			var point_x = event.pageX; 
+			var point_y = event.pageY;
+			var offsetX = ((window.innerWidth)/2 - event.pageX)/window.	innerWidth;
+			var offsetY = ((window.innerHeight)/2 - event.pageY)/window.innerHeight;
+			
+			var x = offsetX*30;
+			var y = offsetY*30;
+			var tempY = 30 - y;
+			var opacity = Math.abs(offsetX) + Math.abs(offsetY);
+
+			$("#intro").css("opacity",1-opacity + 0.2);
+			if (x>=0){
+				$("#intro").css("padding-right",x);
+			} else {
+				$("#intro").css("padding-left",-x);
+			}
+			$("#intro").css("padding-top",tempY+100);
+		}
+
+
+	</script>
+</head>
+<body onmousemove="img_change(event)">
+	<div id="shelter"></div>
+	
+	<!-- 2024 这里改造了一下，让它能自适应站点宽度 -->
+	<div id="intro" style="height: 100vh;width: 100vw;font-size: 22px;position: relative;padding-top:120px;">
+		<p id="02"></p>
+		<div>
+			<input type="text" id="input2display" onchange="when_input()"  value="I am fine,thank you!">
+		</div>
+
+		<p id="03"></p>
+	</div>
+</body>
+</html>

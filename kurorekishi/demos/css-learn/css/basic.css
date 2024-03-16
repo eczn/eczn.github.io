@@ -1,0 +1,88 @@
+/*basic.css*/
+/* 通配符 */
+* {
+	margin: 0; 
+	padding: 0; 
+}
+
+html {
+	background-color: #EBEBEB;
+}
+
+/* 标签选择器 */
+body {
+	max-width: 500px; 
+	padding: 0 32px 32px 32px;
+	margin: 0 auto 10em auto; 
+	background-color: #FFF;
+	color: #445;
+	box-shadow: 0 16px 4px -8px rgba(0,0,0,.2); 
+	font-family: consolas;
+	font-size: 0; 
+}
+
+/* 标签选择器 */
+div {
+	display: inline-block;
+	width: 100px; 
+	height: 100px; 
+	font-size: 16px;
+	line-height: 100px; 
+	text-align: center;
+	vertical-align: top;
+}
+
+@media screen and (max-width: 600px) {
+	div {
+		width: 50px;
+		height: 50px;
+	}
+}
+
+/* 包含选择器 */ 
+/* 空格取选择器结果交集 */ 
+div p { 
+	text-shadow: 0 2px rgb(78, 78, 78); 
+}
+
+/* 子元素选择器 */
+div > div {
+	background-color: #EEE;
+}
+
+/* 类选择器 */
+.red {
+	background-color: rgb(200, 100, 100); 
+}
+
+.green {
+	background-color: rgb(100, 180, 100); 
+}
+
+.blue {
+	background-color: rgb(100, 100, 220);
+}
+
+.pink {
+	background-color: rgb(252, 194, 216);
+}
+
+div[test="hello"] p {
+	text-shadow: 0 -4px #FFF;
+}
+
+/* 逗号取选择器结果并集 */
+.red, .green {
+	color: white; 
+}
+
+/* 选择相邻兄弟 */
+.red + .green {
+	margin-top: 20px;
+}
+
+/* CSS3 伪类 */
+body > div:hover {
+	margin-top: 20px;
+	cursor: pointer;
+}

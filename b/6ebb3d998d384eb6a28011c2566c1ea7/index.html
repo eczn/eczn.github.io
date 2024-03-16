@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<title>电力猫和组网 | Eczn's Home</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,minimal-ui">
+<meta name="format-detection" content="telephone=no">
+
+<style id="CSS_VARS"></style>
+<script>
+(function() {
+console.log('INIT CSS VAR');
+function loadCSSVars() {
+    const j = localStorage.getItem("CSS_VARS_2" /* STORAGE_KEY.CSS_VARS */);
+    const initialVars = initialCSSVars();
+    if (!j)
+        return initialVars;
+    try {
+        const result = {
+            ...initialVars,
+            ...JSON.parse(j)
+        };
+        console.log('loadCSSVars from storage', result);
+        return result;
+    }
+    catch (error) {
+        console.error('load css vars with error', error);
+        return initialVars;
+    }
+}
+function renderCSSVars(vars, style) {
+    const allDefine = Object.keys(vars).map(k => {
+        const v = vars[k];
+        const cssValue = typeof v === 'number' ? `${v}px` : v;
+        return `--${k}:${cssValue};`;
+    }).join('\n');
+    if (style) {
+        style.innerHTML = `:root { ${allDefine} }`;
+    }
+    else {
+        console.error(`style#CSS_VARS NotFound !`);
+    }
+}
+function initialCSSVars() {
+    let rem = 16;
+    // 移动端
+    if (typeof window !== 'undefined' && window.innerWidth <= 500) {
+        rem = Number(((window.innerWidth - 20) / 42).toFixed(1));
+        console.log('mobile calculated rem =>', rem);
+    }
+    return {
+        rem,
+        enableSmallerFont: false,
+        displayToc: 'block',
+        fontSmcp: 'source serif pro, serif',
+        fontCode: 'consolas, Menlo, monospace',
+        fontTitle: 'Noto Serif SC, serif',
+        fontArticle: 'source serif pro, LXGW WenKai',
+        fontSansSerif: 'sans-serif',
+    };
+}
+window.__initialCSSVars = loadCSSVars();
+renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
+})();
+</script>
+
+<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.cfd76580.js"></script><script defer="defer" src="/js/chunk-lib.c90ce4c7.js"></script><link href="/css/index.719eaef39530924de6f6.css" rel="stylesheet"><link href="/css/chunk-lib.5c7d4887bb8714b00c54.css" rel="stylesheet"></head>
+<body>
+<noscript>当前浏览器不支持 JavaScript, 建议使用支持 JavaScript 的浏览器来访问此网站 !</noscript>
+<div id="rally-bg" style="opacity:0"></div>
+<div id="app"><div class="ball-canvas-container"></div><nav class="nav-main --fontSmcp"><div class="_title default-max-width">Eczn&#x27;s Home</div><div class="smcphr"></div><div class="_links default-max-width"><a class="r-link _link clickable r-link" href="/">Home</a><a class="r-link _link clickable r-link" href="/tl/0/">Timeline</a><a class="r-link _link clickable r-link" href="/cate/all/">Category</a><a class="r-link _link clickable r-link" href="/setting/">Setting</a><a class="r-link _link clickable r-link" href="/launchpad/">Launchpad</a></div></nav><div class="std-box rally-page-content default-max-width"><div id="blog-box" class="std-box-content "><div id="start" class="blog-header-main"><div class="_infos"><div class="_info"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="clock" class="svg-inline--fa fa-clock fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256,8C119,8,8,119,8,256S119,504,256,504,504,393,504,256,393,8,256,8Zm92.49,313h0l-20,25a16,16,0,0,1-22.49,2.5h0l-67-49.72a40,40,0,0,1-15-31.23V112a16,16,0,0,1,16-16h32a16,16,0,0,1,16,16V256l58,42.5A16,16,0,0,1,348.49,321Z"></path></svg>2020-04-07</div><div class="_info"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="tag" class="svg-inline--fa fa-tag fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M0 252.118V48C0 21.49 21.49 0 48 0h204.118a48 48 0 0 1 33.941 14.059l211.882 211.882c18.745 18.745 18.745 49.137 0 67.882L293.823 497.941c-18.745 18.745-49.137 18.745-67.882 0L14.059 286.059A48 48 0 0 1 0 252.118zM112 64c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48z"></path></svg>组网</div><div class="_info"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="tag" class="svg-inline--fa fa-tag fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M0 252.118V48C0 21.49 21.49 0 48 0h204.118a48 48 0 0 1 33.941 14.059l211.882 211.882c18.745 18.745 18.745 49.137 0 67.882L293.823 497.941c-18.745 18.745-49.137 18.745-67.882 0L14.059 286.059A48 48 0 0 1 0 252.118zM112 64c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48z"></path></svg>电力猫</div></div><div class="_title --fontTitle">电力猫和组网</div></div><article><div class="r-article"><div class="std-para --fontArticle" data-minimap-color="#CCCCCC">最近听说了一种叫做电力猫的网络设备并实际尝试，实际体验效果很好，如果家庭网络之前没网络埋线的话可以使用这个来有效解决上网问题。</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC"><div class="std-img"><img class="std-img-bg r-link" data-minimap="Rect" src="/images/tenda-ph3.jpg" alt="Tenda PH3"/><div class="std-img-text">Tenda PH3</div></div></div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">长久以来受困于没有以太网走线的家庭网络 … 尝试了很多方案，比方喜闻乐见的信号放大器、路由器无线中继 …  但这些终究是走的电磁波，丢包和延迟都不尽人意，玩网游、联机的时候卡爆了。</div>
+<h1 id="电力猫和调制解调器" class="std-title --fontTitle"><a target="_blank" href="#电力猫和调制解调器" class="markdownIt-Anchor">#</a> 电力猫和调制解调器<i data-minimap="Ignore"> ↵ </i></h1>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">关于电力猫<sup class="footnote-ref" id="fnref1"><span class="ref-link">[1]</span><span class="ref-warp" style="height:4px"></span><span class="ref-content" style="width:100vw;left:0;clear:both;top:calc(
+                undefined -
+                ((undefined - undefined) / 2)
+            );height:0px"><span>猫在一般情况下指的就是 Modem，即调制解调器，是谐音；另外，以我个人的理解来看猫是一个将数字信号调变到模拟信号上进行传输，并解调收到的模拟信号以得到数字信号的电子设备（https://zh.wikipedia.org/wiki/%E8%B0%83%E5%88%B6%E8%A7%A3%E8%B0%83%E5%99%A8) (也算是一种隧道把 233) </span></span></sup><span style="position:absolute;width:100%;top:0%;left:0%;display:block" class="PLEASE_IGNORE_ME"></span>网上已有很多科普文章，这里我将其总结为：电力猫实现了将以太网数字信号调制到交流电网的能力，相反它也具备将这样的信号从电力网络上还原<sup class="footnote-ref" id="fnref2"><span class="ref-link">[2]</span><span class="ref-warp" style="height:4px"></span><span class="ref-content" style="width:100vw;left:0;clear:both;top:calc(
+                undefined -
+                ((undefined - undefined) / 2)
+            );height:0px"><span>解调跟调制是一个相反的过程，将某种已被调制过的信号 “滤” 为初始的信号形式； </span></span></sup><span style="position:absolute;width:100%;top:0%;left:0%;display:block" class="PLEASE_IGNORE_ME"></span>为以太网信号。</div>
+<h1 id="调制解调原理简述" class="std-title --fontTitle"><a target="_blank" href="#调制解调原理简述" class="markdownIt-Anchor">#</a> 调制解调原理简述<i data-minimap="Ignore"> ↵ </i></h1>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">大家都知道，交流电本身会不断交变，其电压随时间曲线满足形如以下的规则<sup class="footnote-ref" id="fnref3"><span class="ref-link">[3]</span><span class="ref-warp" style="height:4px"></span><span class="ref-content" style="width:100vw;left:0;clear:both;top:calc(
+                undefined -
+                ((undefined - undefined) / 2)
+            );height:0px"><span>交流电的函数关系这里我简单写成 sin(x) 了，实际上交流电还有些别的各种参数，这个请参考物理和电路课本，或者维基 https://zh.wikipedia.org/wiki/%E4%BA%A4%E6%B5%81%E9%9B%BB </span></span></sup><span style="position:absolute;width:100%;top:0%;left:0%;display:block" class="PLEASE_IGNORE_ME"></span>：</div>
+<blockquote lang="en" class="std-quote"><span class="std-quote-text">
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">AC = sin(x)<br/>
+其中 AC 为交流电信号强度, x 为时间</div>
+</span></blockquote>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">回到本文的主题，电力猫将数字信号调制以后将其直接通入到交流电网上：</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC"><div class="std-img"><img class="std-img-bg r-link" data-minimap="Rect" src="/images/modem-priciple.svg?maxWidth=300px" alt="调制解调过程"/><div class="std-img-text">调制解调过程</div></div></div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">以上大致就是电力猫的工作原理了，我不是专家，有兴趣深入的可以看看通信原理这门学科。</div>
+<h1 id="电力猫结合阿苏斯-aimesh-无线方案效果" class="std-title --fontTitle"><a target="_blank" href="#电力猫结合阿苏斯-aimesh-无线方案效果" class="markdownIt-Anchor">#</a> 电力猫结合阿苏斯 AiMesh 无线方案效果<i data-minimap="Ignore"> ↵ </i></h1>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">挺好的，跑满百兆没问题，千兆目前还没跑到过。如果家庭里没有奇怪的电器的话，实际运行还挺稳定的，不会有啥特别的地方，但如果开了空调或者一些质量不太好的台灯总会有波动（变压器质量不好的那种） 还有就是不要插在抗电涌这类带滤波的插座上，信号会被屏蔽的</div>
+<h1 id="网件交换机" class="std-title --fontTitle"><a target="_blank" href="#网件交换机" class="markdownIt-Anchor">#</a> 网件交换机<i data-minimap="Ignore"> ↵ </i></h1>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">太靓了好评不解释：</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC"><div class="std-img"><img class="std-img-bg r-link" data-minimap="Rect" src="/images/netgear-gs105e.jpg" alt="NETGEAR GS105E"/><div class="std-img-text">NETGEAR GS105E</div></div></div>
+<h1 id="后话" class="std-title --fontTitle"><a target="_blank" href="#后话" class="markdownIt-Anchor">#</a> 后话<i data-minimap="Ignore"> ↵ </i></h1>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">家里到客厅的网线用来做数字电视线路了，因此之前客厅的 Mesh 节点走的是电力猫，但据实际情况来看，并不太好，有时候丢包厉害，目前用电力猫来做数字电视线路，之前的线路目前只跑局域网了</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">之前还搞了 VLAN 多路复用，线材虽然是超五类的，我试了下千兆接法但不通，估计某根子线挂了，目前接的百兆，跑不满电信带宽啊 …</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC"><div class="std-img"><img class="std-img-bg r-link" data-minimap="Rect" src="/images/ethernet-twisted-pair.jpeg?maxWidth=350px" alt="这接法揭示了网线里的每对线都是可以对等的"/><div class="std-img-text">这接法揭示了网线里的每对线都是可以对等的</div></div></div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">上述方案目前使用了数月，搭配 V2Ray Over HTTPS，上网非常愉快。</div>
+<hr class="std-hr"/>
+<section class="footnotes">
+<ol class="std-list">
+<li id="fn1" class="footnote-item"><div class="std-para --fontArticle" data-minimap-color="#CCCCCC">猫在一般情况下指的就是 Modem，即调制解调器，是谐音；另外，以我个人的理解来看猫是一个将数字信号调变到模拟信号上进行传输，并解调收到的模拟信号以得到数字信号的电子设备（https://zh.wikipedia.org/wiki/%E8%B0%83%E5%88%B6%E8%A7%A3%E8%B0%83%E5%99%A8) (也算是一种隧道把 233) <a target="_blank" href="#fnref1" class="footnote-backref">↩︎</a></div>
+</li>
+<li id="fn2" class="footnote-item"><div class="std-para --fontArticle" data-minimap-color="#CCCCCC">解调跟调制是一个相反的过程，将某种已被调制过的信号 “滤” 为初始的信号形式； <a target="_blank" href="#fnref2" class="footnote-backref">↩︎</a></div>
+</li>
+<li id="fn3" class="footnote-item"><div class="std-para --fontArticle" data-minimap-color="#CCCCCC">交流电的函数关系这里我简单写成 sin(x) 了，实际上交流电还有些别的各种参数，这个请参考物理和电路课本，或者维基 https://zh.wikipedia.org/wiki/%E4%BA%A4%E6%B5%81%E9%9B%BB <a target="_blank" href="#fnref3" class="footnote-backref">↩︎</a></div>
+</li>
+</ol>
+</section>
+</div></article></div></div><div class="smcphr rally-page-smcphr"></div><div class="std-box rally-giscus-wrapper default-max-width"><div class="std-box-content "></div></div></div>
+<script>window.__INITIAL_STATE__ = {"CategoryApiState":{"loaded":false,"loading":false,"error":null,"dataMap":{}},"BlogApiState":{"loaded":true,"loading":false,"error":null,"dataMap":{"6ebb3d998d384eb6a28011c2566c1ea7":{"type":"markdown","meta":{"title":"电力猫和组网","intro":"使用电力猫来组网","date":"Tue Apr 07 2020 04:40:59 GMT+0800 (GMT+08:00)","category":"科学上网","cateIntro":"科学上网","tags":["组网","电力猫"],"type":"article","id":"6ebb3d998d384eb6a28011c2566c1ea7","appTitle":"","author":"eczn","imgs":[],"time":"2020-04-06T20:40:59.000Z","isDraft":false,"fileDeps":["/images/tenda-ph3.jpg","/images/modem-priciple.svg?maxWidth=300px","/images/netgear-gs105e.jpg","/images/ethernet-twisted-pair.jpeg?maxWidth=350px"],"wordCount":1566},"nodes":[{"type":"tag","children":[{"type":"text","data":"最近听说了一种叫做电力猫的网络设备并实际尝试，实际体验效果很好，如果家庭网络之前没网络埋线的话可以使用这个来有效解决上网问题。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[],"name":"img","attribs":{"src":"/images/tenda-ph3.jpg","alt":"Tenda PH3"}}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"长久以来受困于没有以太网走线的家庭网络 … 尝试了很多方案，比方喜闻乐见的信号放大器、路由器无线中继 …  但这些终究是走的电磁波，丢包和延迟都不尽人意，玩网游、联机的时候卡爆了。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"#"}],"name":"a","attribs":{"href":"#电力猫和调制解调器","className":"markdownIt-Anchor"}},{"type":"text","data":" 电力猫和调制解调器"}],"name":"h1","attribs":{"id":"电力猫和调制解调器"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"关于电力猫"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"[1]"}],"name":"a","attribs":{"href":"#fn1","id":"fnref1"}}],"name":"sup","attribs":{"className":"footnote-ref"}},{"type":"text","data":"网上已有很多科普文章，这里我将其总结为：电力猫实现了将以太网数字信号调制到交流电网的能力，相反它也具备将这样的信号从电力网络上还原"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"[2]"}],"name":"a","attribs":{"href":"#fn2","id":"fnref2"}}],"name":"sup","attribs":{"className":"footnote-ref"}},{"type":"text","data":"为以太网信号。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"#"}],"name":"a","attribs":{"href":"#调制解调原理简述","className":"markdownIt-Anchor"}},{"type":"text","data":" 调制解调原理简述"}],"name":"h1","attribs":{"id":"调制解调原理简述"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"大家都知道，交流电本身会不断交变，其电压随时间曲线满足形如以下的规则"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"[3]"}],"name":"a","attribs":{"href":"#fn3","id":"fnref3"}}],"name":"sup","attribs":{"className":"footnote-ref"}},{"type":"text","data":"："}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"AC = sin(x)"},{"type":"tag","children":[],"name":"br","attribs":{}},{"type":"text","data":"\n其中 AC 为交流电信号强度, x 为时间"}],"name":"p","attribs":{}},{"type":"text","data":"\n"}],"name":"blockquote","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"回到本文的主题，电力猫将数字信号调制以后将其直接通入到交流电网上："}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[],"name":"img","attribs":{"src":"/images/modem-priciple.svg?maxWidth=300px","alt":"调制解调过程"}}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"以上大致就是电力猫的工作原理了，我不是专家，有兴趣深入的可以看看通信原理这门学科。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"#"}],"name":"a","attribs":{"href":"#电力猫结合阿苏斯-aimesh-无线方案效果","className":"markdownIt-Anchor"}},{"type":"text","data":" 电力猫结合阿苏斯 AiMesh 无线方案效果"}],"name":"h1","attribs":{"id":"电力猫结合阿苏斯-aimesh-无线方案效果"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"挺好的，跑满百兆没问题，千兆目前还没跑到过。如果家庭里没有奇怪的电器的话，实际运行还挺稳定的，不会有啥特别的地方，但如果开了空调或者一些质量不太好的台灯总会有波动（变压器质量不好的那种） 还有就是不要插在抗电涌这类带滤波的插座上，信号会被屏蔽的"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"#"}],"name":"a","attribs":{"href":"#网件交换机","className":"markdownIt-Anchor"}},{"type":"text","data":" 网件交换机"}],"name":"h1","attribs":{"id":"网件交换机"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"太靓了好评不解释："}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[],"name":"img","attribs":{"src":"/images/netgear-gs105e.jpg","alt":"NETGEAR GS105E"}}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"#"}],"name":"a","attribs":{"href":"#后话","className":"markdownIt-Anchor"}},{"type":"text","data":" 后话"}],"name":"h1","attribs":{"id":"后话"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"家里到客厅的网线用来做数字电视线路了，因此之前客厅的 Mesh 节点走的是电力猫，但据实际情况来看，并不太好，有时候丢包厉害，目前用电力猫来做数字电视线路，之前的线路目前只跑局域网了"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"之前还搞了 VLAN 多路复用，线材虽然是超五类的，我试了下千兆接法但不通，估计某根子线挂了，目前接的百兆，跑不满电信带宽啊 …"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[],"name":"img","attribs":{"src":"/images/ethernet-twisted-pair.jpeg?maxWidth=350px","alt":"这接法揭示了网线里的每对线都是可以对等的"}}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"上述方案目前使用了数月，搭配 V2Ray Over HTTPS，上网非常愉快。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[],"name":"hr","attribs":{"className":"footnotes-sep"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"猫在一般情况下指的就是 Modem，即调制解调器，是谐音；另外，以我个人的理解来看猫是一个将数字信号调变到模拟信号上进行传输，并解调收到的模拟信号以得到数字信号的电子设备（https://zh.wikipedia.org/wiki/%E8%B0%83%E5%88%B6%E8%A7%A3%E8%B0%83%E5%99%A8) (也算是一种隧道把 233) "},{"type":"tag","children":[{"type":"text","data":"↩︎"}],"name":"a","attribs":{"href":"#fnref1","className":"footnote-backref"}}],"name":"p","attribs":{}},{"type":"text","data":"\n"}],"name":"li","attribs":{"id":"fn1","className":"footnote-item"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"解调跟调制是一个相反的过程，将某种已被调制过的信号 “滤” 为初始的信号形式； "},{"type":"tag","children":[{"type":"text","data":"↩︎"}],"name":"a","attribs":{"href":"#fnref2","className":"footnote-backref"}}],"name":"p","attribs":{}},{"type":"text","data":"\n"}],"name":"li","attribs":{"id":"fn2","className":"footnote-item"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"交流电的函数关系这里我简单写成 sin(x) 了，实际上交流电还有些别的各种参数，这个请参考物理和电路课本，或者维基 https://zh.wikipedia.org/wiki/%E4%BA%A4%E6%B5%81%E9%9B%BB "},{"type":"tag","children":[{"type":"text","data":"↩︎"}],"name":"a","attribs":{"href":"#fnref3","className":"footnote-backref"}}],"name":"p","attribs":{}},{"type":"text","data":"\n"}],"name":"li","attribs":{"id":"fn3","className":"footnote-item"}},{"type":"text","data":"\n"}],"name":"ol","attribs":{"className":"footnotes-list"}},{"type":"text","data":"\n"}],"name":"section","attribs":{"className":"footnotes"}},{"type":"text","data":"\n"}],"rawContent":""}}},"HomeApi":{"loaded":false,"loading":false,"error":null,"dataMap":{}},"TimeLineApiState":{"loaded":false,"loading":false,"error":null,"dataMap":{}},"SettingApi":{"loaded":false,"loading":false,"error":null,"dataMap":{}},"LaunchpadApi":{"loaded":false,"loading":false,"error":null,"dataMap":{}}}</script>
+<!--SCRIPT-->
+</body>
+</html>

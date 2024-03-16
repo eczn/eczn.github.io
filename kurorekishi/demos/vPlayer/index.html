@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>vPlayer</title>
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/progress.css">
+	<!-- <script type="text/javascript" src="js/vue.js"></script> -->
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<!-- <script type="text/javascript" src="js/vue-router.js"></script> -->
+	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+</head>
+<body>
+	<div id="clicktoplay">点我播放 (浏览器不允许主动触发播放)</div>
+	<input id="fileinput" hidden type="file" />
+	<label id="clicklocal" for="fileinput">点我选择本地音频</label>
+
+	<canvas class="blur2Px" id="vPC"></canvas>
+
+	<div style="opacity: 0" class="container">
+		<!-- <h1>hello, vPlayer</h1> -->
+		<div id="player">
+			<h2 style="background-color: rgba(0,0,0,.4);padding: .3em 0;" v-bind:class="{ 'blur2Px': status.isListDisplayed, 'unBlur2Px': !status.isListDisplayed }">{{ musicList[indexOfList].split('/')[1].replace('.mp3','') }}</h2>
+			<!-- .list-pop -->
+			<div v-on:click="listing" class="list" v-bind:class="{ 'list-pop': status.isListDisplayed, 'list-close': !status.isListDisplayed }">
+				<ul>
+					<li v-bind:class="{ 'bePlayed' : ($index==indexOfList) }" v-for="elem in musicList" v-on:click="goto($index)">
+						{{ elem }}
+					</li>
+				</ul>
+			</div>
+
+
+			<div v-bind:class="{ 'blur2Px': status.isListDisplayed, 'unBlur2Px': !status.isListDisplayed }" class="btn">
+				<span id="play" v-on:click="play" v-bind:class="{ 'play-onPressed': status.isPlaying , 'play-unPressed': !status.isPlaying }" >play</span><br/>
+				<span id="pre" v-on:click="pre">pre</span>
+				<span id="next" v-on:click="next">next</span>
+			</div>
+			<mp3-progress></mp3-progress>
+			<audio id="vPA" v-bind:src="musicList[indexOfList]"></audio>
+			
+			<img v-bind:class="{ 'blur2Px': status.isListDisplayed, 'unBlur2Px': !status.isListDisplayed }" id="albumPic" src="" alt="">
+
+		</div>
+		
+	</div>
+
+	<footer>vPlayer by Vue.js<br/>eczn@GDUT</footer>
+</body>
+<script type="text/javascript" src="js/musicList.js"></script>
+<!-- <script type="text/javascript" src="js/BPlayer.js"></script> -->
+<script type="text/javascript" src="js/id3-minimized.js"></script>
+<script type="text/javascript" src="js/id3-process.js"></script>
+<script type="text/javascript" src="js/jP2.js"></script>
+<script type="text/javascript" src="js/progress.js"></script>
+<script type="text/javascript">
+
+// 这段 clicklocal 是 2024 年补的，可以选择本地音乐进行播放
+document.getElementById('fileinput').addEventListener('change', fileinputChangeed);
+function fileinputChangeed(e) {
+	var file = this.files[0];
+	console.log(file);
+	if (!file) return;
+	var url = URL.createObjectURL(file); // 这里就懒得 revoke 了, demo 🐶
+	musicList = [url]; // 设置列表
+	main(); // 开始播放
+}
+
+document.getElementById('clicktoplay').addEventListener('click', main)
+
+
+function main() {
+	document.getElementById('clicktoplay').removeEventListener('click', main);
+	console.log("use lib: ["); 
+	console.log("  'id3-reader.js',");
+	console.log("  'some self-made js files',");
+	console.log("  'Vue.js',"); 
+	console.log("]")
+
+	var mp3Progress = Vue.extend({
+		template: "<div class='mp3-progress rotating-init'></div>"
+	});
+
+	var vP = new jPCC('vPA','vPC');
+	var vPen = new jPenCC(vP); 
+	// vPen.circleM();
+	// vPen.circleS();
+	vPen.line();
+
+
+	var vPlayer = new Vue({
+		el: '#player',
+		components: {
+			'mp3-progress': mp3Progress
+		},
+		data: {
+			indexOfList: 0,
+			musicList: musicList,
+			domAudio: document.getElementById('vPA'),
+			status: {
+				isListDisplayed: false,
+				isPlaying: false
+			},
+		},
+		methods: {
+			play: function(){
+				if (this.status.isPlaying){
+					this.domAudio.pause();
+
+					mp3Rotater.setTime(parseInt(this.domAudio.duration));
+					mp3Rotater.stop();
+				} else {
+					this.domAudio.play();
+					mp3Rotater.setTime(parseInt(this.domAudio.duration));
+					mp3Rotater.start();
+				}
+
+				console.log(mp3Rotater);
+
+
+				this.status.isPlaying = !(this.domAudio.paused); 
+			},
+			goto: function(index){
+				// where
+				// console.log(index);
+				this.indexOfList = index;
+				aID3(this.musicList[this.indexOfList]);
+
+				this.status.isPlaying = true;
+				var domTemp = this.domAudio;
+				setTimeout(function(){
+					domTemp.play();
+				},1);
+			},
+			listing: function(){
+				// alert('!');
+				// console.log(this.indexOfList);
+				if (this.status.isListDisplayed){
+					this.status.isListDisplayed = false;
+				} else {
+					this.status.isListDisplayed = true; 
+				}
+			},
+			next: function(){
+				this.domAudio.pause();
+				(this.indexOfList>=this.musicList.length-1)?this.indexOfList=0:this.indexOfList++;
+				aID3(this.musicList[this.indexOfList]);
+
+				
+				this.status.isPlaying = true;
+				var domTemp = this.domAudio;
+				// console.log(domAudio.);
+				setTimeout(function(){
+					domTemp.play();	
+
+				},1);
+
+
+			},
+			pre: function(){
+				this.domAudio.pause();
+				(this.indexOfList<=0)?this.indexOfList=this.musicList.length-1:this.indexOfList--;
+				aID3(this.musicList[this.indexOfList]);
+				
+				this.status.isPlaying = true;
+				var domTemp = this.domAudio;
+				setTimeout(function(){
+					domTemp.play();
+					mp3Rotater.setTime(parseInt(domTemp.duration));
+					mp3Rotater.stop();
+				},1);
+			}
+		}
+	});
+
+
+	setTimeout(() => {
+		vPlayer.play();
+	}, 0)
+	var mp3Rotater = new Rotater("mp3-progress", 'vPA');
+}
+</script>
+</html>

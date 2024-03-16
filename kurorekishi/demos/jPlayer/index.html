@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" style="background-color: #ebebeb;">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>* { margin: 0; padding: 0; }</style>
+</head>
+<body>
+	<div onclick="bf(this)">点我播放 (浏览器不允许主动触发播放)</div>
+	<input id="fileinput" hidden type="file" />
+	<label id="clicklocal" for="fileinput">点我选择本地音频</label>
+	<audio id="jPA" src="/kurorekishi/@public/aurora-palace.mp3"></audio>
+	<canvas style="position: absolute;top: 0;left: 0;z-index: -99" id="jPC"></canvas>
+	<i class="icon-play-w" aria-hidden="true" onclick="bf(this);"></i>
+</body>
+<script>
+	var AudioContext = AudioContext || webkitAudioContext || safariAudioContext;	 //web audio API 
+	var player = document.getElementById('jPA'); 
+	
+	function bf(obj){
+		var audio = document.getElementById('jPA');
+		audio.play(); 
+	}
+	// setTimeout(bf, 5000);
+
+	// 这段 clicklocal 是 2024 年补的，可以选择本地音乐进行播放
+	document.getElementById('fileinput').addEventListener('change', fileinputChangeed);
+	function fileinputChangeed(e) {
+		var file = this.files[0];
+		console.log(file);
+		if (!file) return;
+		var url = URL.createObjectURL(file); // 这里就懒得 revoke 了, demo 🐶
+		player.src = url;
+		bf();
+	}
+
+
+// if (window.DeviceMotionEvent) { 
+//     window.addEventListener('devicemotion',deviceMotionHandler, false);  
+// } 
+// var speed = 25;//speed
+// var x = y = z = lastX = lastY = lastZ = 0;
+// function deviceMotionHandler(event) {  
+// 	var acceleration = event.accelerationIncludingGravity;
+// 	x = acceleration.x;
+// 	y = acceleration.y;
+// 	z = acceleration.z;
+// 	if(Math.abs(x-lastX) > speed || Math.abs(y-lastY) > speed || Math.abs(z-lastZ) > speed) {
+// 	    //简单的摇一摇触发代码
+// 	    alert('别摇..  好晕... ');
+// 	}
+// 	lastX = x;
+// 	lastY = y;
+// 	lastZ = z;
+// }
+
+	// document.write('<h1>Hello</h1><br />'); 
+	// document.write('<h1>World</h1><br />'); 
+</script> 
+<!-- https://github.com/eczn/JP -->
+<script type="text/javascript" src="./jP2.js"></script>
+</html>

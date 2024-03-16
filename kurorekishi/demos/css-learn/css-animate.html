@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CSS动画</title>
+	<!-- 适配移动端 -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<!-- ========== -->
+	<link rel="stylesheet" href="css/basic.css">
+	<link rel="stylesheet" href="css/css-animate.css">
+	<link rel="stylesheet" href="css/footer.css">
+	<link rel="stylesheet" href="css/article.css">
+	<link rel="stylesheet" href="css/image.css">
+</head>
+
+<body>
+	<div>
+		<div></div>
+	</div>
+	<div class="red"></div>
+	<div class="green"></div>
+	<div class="blue"></div>
+	<div class="pink"></div>
+	
+	<article>
+		<h1><a href="index.html">&lt; Return</a></h1>
+		<h1>CSS Animation Works By Transtion</h1>
+	</article>
+
+	<intro class="img-container">
+		<img class="body-img" src="img/001.jpg">
+		<span class="word-container">
+			<span class="intro-word">ジャン・ポポ - 古の魔導機械 [ファンタジー 風景] <br /> CSS Transition</span>
+			<span class="circle"></span>
+		</span>
+	</intro>
+	<intro class="img-container">
+		<img class="body-img" src="img/002.jpg">
+		<span class="word-container">
+			<span class="intro-word">Transition最适合只有两个关键帧的动画 <br /> CSS Transition</span>
+			<span class="circle"></span>
+		</span>
+	</intro>
+
+	<article>
+		<h1>CSS Animation Workd By @keyframes</h1>
+	</article>
+
+	<intro class="ani-container img-container">
+		<span class="red aniblock"></span>
+		<span class="red aniblock"></span>
+
+		<span class="word-container">
+			<span class="intro-word">
+				@keyframes实现的动画一般是多关键帧动画 <br /> 
+				而且.. 动画是可以复用的 你看这里 <br />
+				CSS @keyframes
+			</span>
+			<span class="circle"></span>
+		</span>
+	</intro>
+	<footer>CSS.Animate V0.01</footer>
+
+	<!-- 为移动端优化 可以不看 -->
+	<script type="text/javascript" src="js/fastclick.min.js"></script>
+	<script>
+	document.addEventListener('DOMContentLoaded', function(){FastClick.attach(document.body);console.info('Fastclick Ready');}, false);
+	</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<title>life | 又到年底了 | Eczn's Home</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,minimal-ui">
+<meta name="format-detection" content="telephone=no">
+
+<style id="CSS_VARS"></style>
+<script>
+(function() {
+console.log('INIT CSS VAR');
+function loadCSSVars() {
+    const j = localStorage.getItem("CSS_VARS_2" /* STORAGE_KEY.CSS_VARS */);
+    const initialVars = initialCSSVars();
+    if (!j)
+        return initialVars;
+    try {
+        const result = {
+            ...initialVars,
+            ...JSON.parse(j)
+        };
+        console.log('loadCSSVars from storage', result);
+        return result;
+    }
+    catch (error) {
+        console.error('load css vars with error', error);
+        return initialVars;
+    }
+}
+function renderCSSVars(vars, style) {
+    const allDefine = Object.keys(vars).map(k => {
+        const v = vars[k];
+        const cssValue = typeof v === 'number' ? `${v}px` : v;
+        return `--${k}:${cssValue};`;
+    }).join('\n');
+    if (style) {
+        style.innerHTML = `:root { ${allDefine} }`;
+    }
+    else {
+        console.error(`style#CSS_VARS NotFound !`);
+    }
+}
+function initialCSSVars() {
+    let rem = 16;
+    // 移动端
+    if (typeof window !== 'undefined' && window.innerWidth <= 500) {
+        rem = Number(((window.innerWidth - 20) / 42).toFixed(1));
+        console.log('mobile calculated rem =>', rem);
+    }
+    return {
+        rem,
+        enableSmallerFont: false,
+        displayToc: 'block',
+        fontSmcp: 'source serif pro, serif',
+        fontCode: 'consolas, Menlo, monospace',
+        fontTitle: 'Noto Serif SC, serif',
+        fontArticle: 'source serif pro, LXGW WenKai',
+        fontSansSerif: 'sans-serif',
+    };
+}
+window.__initialCSSVars = loadCSSVars();
+renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
+})();
+</script>
+
+<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.cfd76580.js"></script><script defer="defer" src="/js/chunk-lib.c90ce4c7.js"></script><link href="/css/index.719eaef39530924de6f6.css" rel="stylesheet"><link href="/css/chunk-lib.5c7d4887bb8714b00c54.css" rel="stylesheet"></head>
+<body>
+<noscript>当前浏览器不支持 JavaScript, 建议使用支持 JavaScript 的浏览器来访问此网站 !</noscript>
+<div id="rally-bg" style="opacity:0"></div>
+<div id="app"><div class="ball-canvas-container"></div><nav class="nav-main --fontSmcp"><div class="_title default-max-width">Eczn&#x27;s Home</div><div class="smcphr"></div><div class="_links default-max-width"><a class="r-link _link clickable r-link" href="/">Home</a><a class="r-link _link clickable r-link" href="/tl/0/">Timeline</a><a class="r-link _link clickable r-link" href="/cate/all/">Category</a><a class="r-link _link clickable r-link" href="/setting/">Setting</a><a class="r-link _link clickable r-link" href="/launchpad/">Launchpad</a></div></nav><div class="std-box category-main category-detail default-max-width"><div class="std-box-content "><div class="_cate-header"><div class="_blog-links"><a class="r-link _blog-link --fontTitle" href="/cate/life/43a4681fa69e3ab51bbe4ad3dbd7faa8/"><span class="_nth">#<!-- -->0</span>捞仔训练营</a><a class="r-link _blog-link --fontTitle" href="/cate/life/d420b8480838109e0ba346a95cd217c7/"><span class="_nth">#<!-- -->1</span>传说中麦当劳的臭豆腐</a><a class="r-link _blog-link --fontTitle" href="/cate/life/7afb39b8e1c2f27002033aa28ca9765e/"><span class="_nth">#<!-- -->2</span>谣传</a><a class="r-link _blog-link --fontTitle" href="/cate/life/e177b6f6579ad66644192c0303999714/"><span class="_nth">#<!-- -->3</span>被儿子们独占的七月</a><a class="r-link _blog-link --fontTitle _active" href="/cate/life/4f9e09a143e90562a6d253722d63c3e2/"><span class="_nth">#<!-- -->4</span>又到年底了</a><a class="r-link _blog-link --fontTitle" href="/cate/life/e405cde047f2993f8d97cc6e7cb3c605/"><span class="_nth">#<!-- -->5</span>Hello, 2018</a><a class="r-link _blog-link --fontTitle" href="/cate/life/64925e04e0ffe7710037fd60a065fed1/"><span class="_nth">#<!-- -->6</span>非军事区 DMZ</a><a class="r-link _blog-link --fontTitle" href="/cate/life/e995e823a24ce1cf34dad1af1d907222/"><span class="_nth">#<!-- -->7</span>又到年底了 - 新编</a></div><div class="_cate-title --fontTitle">分类「 <!-- -->life<!-- --> 」</div></div><div><div id="start" class="blog-header-main"><div class="_infos"><div class="_info"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="clock" class="svg-inline--fa fa-clock fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256,8C119,8,8,119,8,256S119,504,256,504,504,393,504,256,393,8,256,8Zm92.49,313h0l-20,25a16,16,0,0,1-22.49,2.5h0l-67-49.72a40,40,0,0,1-15-31.23V112a16,16,0,0,1,16-16h32a16,16,0,0,1,16,16V256l58,42.5A16,16,0,0,1,348.49,321Z"></path></svg>2017-11-26</div><div class="_info"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="tag" class="svg-inline--fa fa-tag fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M0 252.118V48C0 21.49 21.49 0 48 0h204.118a48 48 0 0 1 33.941 14.059l211.882 211.882c18.745 18.745 18.745 49.137 0 67.882L293.823 497.941c-18.745 18.745-49.137 18.745-67.882 0L14.059 286.059A48 48 0 0 1 0 252.118zM112 64c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48z"></path></svg>唠唠叨叨</div></div><div class="_title --fontTitle">又到年底了</div></div><article><div class="r-article"><div class="std-para --fontArticle" data-minimap-color="#CCCCCC">今天周日，这里先给周什么程、Glory、 剑豪和一天说个对不起哈，我今晚其实是写这个叼毛玩意，许愿墙的总结几天前就写完了。</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">实在是想要说出来，有点受不了，日子越加阴暗，写出来、说出来我可能好受些 。。。。</div>
+<h1 id="grey" class="std-title --fontTitle"><a target="_blank" href="#grey" class="markdownIt-Anchor">#</a> Grey<i data-minimap="Ignore"> ↵ </i></h1>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">这几个月，其实过的很快，我也没反应过来，就已经差不多到 12 月了。</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">开学的那会，在搞仲彬的项目，零零碎碎的学充实了 Vue，再来就是 Github 上瞎七瞎八搞的各种，挺有意思的，前段时间过了面试进了唯品做前端实习，感觉还不错，配 Mac 包 3 餐，只是从大学城过去有些麻烦，不过也还好，能克服，天天挤地铁，瞎想的时间也多了 …</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">这段时间搞了许愿墙，就项目情况而言，挺满意的，不过 … 我的心情，不算很好</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">这是一种拼尽全力的无力感，越努力越无力，许愿墙开发过程的来来去去，其实也就一个字： <code>累</code></div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">可能曾有一段时间的幻想，幻想同伴会知道我的辛苦进而可能会过来大家一起拼全力去搞许愿墙、或者说，看到我挺努力的，会有所触动进而有个正向的过程。</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">然而事实上，没说出来的东西都是届不到的。</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">我太了解自己了，长久以来，我学不会说 <code>不</code> 吧，不论是高中被老师鄙视，或者，更加年轻的时候，跟其他人的交流 …</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">这会让别人产生一个严重的认知偏差：</div>
+<ul class="std-list">
+<li>红莲做这些很厉害，继续让他做可能会更好</li>
+</ul>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">事实上，我从未有任何的编程天赋，都是我自找的。</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">我也向来反感吧什么都推到我身上，或者，做事情的时候别人在休息，而只有我一个人做。</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">人之常情。</div>
+<h1 id="blue" class="std-title --fontTitle"><a target="_blank" href="#blue" class="markdownIt-Anchor">#</a> Blue<i data-minimap="Ignore"> ↵ </i></h1>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">前段时间思考这个问题，没有结论，只有怀疑，猜忌，愤怒 ———— 写代码的时候、只有我一人在开发的时候、 同伴出差错的时候</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">唉，可能是我太努力了，可是尽全力开发许愿墙这件事，不是理所当然的吗 ?</div>
+<h1 id="red" class="std-title --fontTitle"><a target="_blank" href="#red" class="markdownIt-Anchor">#</a> Red<i data-minimap="Ignore"> ↵ </i></h1>
+<div class="std-img"><img class="std-img-bg r-link" data-minimap="Rect" src="/images/HAPPY-GIRLS-DAY-2.png"/></div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">其实没什么的只要退群就好了</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">既然都不能在一起协作，那又什么意义？<br/>
+既然什么都靠我，我他妈是傻逼吗？<br/>
+既然心情总是 bad bad 的，还呆在这里活受罪？</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">我从来都学不会正常的沟通 …</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">或许还有转机，因为总是挺开心的 … 最近还有油摩爽 …</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">少了这些，我可能都不算是完整的红莲了。</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">—————— 深爱着你们的红莲</div>
+</div></article></div><hr class="std-hr"/><hr class="std-hr"/><div class="blog-footer-main"><a class="r-link _prev" href="/cate/life/e177b6f6579ad66644192c0303999714/"><span class="_icon"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="caret-left" class="svg-inline--fa fa-caret-left fa-w-6 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M192 127.338v257.324c0 17.818-21.543 26.741-34.142 14.142L29.196 270.142c-7.81-7.81-7.81-20.474 0-28.284l128.662-128.662c12.599-12.6 34.142-3.676 34.142 14.142z"></path></svg></span><span>被儿子们独占的七月</span></a><div class="_current"><span class="_smaller _grey">第</span><span class="_nums _grey">5</span><span class="_smaller _grey">篇</span><div class="_now-id">又到年底了</div></div><a class="r-link _next" href="/cate/life/e405cde047f2993f8d97cc6e7cb3c605/"><span>Hello, 2018</span><span class="_icon"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="caret-right" class="svg-inline--fa fa-caret-right fa-w-6 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z"></path></svg></span></a></div><hr class="std-hr"/><hr class="std-hr"/><div class="back-to-top-main"><span class="_icon"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="caret-up" class="svg-inline--fa fa-caret-up fa-w-10 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"></path></svg></span><span class="_icon"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="caret-up" class="svg-inline--fa fa-caret-up fa-w-10 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"></path></svg></span><span class="_icon"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="caret-up" class="svg-inline--fa fa-caret-up fa-w-10 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"></path></svg></span><div class="_text-intro">回到顶部</div></div><hr class="std-hr"/><hr class="std-hr"/></div></div></div>
+<script>window.__INITIAL_STATE__ = {"CategoryApiState":{"loaded":true,"loading":false,"error":null,"dataMap":{"/life/4f9e09a143e90562a6d253722d63c3e2":{"type":"detail","categoryId":"life","list":[{"title":"捞仔训练营","intro":"老文章恢复","date":"Mon Aug 15 2016 00:00:00 GMT+0800 (中国标准时间)","category":"life","cateIntro":"Introdution Of This Category","tags":["Coming Soon"],"head":false,"headerStyle":["line-height: 314px;"],"headPic":false,"type":"article","id":"43a4681fa69e3ab51bbe4ad3dbd7faa8","appTitle":"","author":"eczn","imgs":[],"time":"2016-08-14T16:00:00.000Z","isDraft":false,"fileDeps":[],"wordCount":1628},{"title":"传说中麦当劳的臭豆腐","intro":"及时行乐","date":"Sat Jun 03 2017 00:00:31 GMT+0800 (中国标准时间)","category":"life","tags":["Coming Soon"],"head":false,"headerStyle":["line-height: 314px;"],"headPic":false,"isDraft":false,"type":"article","id":"d420b8480838109e0ba346a95cd217c7","appTitle":"","cateIntro":"该分类暂无介绍 ~","author":"eczn","imgs":[],"time":"2017-06-02T16:00:31.000Z","fileDeps":["/images/car-on-way-to-gdut.jpg","/images/mdl-cdf.jpg"],"wordCount":550},{"title":"谣传","intro":"三年前我开始编程的时候就打算完成贪吃蛇，上了大学终于是完成了，过了两年，结果却出乎我的所料","date":"Thu Jul 13 2017 00:12:04 GMT+0800 (中国标准时间)","category":"life","tags":["流言终结者"],"head":false,"headerStyle":["line-height: 314px;"],"headPic":false,"type":"article","id":"7afb39b8e1c2f27002033aa28ca9765e","appTitle":"","cateIntro":"该分类暂无介绍 ~","author":"eczn","imgs":[],"time":"2017-07-12T16:12:04.000Z","isDraft":false,"fileDeps":["/images/cpython-3q.png","/images/cpython-play.png","/images/cpython-rank.png"],"wordCount":1568},{"title":"被儿子们独占的七月","intro":"这不是遗书... ","date":"Fri Aug 11 2017 12:12:34 GMT+0800 (中国标准时间)","category":"life","tags":["night-watch"],"head":false,"headerStyle":["line-height: 314px;"],"headPic":false,"headerText":"天亮了","customCSS":["header { ","font-size: 1rem;","}"],"type":"article","id":"e177b6f6579ad66644192c0303999714","appTitle":"","cateIntro":"该分类暂无介绍 ~","author":"eczn","imgs":[],"time":"2017-08-11T04:12:34.000Z","isDraft":false,"fileDeps":["/images/books-201707.png","/images/foods-shunde.jpg","/images/all-in-a-pic.png","/images/nunu-coco.png","/images/eczn-coding.png"],"wordCount":2720},{"title":"又到年底了","intro":"就 17 年的年底嘛","date":"Sun Nov 26 2017 22:33:45 GMT+0800 (中国标准时间)","category":"life","tags":["唠唠叨叨"],"head":false,"headerStyle":["line-height: 314px;"],"headPic":false,"type":"article","id":"4f9e09a143e90562a6d253722d63c3e2","appTitle":"","cateIntro":"该分类暂无介绍 ~","author":"eczn","imgs":[],"time":"2017-11-26T14:33:45.000Z","isDraft":false,"fileDeps":["/images/HAPPY-GIRLS-DAY-2.png"],"wordCount":1250},{"title":"Hello, 2018","intro":"This is a NEW BLOG Generated By Vally","date":"Sat Dec 30 2017 18:40:39 GMT+0800 (中国标准时间)","category":"life","tags":["2018"],"head":false,"headerStyle":["line-height: 314px;"],"headPic":false,"isStar":true,"type":"article","id":"e405cde047f2993f8d97cc6e7cb3c605","appTitle":"","cateIntro":"该分类暂无介绍 ~","author":"eczn","imgs":[],"time":"2017-12-30T10:40:39.000Z","isDraft":false,"fileDeps":["/images/2017-github-works.png","/images/huangshawait.jpg"],"wordCount":2110},{"title":"非军事区 DMZ","intro":"This is a NEW BLOG Generated By Vally","date":"Sat Dec 30 2017 21:06:46 GMT+0800 (中国标准时间)","category":"life","cateIntro":"Introdution Of This Category","tags":["计算机网络"],"head":false,"headerStyle":["line-height: 314px;"],"headPic":false,"type":"article","id":"64925e04e0ffe7710037fd60a065fed1","appTitle":"","author":"eczn","imgs":[],"time":"2017-12-30T13:06:46.000Z","isDraft":false,"fileDeps":["/images/dmz-intro.jpg"],"wordCount":1553},{"title":"又到年底了 - 新编","intro":"就 18 年的年底嘛","time":"2018-11-13T19:55:32.000Z","category":"life","tags":["唠唠叨叨"],"type":"article","id":"e995e823a24ce1cf34dad1af1d907222","appTitle":"","cateIntro":"该分类暂无介绍 ~","author":"eczn","imgs":[],"isDraft":false,"fileDeps":[],"wordCount":737}],"current":{"type":"markdown","meta":{"title":"又到年底了","intro":"就 17 年的年底嘛","date":"Sun Nov 26 2017 22:33:45 GMT+0800 (中国标准时间)","category":"life","tags":["唠唠叨叨"],"head":false,"headerStyle":["line-height: 314px;"],"headPic":false,"type":"article","id":"4f9e09a143e90562a6d253722d63c3e2","appTitle":"","cateIntro":"该分类暂无介绍 ~","author":"eczn","imgs":[],"time":"2017-11-26T14:33:45.000Z","isDraft":false,"fileDeps":["/images/HAPPY-GIRLS-DAY-2.png"],"wordCount":1250},"nodes":[{"type":"tag","children":[{"type":"text","data":"今天周日，这里先给周什么程、Glory、 剑豪和一天说个对不起哈，我今晚其实是写这个叼毛玩意，许愿墙的总结几天前就写完了。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"实在是想要说出来，有点受不了，日子越加阴暗，写出来、说出来我可能好受些 。。。。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"#"}],"name":"a","attribs":{"href":"#grey","className":"markdownIt-Anchor"}},{"type":"text","data":" Grey"}],"name":"h1","attribs":{"id":"grey"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"这几个月，其实过的很快，我也没反应过来，就已经差不多到 12 月了。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"开学的那会，在搞仲彬的项目，零零碎碎的学充实了 Vue，再来就是 Github 上瞎七瞎八搞的各种，挺有意思的，前段时间过了面试进了唯品做前端实习，感觉还不错，配 Mac 包 3 餐，只是从大学城过去有些麻烦，不过也还好，能克服，天天挤地铁，瞎想的时间也多了 …"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"这段时间搞了许愿墙，就项目情况而言，挺满意的，不过 … 我的心情，不算很好"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"这是一种拼尽全力的无力感，越努力越无力，许愿墙开发过程的来来去去，其实也就一个字： "},{"type":"tag","children":[{"type":"text","data":"累"}],"name":"code","attribs":{}}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"可能曾有一段时间的幻想，幻想同伴会知道我的辛苦进而可能会过来大家一起拼全力去搞许愿墙、或者说，看到我挺努力的，会有所触动进而有个正向的过程。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"然而事实上，没说出来的东西都是届不到的。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"我太了解自己了，长久以来，我学不会说 "},{"type":"tag","children":[{"type":"text","data":"不"}],"name":"code","attribs":{}},{"type":"text","data":" 吧，不论是高中被老师鄙视，或者，更加年轻的时候，跟其他人的交流 …"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"这会让别人产生一个严重的认知偏差："}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"红莲做这些很厉害，继续让他做可能会更好"}],"name":"li","attribs":{}},{"type":"text","data":"\n"}],"name":"ul","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"事实上，我从未有任何的编程天赋，都是我自找的。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"我也向来反感吧什么都推到我身上，或者，做事情的时候别人在休息，而只有我一个人做。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"人之常情。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"#"}],"name":"a","attribs":{"href":"#blue","className":"markdownIt-Anchor"}},{"type":"text","data":" Blue"}],"name":"h1","attribs":{"id":"blue"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"前段时间思考这个问题，没有结论，只有怀疑，猜忌，愤怒 ———— 写代码的时候、只有我一人在开发的时候、 同伴出差错的时候"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"唉，可能是我太努力了，可是尽全力开发许愿墙这件事，不是理所当然的吗 ?"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"tag","children":[{"type":"text","data":"#"}],"name":"a","attribs":{"href":"#red","className":"markdownIt-Anchor"}},{"type":"text","data":" Red"}],"name":"h1","attribs":{"id":"red"}},{"type":"text","data":"\n"},{"type":"tag","children":[],"name":"img","attribs":{"src":"/images/HAPPY-GIRLS-DAY-2.png"}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"其实没什么的只要退群就好了"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"既然都不能在一起协作，那又什么意义？"},{"type":"tag","children":[],"name":"br","attribs":{}},{"type":"text","data":"\n既然什么都靠我，我他妈是傻逼吗？"},{"type":"tag","children":[],"name":"br","attribs":{}},{"type":"text","data":"\n既然心情总是 bad bad 的，还呆在这里活受罪？"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"我从来都学不会正常的沟通 …"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"或许还有转机，因为总是挺开心的 … 最近还有油摩爽 …"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"少了这些，我可能都不算是完整的红莲了。"}],"name":"p","attribs":{}},{"type":"text","data":"\n"},{"type":"tag","children":[{"type":"text","data":"—————— 深爱着你们的红莲"}],"name":"p","attribs":{}},{"type":"text","data":"\n"}],"rawContent":""}}}},"BlogApiState":{"loaded":false,"loading":false,"error":null,"dataMap":{}},"HomeApi":{"loaded":false,"loading":false,"error":null,"dataMap":{}},"TimeLineApiState":{"loaded":false,"loading":false,"error":null,"dataMap":{}},"SettingApi":{"loaded":false,"loading":false,"error":null,"dataMap":{}},"LaunchpadApi":{"loaded":false,"loading":false,"error":null,"dataMap":{}}}</script>
+<!--SCRIPT-->
+</body>
+</html>

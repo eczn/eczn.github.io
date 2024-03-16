@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>>-BPlayer</title>
+	<link rel="stylesheet" href="BPlayer.css">
+</head>
+<body>
+	<audio id="music" src="/kurorekishi/@public/aurora-palace.mp3">
+		你的浏览器不支持audio标签
+	</audio>
+
+	<div name="image" id="dropbox">
+		<img id="i00" src="1x1Alpha.png">
+	</div>
+	
+	
+
+	<div id="player">
+		<canvas id="canvas" width="0" height="0"></canvas>	
+
+		<div id="upLine" class="BLine"></div>
+		<div id="downLine" class="BLine"></div>
+
+		<div class="volDiv">Vol:80</div>
+
+		<div class="musicName">aurora-palace.mp3</div>
+		<div id="slide">
+			<img id="#img_gray" src="shelter.jpg">
+		</div>
+
+		<div id="slideS">
+			<img id="#img_gray" src="shelter.jpg">
+		</div>
+
+		<div class="btnColl">
+			<div class="btn" id="play">
+				<span class="col1_span1 playbtn"></span>
+			</div>
+
+			<div class="btn" id="pause">
+				<span class="col2_span1 playbtn"></span>
+				<span class="col2_span2 playbtn"></span>
+			</div>
+
+			<div class="btn" id="next">
+				<span class="col3_span1 playbtn"></span>
+			</div>
+		</div>
+		
+		<div class="list">
+			<div id="changeAnimate">点我切换音频动画</br></div>
+			<div style="margin-left: 50px;"><label id="fileinputLabel" for="fileinput">选择本地音乐</br></label></div>
+			<input id="fileinput" hidden type="file" />
+		</div>
+
+
+		<div class="searchList"></div>
+		<input type="text" id="search" onkeyup="search(this.value,event);"/>
+
+	</div>
+</body>
+	<script type="text/javascript" src="/kurorekishi/@public/jquery.min.js"></script>
+	<script type="text/javascript" src="js/BGlobal.js"></script>
+	
+	<script type="text/javascript" src="js/rand_number_v3.js"></script>
+	<script type="text/javascript" src="js/adoptiOS.js"></script>
+	<script type="text/javascript" src="js/BVis.js"></script>
+	<script type="text/javascript" src="js/picDrop.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+</html>

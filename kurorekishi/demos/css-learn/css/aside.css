@@ -1,0 +1,19 @@
+/*aside.css*/
+aside {
+	font-size: 16px;
+	margin: 2em 0; 
+}
+
+aside > ul {
+	position: relative;
+	padding-left: 2em; 
+	
+}
+aside > ul > li {
+	font-size: 22px;
+	margin: .3em 0; 
+}
+
+aside > ul > ul {
+	padding-left: 2em; 
+}

@@ -1,0 +1,262 @@
+body {
+	background: url(bg91.png);
+	background-color: rgb(123,185,248);
+
+	overflow: hidden;
+}
+
+.BLine {
+	position: absolute;
+	height: 5px;
+	width: 100%;
+
+	background-color: rgb(0,100,255);
+	z-index: -98;
+	opacity: 0;
+
+}
+
+#upLine {
+	top: 0;
+}
+#downLine {
+	bottom: 0; 
+}
+
+.volDiv {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 100%;
+	/*display: none; */
+	background-color: rgba(80,145,208,0.5);
+	color: black;
+	z-index: -99;
+}
+
+.btn {
+	position: absolute;
+
+	width: 60px;
+	height: 60px;
+	
+	cursor:pointer;
+}
+
+.btnColl {
+	position: absolute;
+	height: 60px;
+	width: 40%;
+	left: 30%;
+	margin:auto;
+	bottom: 18%;
+}
+
+#play {
+	left: 0px; 
+	/*background-color: #BBBBBB;*/
+}
+
+#pause{
+	left: 0px;
+	opacity: 0;
+	display: none;
+	/*background-color: #BBBBBB;*/
+}
+
+#next {
+	right: 0px;
+}
+
+
+#player {
+	overflow: hidden;
+	border-radius:15px;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+
+	position: absolute;
+
+	width: 0;
+	height: 0;
+	transform: translate(-50%, -50%);
+	opacity: 0;
+
+	left: 50%;
+	top: 50%;
+	background-color: rgba(255,255,255,0.7);
+}
+
+.col1_span1 {
+    border: 2px solid #333;
+    border-radius: 40px;
+    -webkit-border-radius: 40px;
+    -moz-border-radius: 40px;
+
+    content: '';
+    height: 0;
+    width: 0;
+    display: block;
+    border: 20px transparent solid;
+    border-right-width: 0;
+    border-left-color: #333333;
+	margin:auto;
+	margin-top: 10px;
+}
+
+.col2_span1,.col2_span2 {
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    display: block;
+    background: #333333;
+    position: absolute;
+	margin-top:15px;
+	margin-left: 20px;
+    height: 30px;
+    width: 5px;
+    left: 0px;
+}
+.col2_span2 {
+    left: 10px;
+}
+
+.col3_span1 {
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    display: block;
+    background: #333333;
+    position: absolute;
+	margin-top:15px;
+	margin-left: 20px;
+    height: 30px;
+
+    width: 5px;
+    left: 0px;
+}
+
+
+.musicName {
+/*	position: absolute;
+	top: 0;*/
+	text-align: center;
+	margin-top: 5%;
+	margin-left: 10%;
+	margin-right: 10%;
+	width: 80%; 
+	font-size: 20px;
+	font-family: 黑体;
+}
+
+#slide , #slideS {
+	overflow: hidden;
+	position: absolute;
+	top: 48%;
+	left: -100%;
+	width: 100%;
+	height: 4%;
+}
+
+#slideS {
+	opacity: 0.2;
+	left: 0;
+	z-index: 99;
+	cursor: pointer;
+}
+
+#img_gray {
+
+}
+
+.list {
+	overflow: scroll;
+	overflow-x: hidden; 
+	cursor: pointer;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+
+	background-color: rgba(70,130,170,0.7);
+	
+	color: white;
+
+	top: 0%;
+	right: -98%;
+}
+
+.listName ,.listNameS , #changeAnimate {
+	font-size: 20px;
+	cursor: pointer;
+	font-family: 黑体;
+	margin-left: 50px;
+	margin-right: 50px;
+	opacity: 0.7;
+}
+
+#changeAnimate{
+	display: block;
+	font-size: 30px;
+	/*position: absolute;*/
+	top:0;
+	left: 10%;
+}
+
+.searchList{
+	top: 0; 
+	height: 100%;
+	width: 100%;
+	z-index: 99;
+	overflow: scroll;
+	position: absolute;
+	background-color: rgba(233,233,233,0.8);
+	
+	display: none;
+	opacity: 0;
+}
+
+/* 把滚动条隐藏 适用于chrome */
+::-webkit-scrollbar , ::-webkit-scrollbar-track , ::-webkit-scrollbar-thumb{ 
+	display: none;
+}  
+
+#search {
+	position: absolute;
+	margin-left:28%;
+	margin-right:32%;
+	bottom: 2%;
+	width:40%;
+	height: 10%;
+	text-align: center;
+
+	font-family: 黑体;
+	border-radius: 25px;
+	background-color: rgba(255,255,255,0);
+	border:2px solid #333333;
+}
+
+canvas {
+	position: absolute;
+	top: 0;
+	/*left: -1px;*/
+	z-index: -98;
+	overflow: hidden;
+}
+
+#i00 {
+	position: absolute;
+	z-index: -999;	
+	width: 100%;
+	top: 0px;
+	left: 0px;
+	z-index: -999;
+}
+
+#dropbox {
+	position: absolute;
+	z-index: -998;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+}
