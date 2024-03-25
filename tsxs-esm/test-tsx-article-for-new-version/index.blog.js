@@ -1,6 +1,6 @@
 System.register(['react', 'rally/@@', './picexample.jpg.js'], (function (exports) {
     'use strict';
-    var React, P, H1Block, H2, H3, ImgDynamic, Code, Col, Numbering, Quote, metaBeauty, filePicExample;
+    var React, P, H1Block, H2, H3, ImgDynamic, Code, Col, Numbering, Quote, Formula, WindowApp, WindowAppIframe, metaBeauty, filePicExample;
     return {
         setters: [function (module) {
             React = module.default;
@@ -14,6 +14,9 @@ System.register(['react', 'rally/@@', './picexample.jpg.js'], (function (exports
             Col = module.Col;
             Numbering = module.Numbering;
             Quote = module.Quote;
+            Formula = module.Formula;
+            WindowApp = module.WindowApp;
+            WindowAppIframe = module.WindowAppIframe;
             metaBeauty = module.metaBeauty;
         }, function (module) {
             filePicExample = module.default;
@@ -185,7 +188,47 @@ System.register(['react', 'rally/@@', './picexample.jpg.js'], (function (exports
         <div onClick={sayHelloWorld}>
           <CodeHelloWorld />
         </div>
-      ` })));
+      ` })),
+                    React.createElement(H1Block, { id: "Formulas", title: "LaTex \u516C\u5F0F <Formulas />" },
+                        (() => {
+                            const c = `
+          Hello, \\\\
+          \\LaTeX \\\\
+        `;
+                            return React.createElement(Col, { style: { alignItems: 'center' } },
+                                React.createElement(Code, { lang: 'latex', source: `
+            <Formula source={\`
+              Hello, \\\\\\\\
+              \\\\LaTex \\\\\\\\
+            \`} />
+          ` }),
+                                React.createElement(Formula, { source: c }));
+                        })(),
+                        React.createElement(P, null, "\u7531\u4E8E `\\` \u88AB\u6A21\u7248\u5B57\u7B26\u4E32\u5360\u7528\u4E86\uFF0C\u76EE\u524D\u4F7F\u7528\u4F53\u9A8C\u6BD4\u8F83\u7CDF\u7CD5\uFF0C\u5F85\u4F18\u5316")),
+                    React.createElement(H1Block, { id: "WindowApp", title: "\u5E94\u7528\u7A97\u683C <WindowApp />" },
+                        React.createElement(WindowApp, { height: "auto", initialRun: false, title: "My App" },
+                            React.createElement("div", { style: { textAlign: 'center', padding: '2em' } }, "hello, world!")),
+                        React.createElement(Code, { lang: 'tsx', source: `
+        <WindowApp height="auto" initialRun={false} title="My App">
+          <div style={{ textAlign: 'center', padding: '2em' }}>
+            hello, world!
+          </div>
+        </WindowApp>
+      ` }),
+                        React.createElement(P, null, "\u652F\u6301\u4EE5\u7A97\u683C\u65B9\u5F0F\u5C55\u793A\u4E00\u6BB5 JSX \u5B9E\u4F8B, \u7A97\u683C\u53F3\u4E0A\u89D2\u652F\u6301\u82E5\u5E72\u529F\u80FD, \u5982\u542F\u52A8/\u6682\u505C/\u5168\u5C4F/\u7A97\u53E3\u5316, \u5176\u4ED6\u53C2\u6570\u542B\u4E49\u5982\u4E0B:"),
+                        React.createElement(Numbering, { template: "rect" },
+                            React.createElement(P, null, "`height?` \u4F20\u5165 `auto` \u7684\u65F6\u5019\u7A97\u683C\u9AD8\u5EA6\u7531\u4F20\u5165\u7684 JSX \u6491\u5F00\uFF0C\u5176\u4ED6\u4F20\u5165\u60C5\u51B5\u5219\u5B9A\u9AD8\uFF0C\u9ED8\u8BA4\u503C\u4E3A `30rem`"),
+                            React.createElement(P, null, "`title?` \u7A97\u53E3 title \u4FE1\u606F"),
+                            React.createElement(P, null, "`initialRun?` \u662F\u5426\u9ED8\u8BA4\u6267\u884C\uFF0C\u5982\u679C\u4F20 `false` \u5219\u9996\u6B21\u52A0\u8F7D\u540E\u4E0D\u6267\u884C\u6E32\u67D3")),
+                        React.createElement(H2, null, `<WindowAppIframe />`),
+                        React.createElement(WindowAppIframe, { src: "/?\u8FD9\u662F\u4E00\u6BB5\u94FE\u63A5", height: "30rem" }),
+                        React.createElement(Code, { lang: 'tsx', source: `
+        <WindowAppIframe
+          src="/?这是一段链接"
+          height="30rem"
+        />
+      ` }),
+                        React.createElement(P, null, "\u652F\u6301\u4EE5\u7A97\u683C\u65B9\u5F0F\u5C55\u793A iframe \u9875\u9762, \u9700\u8981\u4F20 src \u53C2\u6570\u6307\u5B9A\u94FE\u63A5")));
             });
 
         })

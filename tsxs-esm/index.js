@@ -9,11 +9,15 @@ System.register([], (function (exports, module) {
 			module.import('./css-matrix3d-calc/index.blog.js');
 			module.import('./eczn-home-intro/index.blog.js');
 			module.import('./hello-css-vars/index.blog.js');
+			module.import('./i-dont-know-js/index.blog.js');
 			module.import('./ipod-spin-gesture/index.blog.js');
 			module.import('./is-esm-robust-enough-in-broswer/index.blog.js');
 			module.import('./latex-notes/index.blog.js');
 			module.import('./noise-perlin/index.blog.js');
 			module.import('./old-demos/index.blog.js');
+			module.import('./syuuchuuryoku/240310/index.blog.js');
+			module.import('./syuuchuuryoku/240320/index.blog.js');
+			module.import('./syuuchuuryoku/240322/index.blog.js');
 			module.import('./test-tsx-article-for-new-version/index.blog.js');
 			module.import('./the-adt-in-ts/index.blog.js');
 			module.import('./three-body-emulator/index.blog.js');

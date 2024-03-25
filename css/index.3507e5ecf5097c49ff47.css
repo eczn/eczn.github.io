@@ -832,6 +832,7 @@ h6.std-title {
 .std-img-dynamic {
   position: relative;
   margin-bottom: 1em;
+  box-sizing: border-box;
 }
 .std-img-dynamic .std-img-text {
   text-align: center;
@@ -847,12 +848,67 @@ h6.std-title {
   left: 0;
   width: 100%;
 }
+.std-img-dynamic .std-img-dymanic-main.__mosaic {
+  transition: all 0.5s;
+  transition-delay: 200ms;
+  opacity: 1;
+  transition-timing-function: cubic-bezier(0.64, -0.38, 0.57, 1.28);
+  transform-origin: 50% 80%;
+}
+.std-img-dynamic .std-img-dymanic-main.__hidden {
+  opacity: 0;
+}
 .std-img-dynamic .std-img-dymanic-tips {
   display: block;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
+}
+.xhr-progress-printer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  border: 1px solid #DDD;
+  font-size: 5rem;
+  font-family: var(--fontCode);
+  color: #FFF;
+  text-shadow: 0.2rem 0.2rem 3px #000000;
+  user-select: none;
+  flex-direction: column;
+}
+.xhr-progress-printer._error {
+  text-shadow: none;
+  font-size: 2rem;
+  color: #c6340b;
+  cursor: pointer;
+}
+.xhr-progress-printer._error:active {
+  opacity: 0.8;
+}
+.xhr-progress-printer._error > .std-icon {
+  width: 8rem;
+  margin-bottom: 1rem;
+}
+.xhr-progress-printer .__smalltext {
+  text-shadow: 1px 1px 2px #000000;
+  font-size: 1rem;
+}
+
+.std-icon {
+  display: inline-block;
+}
+.std-icon > svg {
+  height: 100%;
+  width: 100%;
+  display: block;
 }
 
 .button-main {
@@ -1112,15 +1168,6 @@ h6.std-title {
   font-weight: 900;
 }
 
-.std-icon {
-  display: inline-block;
-}
-.std-icon > svg {
-  height: 100%;
-  width: 100%;
-  display: block;
-}
-
 .r-article .std-window {
   margin-bottom: 1em;
 }
@@ -1175,6 +1222,8 @@ h6.std-title {
 .std-window .std-window-status {
   width: 100%;
   height: 100%;
+  padding: 1em 0;
+  box-sizing: border-box;
   border: none;
   outline: none;
   display: flex;

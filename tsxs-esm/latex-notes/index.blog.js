@@ -81,6 +81,13 @@ System.register(['react', 'rally/@@'], (function (exports) {
       \\P \\\\
       A^a = B_b \\\\ % 上下标
       `,
+                            `
+      \\underbrace{
+        3 + 3 + \\cdots + 3
+      }_{
+        \\text{一共 13 个 3}
+      }
+      `,
                         ] }),
                     React.createElement(RenderLaTeXes, { id: "matrix", title: "\u77E9\u9635", codes: [
                             `
