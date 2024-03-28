@@ -75,7 +75,7 @@ System.register(['react', 'rally/@@', '../coordinate-axis/line.js', '../matrix/m
           const finalMatrix = matrixProduct(rotateMatrix, rotateDxDy);
           const result = matrixToCSS(finalMatrix);
           return (React.createElement("div", null,
-              React.createElement("div", { style: { margin: '0 auto', textAlign: 'center' } },
+              React.createElement("div", { style: { margin: '0 auto', textAlign: 'center', overflow: 'hidden' } },
                   React.createElement(CoordinateAxis, { width: 24, height: 24, zero: [12, 12], subview: React.createElement(React.Fragment, null,
                           React.createElement(Rect, { width: 16, height: 16, left: -8, bottom: -8, color: 'rgba(245, 0, 0, .6)', style: {
                                   transform: `perspective(15em) ${result}`,

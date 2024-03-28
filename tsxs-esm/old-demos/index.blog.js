@@ -1,15 +1,18 @@
-System.register(['react', 'rally/@@'], (function (exports) {
+System.register(['react', 'rally/@@', './demo-book.svg.js'], (function (exports) {
     'use strict';
-    var React, P, H1Block, WindowAppIframe, Link, metaBeauty;
+    var React, P, ImgDynamic, H1Block, WindowAppIframe, Link, metaBeauty, svgDemoBook;
     return {
         setters: [function (module) {
             React = module.default;
         }, function (module) {
             P = module.P;
+            ImgDynamic = module.ImgDynamic;
             H1Block = module.H1Block;
             WindowAppIframe = module.WindowAppIframe;
             Link = module.Link;
             metaBeauty = module.metaBeauty;
+        }, function (module) {
+            svgDemoBook = module.default;
         }],
         execute: (function () {
 
@@ -19,6 +22,7 @@ System.register(['react', 'rally/@@'], (function (exports) {
                 id: 'old-demos',
                 type: 'app',
                 appTitle: '早期 DEMO 集',
+                appIcon: svgDemoBook.src,
                 title: '早期 DEMO 集',
                 author: 'eczn',
                 // category: '分类',
@@ -32,7 +36,8 @@ System.register(['react', 'rally/@@'], (function (exports) {
                     React.createElement(React.Fragment, null,
                         React.createElement(P, null,
                             "\u6700\u8FD1\u4ECE\u8001\u786C\u76D8\u91CC\u641C\u51FA\u4E86\u4E4B\u524D\u8001\u7535\u8111\u7528\u4E86\u5F88\u591A\u5E74\u7684 www \u76EE\u5F55, \u5FC3\u8840\u6765\u6F6E\u6574\u7406\u4E86\u4E00\u4E0B\u91CC\u9762\u7684 demo \u4EE3\u7801, \u6536\u5F55\u5728\u8FD9\u91CC, \u65F6\u95F4\u96C6\u4E2D\u5728\u5927\u5B66\u9ED1\u5386\u53F2\u671F\u95F4\u3002",
-                            React.createElement("s", null, "\u6211\u662F\u50BB\u903C"))),
+                            React.createElement("s", null, "\u6211\u662F\u50BB\u903C")),
+                        React.createElement(ImgDynamic, { file: svgDemoBook })),
                     React.createElement(H1Block, { id: "2016/04/14", title: "2016/04/14 randstr" },
                         React.createElement(WindowAppIframe, { src: "/kurorekishi/demos/randstr/index.html", height: "37rem" }),
                         React.createElement(P, null, "16 \u5E74\u5F53\u65F6\u521A\u521A\u63A5\u89E6\u524D\u7AEF\uFF0C\u8FD9\u53EF\u80FD\u662F\u6211\u5199\u7684\u524D 500 \u884C js, \u5F97\u76CA\u4E8E C \u7684\u57FA\u7840\u597D\uFF0C\u8FD9\u6BB5\u4EE3\u7801\u5F53\u65F6\u5F88\u5FEB\u5C31\u5199\u5B8C\u4E86\uFF0C\u76F8\u6BD4\u5199 C \u7684\u90A3\u5957 stdout, \u8FD9\u91CC\u7684 UI \u6548\u679C\u8BA9\u6211\u6709\u5DE8\u5927\u6210\u5C31\u611F\uFF0C\u540E\u9762\u5C31\u5165\u5751\u4E86\u3002")),

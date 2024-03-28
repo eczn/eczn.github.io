@@ -1203,6 +1203,26 @@ h6.std-title {
   font-family: var(--fontCode);
   font-size: 80%;
 }
+.std-window .std-window-menus .std-window-title > * {
+  vertical-align: middle;
+}
+.std-window .std-window-menus .std-window-title .std-window-icon {
+  position: relative;
+  margin-right: 0.5em;
+  width: 2em;
+  height: 2em;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.5s;
+  transition-timing-function: cubic-bezier(0.64, -0.34, 0.42, 1.36);
+  z-index: 99999;
+}
+.std-window .std-window-menus .std-window-title .std-window-icon:active {
+  transform: scale(4);
+  transform-origin: 0% 0%;
+}
 .std-window .std-window-menus .std-window-btns {
   display: flex;
   align-items: center;
@@ -1460,6 +1480,16 @@ li .std-list {
   margin-bottom: 0.3em;
   font-weight: 900;
   color: hsl(0deg 1% 4%);
+}
+.timeline-main ._item ._title > * {
+  display: inline-block;
+  vertical-align: middle;
+}
+.timeline-main ._item ._title > ._icon {
+  background-size: cover;
+  width: 2em;
+  height: 2em;
+  margin-left: 0.5em;
 }
 .timeline-main ._item ._after-title {
   font-size: 0.75rem;
@@ -1965,6 +1995,12 @@ li .std-list {
 }
 .launchpad-app:hover {
   cursor: pointer;
+}
+.launchpad-app .launchpad-app-icon {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 @charset "UTF-8";

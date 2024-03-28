@@ -9,7 +9,6 @@ System.register([], (function (exports, module) {
 			module.import('./css-matrix3d-calc/index.blog.js');
 			module.import('./eczn-home-intro/index.blog.js');
 			module.import('./hello-css-vars/index.blog.js');
-			module.import('./i-dont-know-js/index.blog.js');
 			module.import('./ipod-spin-gesture/index.blog.js');
 			module.import('./is-esm-robust-enough-in-broswer/index.blog.js');
 			module.import('./latex-notes/index.blog.js');

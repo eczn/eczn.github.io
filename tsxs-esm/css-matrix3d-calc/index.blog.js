@@ -1,6 +1,6 @@
-System.register(['react', 'rally/@@', './matrix/matrix-calc-progress.js', './matrix/matrix-product.js', './matrix/matrix-equal.js', './coordinate-axis/index.js', './matrix/index.css.js', './coordinate-axis/index.css.js', './formula/index.css.js', './coordinate-axis/rect.js', './coordinate-axis/point.js', './coordinate-axis/line.js', './formula/index.js', './matrix-demo/matrix-demo.js', './matrix-calc.jpg.js'], (function (exports) {
+System.register(['react', 'rally/@@', './matrix/matrix-calc-progress.js', './matrix/matrix-product.js', './matrix/matrix-equal.js', './coordinate-axis/index.js', './matrix/index.css.js', './coordinate-axis/index.css.js', './formula/index.css.js', './coordinate-axis/rect.js', './coordinate-axis/point.js', './coordinate-axis/line.js', './formula/index.js', './matrix-demo/matrix-demo.js', './matrix-calc.jpg.js', './matrix2x2.svg.js'], (function (exports) {
     'use strict';
-    var React, Col, P, Code, H1Block, H2, ImgDynamic, Link, metaBeauty, MatrixCalcProgress, matrixProduct, MatrixEqual, CoordinateAxis, cssMatrix, cssCoordinateAxis, cssFormula, Rect, Point, LinePP, Formula, SymbolCharacter, MatrixDemo, fileMatrixCalc;
+    var React, Col, P, Code, H1Block, H2, WindowApp, ImgDynamic, Link, metaBeauty, MatrixCalcProgress, matrixProduct, MatrixEqual, CoordinateAxis, cssMatrix, cssCoordinateAxis, cssFormula, Rect, Point, LinePP, Formula, SymbolCharacter, MatrixDemo, fileMatrixCalc, svgMatrix2x2;
     return {
         setters: [function (module) {
             React = module.default;
@@ -10,6 +10,7 @@ System.register(['react', 'rally/@@', './matrix/matrix-calc-progress.js', './mat
             Code = module.Code;
             H1Block = module.H1Block;
             H2 = module.H2;
+            WindowApp = module.WindowApp;
             ImgDynamic = module.ImgDynamic;
             Link = module.Link;
             metaBeauty = module.metaBeauty;
@@ -40,14 +41,19 @@ System.register(['react', 'rally/@@', './matrix/matrix-calc-progress.js', './mat
             MatrixDemo = module.MatrixDemo;
         }, function (module) {
             fileMatrixCalc = module.default;
+        }, function (module) {
+            svgMatrix2x2 = module.default;
         }],
         execute: (function () {
 
             exports('initialProps', initialProps);
 
             const meta = exports('meta', metaBeauty({
+                type: 'app',
                 id: 'css-matrix3d-calc',
                 title: 'CSS Matrix3D 中的矩阵运算',
+                appTitle: 'CSS Matrix',
+                appIcon: svgMatrix2x2.src,
                 author: 'eczn',
                 // category: '分类',
                 time: new Date('2023-08-18 00:00'),
@@ -262,9 +268,7 @@ System.register(['react', 'rally/@@', './matrix/matrix-calc-progress.js', './mat
                                 })() })),
                         React.createElement(P, null,
                             "\u8FD9\u4E2A\u8BA1\u7B97\u662F\u663E\u800C\u6613\u89C1\u7684\uFF0C\u6839\u636E\u52FE\u80A1\u5B9A\u7406\u8BA1\u7B97\u5C31\u80FD\u5F97\u5230 P' \u7684\u5750\u6807\u7EA6\u4E3A: (",
-                            calc(5, 15).x.toFixed(2),
-                            ", ",
-                            calc(5, 15).y.toFixed(2),
+                            React.createElement("i", null, calc(5, 15).x.toFixed(2) + ',' + calc(5, 15).y.toFixed(2)),
                             ") ",
                             React.createElement("br", null),
                             "\u6839\u636E\u6B64\u4F8B\u6211\u4EEC\u53EF\u4EE5\u6784\u9020\u4E00\u4E2A\u66F4\u4E00\u822C\u7684\u60C5\u51B5, \u5373\u53F3\u56FE\u6240\u793A: A \u4EE5 O \u4E3A\u4E2D\u5FC3\u987A\u65F6\u9488\u65CB\u8F6C \u03B8 \u81F3 B, \u6839\u636E\u5DF2\u6709\u7684\u4FE1\u606F, \u53EF\u4EE5\u5F97\u51FA\u4E0B\u9762 6 \u6761\u65B9\u7A0B, \u5176\u4E2D r \u6307\u7684\u662F\u4ECE A \u5230 O \u70B9\u7684\u8DDD\u79BB, \u800C sinA sinB \u4E2D\u7684 A \u548C B \u6307\u7684\u662F AO \u548C BO \u8DDF X \u8F74\u7684\u89D2\u5EA6\u3002"),
@@ -322,8 +326,8 @@ System.register(['react', 'rally/@@', './matrix/matrix-calc-progress.js', './mat
                         React.createElement(P, null, "\u77E9\u9635\u7684\u9B54\u529B\u5728\u4E8E\u5B83\u7684\u4E58\u6CD5\u64CD\u4F5C\u5BF9\u5E94\u4E86\u5411\u91CF\u7A7A\u95F4\u7684\u53D8\u6362 \u2014\u2014 \u5E94\u7528\u5230\u56FE\u5F62\u5B66\u5C31\u662F\u56FE\u50CF\u53D8\u6362"),
                         React.createElement(P, null, "\u4EFB\u610F\u590D\u6742\u7684\u53D8\u6362\u90FD\u53EF\u4EE5\u62C6\u4E3A\u82E5\u5E72\u4E2A\u5B50\u53D8\u6362, \u800C\u6BCF\u4E00\u4E2A\u53D8\u6362\u610F\u5473\u7740\u4E00\u6B21\u77E9\u9635\u4E58\u6CD5 \u2014\u2014 \u90A3\u4E48\u6211\u4EEC\u53EF\u4EE5\u901A\u8FC7\u591A\u6B21\u5E94\u7528\u77E9\u9635\u53D8\u6362\u7684\u65B9\u5F0F\u6765\u5B9E\u73B0\u5BF9\u4EFB\u610F\u590D\u6742\u7684\u53D8\u6362\u6216\u8FD0\u52A8\u7684\u7ED8\u5236\uFF0C\u66F4\u5177\u4F53\u4E00\u70B9\u6765\u8BF4\u6BCF\u6B21\u4E58\u4E0A\u4E00\u6B21\u7279\u5F81\u77E9\u9635\u5C31\u662F\u505A\u4E00\u6B21\u53D8\u6362\uFF0C\u6BD4\u65B9\u65CB\u8F6C 45 \u5EA6\u540E\u5411\u53F3\u8D70 5px \u90A3\u5C31\u5206\u4E24\u4E2A\u77E9\u9635\u4F9D\u6B21\u4E58\u4E0A\u53BB")),
                     React.createElement(H1Block, { id: "let-the-game-begin", title: "\u3055\u3042\u3001\u30B2\u30FC\u30E0\u3092\u59CB\u3081\u3088\u3046" },
-                        React.createElement(P, null, "\u8FD9\u4E00\u8282\u5C06\u6839\u636E\u524D\u9762\u7684\u8BA8\u8BBA\u5199\u4E00\u4E2A\u6709\u5173\u4E8E\u77E9\u9635\u53D8\u6362\u7684 DEMO"),
-                        React.createElement(MatrixDemo, null)),
+                        React.createElement(WindowApp, { height: "auto", icon: svgMatrix2x2.src, title: "CSS Matrix" },
+                            React.createElement(MatrixDemo, null))),
                     React.createElement(H1Block, { id: "motto", title: "\u610F\u72B9\u672A\u5C3D ..." },
                         React.createElement(P, null, "\u73A9\u4E86\u4E0A\u9762\u7684 demo \u4F60\u53EF\u80FD\u4F1A\u53D1\u73B0\u6211\u4F7F\u7528\u7684\u4F4D\u79FB\u77E9\u9635\u5E76\u4E0D\u662F\u50CF\u4E0B\u9762\u7684 \u278A \u8FD9\u6837, \u800C\u662F \u278B \u8FD9\u6837\u5728\u6700\u540E\u4E00\u884C\u6DFB\u52A0\u5206\u91CF:"),
                         React.createElement(Formula, { nth: 1 }, 矩阵的一般形式.translate3d),
