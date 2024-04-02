@@ -19,6 +19,7 @@ System.register([], (function (exports, module) {
 			module.import('./syuuchuuryoku/240322/index.blog.js');
 			module.import('./test-tsx-article-for-new-version/index.blog.js');
 			module.import('./the-adt-in-ts/index.blog.js');
+			module.import('./the-structure-and-interpretation-of-std-unicode-and-its-utf-encodings/index.blog.js');
 			module.import('./three-body-emulator/index.blog.js');
 			module.import('./white-noise/index.blog.js');
 
