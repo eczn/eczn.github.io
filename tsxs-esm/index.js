@@ -5,6 +5,7 @@ System.register([], (function (exports, module) {
 
 			module.import('./ai-2023/index.blog.js');
 			module.import('./app-pinch/index.blog.js');
+			module.import('./binary-complement-principle/index.blog.js');
 			module.import('./create-game-map/index.blog.js');
 			module.import('./css-matrix3d-calc/index.blog.js');
 			module.import('./eczn-home-intro/index.blog.js');
@@ -17,6 +18,8 @@ System.register([], (function (exports, module) {
 			module.import('./syuuchuuryoku/240310/index.blog.js');
 			module.import('./syuuchuuryoku/240320/index.blog.js');
 			module.import('./syuuchuuryoku/240322/index.blog.js');
+			module.import('./syuuchuuryoku/240430/index.blog.js');
+			module.import('./syuuchuuryoku/index.blog.js');
 			module.import('./test-tsx-article-for-new-version/index.blog.js');
 			module.import('./the-adt-in-ts/index.blog.js');
 			module.import('./the-structure-and-interpretation-of-std-unicode-and-its-utf-encodings/index.blog.js');
