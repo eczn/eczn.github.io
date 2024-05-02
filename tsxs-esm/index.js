@@ -13,8 +13,10 @@ System.register([], (function (exports, module) {
 			module.import('./ipod-spin-gesture/index.blog.js');
 			module.import('./is-esm-robust-enough-in-broswer/index.blog.js');
 			module.import('./latex-notes/index.blog.js');
+			module.import('./moonbit-start/index.blog.js');
 			module.import('./noise-perlin/index.blog.js');
 			module.import('./old-demos/index.blog.js');
+			module.import('./parser-combinator/index.blog.js');
 			module.import('./syuuchuuryoku/240310/index.blog.js');
 			module.import('./syuuchuuryoku/240320/index.blog.js');
 			module.import('./syuuchuuryoku/240322/index.blog.js');
