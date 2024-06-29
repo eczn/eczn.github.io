@@ -157,6 +157,138 @@ fn init {
   debug(result.to_array())
 }
 `.trim();
+      const code2 = `
+// 根据 lexer.mbt 改的 ts 版
+type Char = string & { length: 1 };
+
+type Token = (
+  | { type: 'token-value', number: number }
+  | { type: 'token-plus' }
+  | { type: 'token-minus' }
+  | { type: 'token-multiply' }
+  | { type: 'token-divide' }
+  | { type: 'token-lparen' }
+  | { type: 'token-rparen' }
+)
+
+class Lexer<V> {
+  constructor(
+    public parse: (str: string) => null | [V, string]
+  ) {}
+
+  map<O>(f: (input: V) => O): Lexer<O> {
+    return new Lexer<O>(input => {
+      let res = this.parse(input)
+      if (res === null) return null;
+      const [value, rest] = res;
+      return [f(value), rest]
+    })
+  }
+
+  and<V2>(parser2: Lexer<V2>): Lexer<[V, V2]> {
+    return new Lexer(input => {
+      const res1 = this.parse(input)
+      if (res1 === null) return null;
+      const [value1, rest1] = res1;
+      const res2 = parser2.parse(rest1);
+      if (res2 === null) return null;
+      const [value2, rest2] = res2;
+      return [[value1, value2], rest2]
+    })
+  }
+
+  or(parser2: Lexer<V>): Lexer<V> {
+    return new Lexer(input => {
+      const res = this.parse(input)
+      if (res === null) return parser2.parse(input)
+        return res;
+    })
+  }
+
+  many(): Lexer<V[]> {
+    return new Lexer(input => {
+      let rest = input
+      let cumul: V[] = []
+      while (true) {
+        const res = this.parse(rest)
+        if (res === null) break;
+        const [value, newRest] = res;
+        rest = newRest;
+        cumul.push(value);
+      }
+      return [cumul, rest];
+    })
+  }
+}
+
+function pchar(predicate: (char: Char) => boolean): Lexer<Char> {
+  return new Lexer(input => {
+    if (input.length && predicate(input[0] as Char)) {
+      return [input[0] as Char, input.slice(1)]
+    } else {
+      return null;
+    }
+  })
+}
+
+let symbol: Lexer<Token> = pchar(input => {
+  if (input === '+') return true
+  if (input === '-') return true
+  if (input === '*') return true
+  if (input === '/') return true
+  if (input === '(') return true
+  if (input === ')') return true
+  return false
+}).map(char => {
+  if (char === '+') return { type: 'token-plus' } as Token
+  if (char === '-') return { type: 'token-minus' } as Token
+  if (char === '*') return { type: 'token-multiply' } as Token
+  if (char === '/') return { type: 'token-divide' } as Token
+  if (char === '(') return { type: 'token-lparen' } as Token
+  if (char === ')') return { type: 'token-rparen' } as Token
+  throw new Error('不可能走到这里')
+})
+
+let whitespace: Lexer<Char> = pchar(input => (input === ' '));
+
+let zero: Lexer<number> = pchar(ch => ch === '0').map(i => 0)
+let oneToNine: Lexer<number> = (
+  pchar(ch => !!(ch.charCodeAt(0) >= 0x31 && ch.charCodeAt(0) <= 0x39))
+  .map(ch => ch.charCodeAt(0) - 0x30)
+)
+let zeroToNine: Lexer<number> = (
+  pchar(ch => !!(ch.charCodeAt(0) >= 0x30 && ch.charCodeAt(0) <= 0x39))
+  .map(ch => ch.charCodeAt(0) - 0x30)
+)
+
+let value: Lexer<Token> = (
+  zero.or(
+    oneToNine.and(
+      zeroToNine.many()
+    ).map(input => {
+      const [i, ls] = input;
+      return ls.reduce((acc, cur) => acc * 10 + cur, i)
+    })
+  ).map(number => ({ type: 'token-value', number }))
+);
+
+let tokens: Lexer<Token[]> = (
+  whitespace.many().and(value.or(symbol).and(whitespace.many()))
+    .map(input => {
+      const [_0, [token, _1]] = input;
+      return token
+    })
+    .many()
+);
+
+
+// test !!
+(() => {
+  let input = '  + 123 313 +- /*22';
+  let res = tokens.parse(input)
+  console.log(res);
+})()
+`.trim();
       var index_blog = exports('default', (props) => {
           return React.createElement(React.Fragment, null,
               React.createElement(React.Fragment, null,
@@ -173,7 +305,8 @@ fn init {
                   React.createElement(WindowAppIframe, { src: "https://try.moonbitlang.cn/#dbe28e82" }),
                   React.createElement(P, null, "\u770B\u5B8C\u771F\u7684\u918D\u9190\u704C\u9876\uFF0C\u6DF1\u523B\u9886\u6559\u4E86 `Combinator` \u4F53\u73B0\u7684\u51FD\u6570\u5F0F\u601D\u60F3\uFF0C\u518D\u914D\u5408 ADT \u5E26\u4E0A\u6EE1\u8840\u7248\u6A21\u5F0F\u5339\u914D\u5199 parser \u723D\u5230\u98DE\u8D77\uFF0C\u73B0\u5728\u518D\u770B\u5927\u5B66\u7F16\u8BD1\u539F\u7406\u7528 C \u5199\u7684\u5404\u79CD for \u5FAA\u73AF\u7136\u540E getChar \u98CE\u683C\u7684\u8BCD\u6CD5\u89E3\u6790\u5C31\u4F1A\u611F\u89C9\u4E11\u5230\u65E0\u6CD5\u5165\u773C\u4E86\u3002\uFF08\u4EE5\u4E0B\u662F\u5B8C\u6574\u4EE3\u7801\uFF0C\u518D\u8D34\u4E00\u904D233\uFF09"),
                   React.createElement(Code, { lang: "moonbit", source: code }),
-                  React.createElement(P, null, "\u4EBA\u53EA\u6D3B\u5728\u77AC\u95F4\u554A ~")));
+                  React.createElement(P, null, "\u4E0B\u9762\u662F\u6839\u636E\u4E0A\u9762\u7684 TS \u7248\u672C"),
+                  React.createElement(Code, { lang: "ts", source: code2 })));
       });
 
     })
