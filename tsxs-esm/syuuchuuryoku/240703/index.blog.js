@@ -35,7 +35,7 @@ System.register(['react', 'rally/@@'], (function (exports) {
     ` }),
                     React.createElement(P, null, "... \u96C6\u4E2D\u6CE8\u610F\u529B: "),
                     React.createElement(Code, { lang: 'tsx', source: `
-      enum Uint { onlyOne }
+      enum Unit { onlyOne }
       // 共 1 个成员，占用 0 bit = log2(1) 来存储表达 (没错，这就是 null)
     ` }),
                     React.createElement(P, null, "... \u8FDB\u4E00\u6B65\u96C6\u4E2D\u6CE8\u610F\u529B\uFF0C\u5199\u51FA never \u7684\u5B9A\u4E49: "),

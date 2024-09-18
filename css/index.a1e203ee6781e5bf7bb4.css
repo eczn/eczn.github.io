@@ -545,25 +545,28 @@ svg:not(:root).svg-inline--fa {
 .toc {
   display: var(--displayToc);
   padding-left: 1em;
-  position: relative;
-  bottom: 0;
-  width: 100%;
+  position: sticky;
+  top: 0px;
+  width: 20rem;
   padding-bottom: 1em;
-  border-left: 0.3em solid hsl(0, 1%, 40%);
-  background-color: hsl(2, 5%, 95%);
-  right: 0em;
-  line-height: 1;
   padding-top: 1em;
   margin-bottom: 3em;
   box-sizing: border-box;
-  font-size: 90%;
+  font-size: 80%;
+  border-right: 1px solid hsl(2, 5%, 95%);
+  margin-right: 1em;
+  padding-right: 1em;
 }
 .toc .toc-item {
-  margin-bottom: 1em;
   white-space: nowrap;
+  width: 95%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.5em;
 }
 .toc .toc-item._active {
   font-weight: bold;
+  background-color: hsl(2, 5%, 95%);
 }
 .toc .toc-item ._hashtag {
   color: #BBB;
@@ -577,6 +580,13 @@ svg:not(:root).svg-inline--fa {
   font-weight: 900;
   font-size: 1.5rem;
   padding-left: 0.5em;
+  text-align: right;
+}
+/* 竖屏 */
+@media screen and (max-width: 40rem) {
+  .toc {
+    display: none;
+  }
 }
 
 .mini-map-main {
@@ -847,16 +857,45 @@ h6.std-title {
   top: 0;
   left: 0;
   width: 100%;
+  cursor: pointer;
 }
 .std-img-dynamic .std-img-dymanic-main.__mosaic {
   transition: all 0.5s;
   transition-delay: 200ms;
   opacity: 1;
+  image-rendering: pixelated;
   transition-timing-function: cubic-bezier(0.64, -0.38, 0.57, 1.28);
   transform-origin: 50% 80%;
 }
-.std-img-dynamic .std-img-dymanic-main.__hidden {
+.std-img-dynamic .std-img-dymanic-main.__mosaic.__loading {
+  opacity: 1;
+}
+.std-img-dynamic .std-img-dymanic-main.__mosaic.__loaded {
   opacity: 0;
+}
+.std-img-dynamic .std-img-dymanic-main.__texttip {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+  border: 1px dashed #000;
+  box-sizing: border-box;
+  flex-direction: column;
+  user-select: none;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+.std-img-dynamic .std-img-dymanic-main.__texttip > span {
+  margin-top: 1em;
+  font-weight: bold;
+}
+.std-img-dynamic .std-img-dymanic-main.__texttip:active {
+  color: #d74141;
+}
+.std-img-dynamic .std-img-dymanic-main.__error {
+  color: #b72121;
+}
+.std-img-dynamic .std-img-dymanic-main.__loading {
+  cursor: wait;
 }
 .std-img-dynamic .std-img-dymanic-tips {
   display: block;
@@ -864,42 +903,6 @@ h6.std-title {
   top: 0;
   left: 0;
   width: 100%;
-}
-.xhr-progress-printer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 15;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-sizing: border-box;
-  border: 1px solid #DDD;
-  font-size: 5rem;
-  font-family: var(--fontCode);
-  color: #FFF;
-  text-shadow: 0.2rem 0.2rem 3px #000000;
-  user-select: none;
-  flex-direction: column;
-}
-.xhr-progress-printer._error {
-  text-shadow: none;
-  font-size: 2rem;
-  color: #c6340b;
-  cursor: pointer;
-}
-.xhr-progress-printer._error:active {
-  opacity: 0.8;
-}
-.xhr-progress-printer._error > .std-icon {
-  width: 8rem;
-  margin-bottom: 1rem;
-}
-.xhr-progress-printer .__smalltext {
-  text-shadow: 1px 1px 2px #000000;
-  font-size: 1rem;
 }
 
 .std-icon {
@@ -1109,6 +1112,26 @@ h6.std-title {
   background-image: url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%0A%3Csvg%20width%3D%22100px%22%20height%3D%2295px%22%20viewBox%3D%220%200%20100%2095%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%0A%20%20%20%20%3Ctitle%3Ewarning.contain%3C%2Ftitle%3E%0A%20%20%20%20%3Cg%20id%3D%22icons-02%22%20stroke%3D%22none%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cg%20id%3D%22warning%22%20fill%3D%22%23000000%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M50.14%2C3.05908303%20C69.4734964%2C3.05908303%2099.86%2C58.0919648%20100%2C76.5424933%20C100.1358%2C94.4395059%2094.4844613%2C94.9764163%2053.9973591%2C94.9925236%20L46.2822705%2C94.9925236%20C5.78726472%2C94.9764163%200.0042%2C94.4395059%200.14%2C76.5424933%20C0.28%2C58.0919648%2030.8065036%2C3.05908303%2050.14%2C3.05908303%20Z%20M50%2C70%20C46.6862915%2C70%2044%2C72.6862915%2044%2C76%20C44%2C79.3137085%2046.6862915%2C82%2050%2C82%20C53.3137085%2C82%2056%2C79.3137085%2056%2C76%20C56%2C72.6862915%2053.3137085%2C70%2050%2C70%20Z%20M50%2C27%20C46.2665294%2C27%2044%2C29.6510692%2044%2C34.1463825%20C44%2C37.1432581%2045.1666667%2C48.0944639%2047.5%2C67%20L47.5%2C67%20L52.5%2C67%20L52.5799974%2C66.3512377%20C54.8599991%2C47.843763%2056%2C37.1088112%2056%2C34.1463825%20C56%2C29.6510692%2053.7334706%2C27%2050%2C27%20Z%22%3E%3C%2Fpath%3E%0A%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%20%20%3Cg%20id%3D%22success%22%20transform%3D%22translate(0.000000%2C%20-100.000000)%22%20fill%3D%22%23000000%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M50.14%2C0.06%20C77.7542375%2C0.06%20100.14%2C22.4457625%20100.14%2C50.06%20C100.14%2C77.6742375%2077.7542375%2C100.06%2050.14%2C100.06%20C22.5257625%2C100.06%200.14%2C77.6742375%200.14%2C50.06%20C0.14%2C22.4457625%2022.5257625%2C0.06%2050.14%2C0.06%20Z%20M79.3408356%2C33.4617747%20L42.7%2C64.2276047%20L24.0041898%2C43.965797%20L16.7017282%2C51.1758296%20L41.6680188%2C78.2081208%20L85.4309457%2C40.86347%20L79.3408356%2C33.4617747%20Z%22%3E%3C%2Fpath%3E%0A%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
   background-repeat: no-repeat;
   background-size: contain;
+}
+
+.purebyuu-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  z-index: 9999999;
+  transition: all 0.4s;
+}
+.purebyuu-wrapper .purebyuu-preview {
+  position: absolute;
+  transition: all 0.2s;
+}
+.purebyuu-wrapper .purebyuu-preview > * {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .button-main {
@@ -1620,8 +1643,15 @@ li .std-list {
   padding-left: 1em;
 }
 
+.r-article-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: end;
+}
 .r-article {
   position: relative;
+  min-width: 40rem;
 }
 .r-article ._active a::after {
   width: 100%;
@@ -2315,8 +2345,6 @@ li .std-list {
 }
 html {
   font-size: var(--rem);
-  overflow-x: hidden;
-  overflow-y: scroll;
 }
 a {
   color: inherit;

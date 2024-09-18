@@ -28,6 +28,7 @@ System.register([], (function (exports, module) {
 			module.import('./the-adt-in-ts/index.blog.js');
 			module.import('./the-structure-and-interpretation-of-std-unicode-and-its-utf-encodings/index.blog.js');
 			module.import('./three-body-emulator/index.blog.js');
+			module.import('./typescript-52000-checker-ts/index.blog.js');
 			module.import('./v8-asm-detail-of-inline-caches/index.blog.js');
 			module.import('./white-noise/index.blog.js');
 
