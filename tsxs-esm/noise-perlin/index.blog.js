@@ -1,6 +1,6 @@
-System.register(['react', 'rally/@@', './canvas1d.js', './perlin1d_v1.js', './hashes.js', './perlin-noise-example.png.js', './white-noise-example.png.js', './perlin-imageLinearInterpolation.svg.js', './perlin-imageLinearInterpolationBlending.svg.js', './perlin-imagePerlinGrid.svg.js', './perlin-imagePerlinRandVecs.svg.js', './perlin-imagePerlin2DRate.svg.js', './perlin-imagePerlinLerp1.svg.js', './desmos-fade.svg.js', './perlin1d_v2.js', './perlin1d_v3.js', './canvas2d.js', './perlin2d_v1.js'], (function (exports) {
+System.register(['react', 'rally/@@', './canvas1d.js', './perlin1d_v1.js', './hashes.js', './perlin-noise-example.png.js', './white-noise-example.png.js', './perlin-imageLinearInterpolation.svg.js', './perlin-imageLinearInterpolationBlending.svg.js', './perlin-imagePerlinGrid.svg.js', './perlin-imagePerlinRandVecs.svg.js', './perlin-imagePerlin2DRate.svg.js', './perlin-imagePerlinLerp1.svg.js', './desmos-fade.svg.js', './perlin1d_v2.js', './perlin1d_v3.js', './canvas2d.js', './perlin2d_v1.js', './render-map.js'], (function (exports) {
     'use strict';
-    var React, P, H1Block, Col, ImgDynamic, Numbering, Code, H2, Formula, Link, metaBeauty, RenderNoiseCanvas1d, perlin1d_v1, rand, imagePerlinNoiseExample, imageWhiteNoiseExample, imageLinearInterpolation, imageLinearInterpolationBlending, imagePerlinGrid, imagePerlinRandVecs, imagePerlin2DRate, imagePerlinLerp1, imageDemosFade, perlin1d_v2, perlin1d_v3, RenderNoiseCanvas2d, perlin2d_v1;
+    var React, P, H1Block, Col, ImgDynamic, Numbering, Code, H2, Formula, Link, metaBeauty, RenderNoiseCanvas1d, perlin1d_v1, rand, imagePerlinNoiseExample, imageWhiteNoiseExample, imageLinearInterpolation, imageLinearInterpolationBlending, imagePerlinGrid, imagePerlinRandVecs, imagePerlin2DRate, imagePerlinLerp1, imageDemosFade, perlin1d_v2, perlin1d_v3, RenderNoiseCanvas2d, perlin2d_v1, RenderMap;
     return {
         setters: [function (module) {
             React = module.default;
@@ -47,6 +47,8 @@ System.register(['react', 'rally/@@', './canvas1d.js', './perlin1d_v1.js', './ha
             RenderNoiseCanvas2d = module.RenderNoiseCanvas2d;
         }, function (module) {
             perlin2d_v1 = module.perlin2d_v1;
+        }, function (module) {
+            RenderMap = module.RenderMap;
         }],
         execute: (function () {
 
@@ -54,11 +56,12 @@ System.register(['react', 'rally/@@', './canvas1d.js', './perlin1d_v1.js', './ha
 
             const meta = exports('meta', metaBeauty({
                 id: 'perlin-noise',
-                title: '柏林噪声的原理',
+                title: '柏林噪声的原理和实现',
                 author: 'eczn',
                 // category: '分类',
-                isDraft: true,
-                time: new Date('2023-12-10 17:03'),
+                // isDraft: true,
+                // time: new Date('2023-12-10 17:03'),
+                time: new Date('2024-12-02 12:03'),
             }));
             async function initialProps(context) {
                 return {
@@ -74,14 +77,17 @@ System.register(['react', 'rally/@@', './canvas1d.js', './perlin1d_v1.js', './ha
             var index_blog = exports('default', (props) => {
                 return React.createElement(React.Fragment, null,
                     React.createElement(React.Fragment, null,
-                        React.createElement(P, null, "\u6700\u8FD1\u5728\u73A9\u67CF\u6797\u566A\u58F0\uFF0C\u8FD9\u91CC\u8BB0\u5F55\u4E00\u4E0B")),
+                        React.createElement(P, null, "\u8FD9\u662F\u4E00\u7BC7\u53BB\u5E74 12 \u6708\u5199\u5B8C\u7684\u6587\u7AE0\uFF0C\u4E0D\u8FC7\u4E00\u76F4\u611F\u89C9\u5BF9\u4E8C\u7EF4\u63A8\u5E7F\u91CC\u7684\u68AF\u5EA6\u7684\u6570\u5B66\u7406\u89E3\u4E0D\u591F\u900F\u5F7B\u5C31\u5FD8\u53D1\u4E86\uFF0C\u8FD9\u4E24\u5929\u60F3\u67E5\u70B9\u8D44\u6599\u53C8\u627E\u5230\u4E86\u8FD9\u7BC7\u53D1\u73B0\u8FD8\u6CA1\u53D1 ... \u7B97\u4E86\u8FD8\u662F\u5148\u53D1\u5427")),
+                    React.createElement(H1Block, { id: "map-demo", title: "\u5730\u56FE\u751F\u6210\u5668 demo" },
+                        React.createElement(P, null, "\u5199\u8FD9\u7BC7\u7684\u539F\u56E0\u662F\u6709\u770B\u4E00\u4E9B\u5730\u56FE\u751F\u6210\u7B97\u6CD5\uFF0C\u91CC\u9762\u662F\u5229\u7528\u67CF\u6797\u566A\u58F0\u6765\u5B9E\u73B0\u7684\uFF0C\u6BD4\u5982\u5C06\u5176\u8F93\u51FA\u770B\u6210\u662F\u6D77\u62D4\uFF0C\u7136\u540E\u5C06\u4E0D\u540C\u6D77\u62D4\u5212\u5206\u4E3A\u4E0D\u540C\u5730\u5F62\uFF0C\u636E\u6B64\u53EF\u4EE5\u753B\u51FA\u4E0B\u9762\u7684\u5730\u56FE: "),
+                        React.createElement(RenderMap, { widthEm: 40, heightEm: 30 })),
                     React.createElement(H1Block, { id: "problem-of-white-noise", title: "\u767D\u566A\u58F0\u7684\u95EE\u9898" },
                         React.createElement(P, null, "\u4E0B\u9762\u5DE6\u56FE\u662F\u4E00\u5F20\u5178\u578B\u7684\u767D\u566A\u58F0\u6E32\u67D3\u6548\u679C\uFF0C\u53EF\u4EE5\u770B\u5230\u5176\u76F8\u5F53\u79BB\u6563\uFF0C\u6CA1\u6709\u4E00\u70B9\u89C4\u5F8B"),
                         React.createElement(Col, { units: [1, 0.1, 1], style: { textAlign: 'center' } },
                             React.createElement(ImgDynamic, { style: { margin: '0 auto' }, file: imageWhiteNoiseExample }),
                             React.createElement(React.Fragment, null),
                             React.createElement(ImgDynamic, { style: { margin: '0 auto' }, file: imagePerlinNoiseExample })),
-                        React.createElement(P, null, "\u4F46\u662F\u5728\u5B9E\u9645\u5F00\u53D1\u4E2D\u6709\u65F6\u9700\u8981\u6709\u4E00\u5B9A\u89C4\u5F8B\u7684\u968F\u673A\u566A\u58F0\uFF0C\u5982 Minecraft \u7684\u5730\u56FE\u751F\u6210\uFF0C\u8FD9\u7C7B\u5E38\u89C1\u5C31\u4E0D\u80FD\u4F7F\u7528\u767D\u566A\u58F0\u4E86\uFF0C\u9700\u8981\u5355\u72EC\u4E00\u79CD\u66F4\u5E73\u6ED1\u7684\u566A\u58F0\u4E86\uFF0C\u4E00\u822C\u6765\u8BF4\u884C\u4E1A\u5185\u901A\u5E38\u4F7F\u7528\u67CF\u6797\u566A\u58F0\u6765\u5B9E\u73B0\u8FD9\u79CD\u5E26\u6709\u4E00\u5B9A\u5E73\u6ED1\u89C4\u5F8B\u7684\u566A\u58F0\u6765\u751F\u6210\u5730\u5F62\uFF0C\u4E0A\u9762\u53F3\u56FE\u5C31\u662F\u67CF\u6797\u566A\u58F0\u7B97\u6CD5\u751F\u6210\u7684\u6548\u679C\u56FE\uFF0C\u53EF\u4EE5\u611F\u53D7\u4E0B\u8DDF\u767D\u566A\u58F0\u7684\u4E0D\u540C\u3002")),
+                        React.createElement(P, null, "\u4F46\u662F\u5728\u5B9E\u9645\u5F00\u53D1\u4E2D\u6709\u65F6\u9700\u8981\u6709\u4E00\u5B9A\u89C4\u5F8B\u7684\u968F\u673A\u566A\u58F0\uFF0C\u5982 Minecraft \u7684\u5730\u56FE\u751F\u6210\uFF0C\u8FD9\u7C7B\u573A\u666F\u5C31\u4E0D\u80FD\u4F7F\u7528\u767D\u566A\u58F0\u4E86\uFF0C\u9700\u8981\u5355\u72EC\u4E00\u79CD\u66F4\u5E73\u6ED1\u7684\u566A\u58F0\u4E86\uFF0C\u4E00\u822C\u6765\u8BF4\u884C\u4E1A\u5185\u901A\u5E38\u4F7F\u7528\u67CF\u6797\u566A\u58F0\u6765\u5B9E\u73B0\u8FD9\u79CD\u5E26\u6709\u4E00\u5B9A\u5E73\u6ED1\u89C4\u5F8B\u7684\u566A\u58F0\u6765\u751F\u6210\u5730\u5F62\uFF0C\u4E0A\u9762\u53F3\u56FE\u5C31\u662F\u67CF\u6797\u566A\u58F0\u7B97\u6CD5\u751F\u6210\u7684\u6548\u679C\u56FE\uFF0C\u53EF\u4EE5\u611F\u53D7\u4E0B\u8DDF\u767D\u566A\u58F0\u7684\u4E0D\u540C\u3002")),
                     React.createElement(H1Block, { id: "priciple-of-perlin-noise", title: "\u67CF\u6797\u566A\u58F0\u7684\u539F\u7406" },
                         React.createElement(P, null, "`\u67CF\u6797\u566A\u58F0 (Perlin Noise)` \u662F\u7531 `\u80AF\u00B7\u67CF\u6797 (Ken Perlin)` \u53D1\u660E\u7684\u81EA\u7136\u566A\u58F0\u751F\u6210\u7B97\u6CD5\uFF0C\u7B97\u6CD5\u7684\u540D\u5B57\u4E5F\u662F\u4F5C\u8005\u81EA\u5DF1\u7684\u540D\u5B57\uFF0C\u8FD9\u4E2A\u7B97\u6CD5\u5F88\u6709\u610F\u601D\uFF0C\u6B64\u5904\u4EE5 x \u8F74\u4E0A\u7684\u70B9\u4F5C\u4E3A\u53C2\u6570\u8BA1\u7B97\u51FA\u4E00\u7EF4\u67CF\u6797\u566A\u58F0\u4F5C\u4E3A y \u8F74\u7ED8\u5236\u4E00\u4E2A\u4E8C\u7EF4\u5750\u6807\u7CFB\u6765\u4ECB\u7ECD\u67CF\u6797\u566A\u58F0\u7684\u539F\u7406\uFF0C\u5177\u4F53\u5373\u4E0B\u56FE\u6240\u793A\u8FD9\u822C\uFF0C\u5176\u4E2D\u7684 P0\u3001P\u3001P1 \u4E09\u4E2A\u70B9\u7684\u67CF\u6797\u566A\u58F0\u5206\u522B\u662F r0\u3001N\u3001r1\uFF1A"),
                         React.createElement(ImgDynamic, { file: imageLinearInterpolation }),
@@ -106,8 +112,8 @@ System.register(['react', 'rally/@@', './canvas1d.js', './perlin1d_v1.js', './ha
                             React.createElement(RenderNoiseCanvas1d, { widthEm: 16, heightEm: 16, label: "\u67CF\u6797\u566A\u58F0 n=32", noise1d: x => perlin1d_v1(x / 32) })),
                         React.createElement(P, null, "\u5F53 n \u53D8\u5927\u65F6\uFF0C\u6211\u4EEC\u53EF\u4EE5\u770B\u5230\u6298\u7EBF\u8F6C\u89D2\u53D8\u5C11\u4E86\uFF0C\u800C\u4E14\u7EBF\u4E5F\u6CA1\u90A3\u4E48 `\u79BB\u6563` \u4E86\uFF0C\u4F46\u662F\u6298\u7EBF\u8F6C\u89D2\u5904\u4F9D\u7136\u975E\u5E38\u9661\u5CED\uFF0C\u4E0D\u591F\u5E73\u6ED1\u89C4\u6574\uFF0C\u662F\u54EA\u91CC\u6709\u95EE\u9898\u4E48\uFF1F\u6B64\u65F6\u9700\u8981\u518D\u6B21\u5BA1\u89C6 `\u7EBF\u6027\u63D2\u503C`\uFF0C\u5982\u4E0B\u56FE\u6240\u793A\uFF0C\u968F\u7740 x \u589E\u52A0\uFF0CN \u4E5F\u4F1A\u4ECE r0 \u5747\u5300\u53D8\u5927\u5230 r1, \u5BF9\u5E94\u7684\u67CF\u6797\u566A\u58F0\u8F93\u51FA\u4E5F\u4F1A `\u5747\u5300\u7EBF\u6027\u53D8\u5927`:"),
                         React.createElement(ImgDynamic, { file: imageLinearInterpolation }),
-                        React.createElement(P, null, "\u5F53 P \u8DE8\u8FC7 P1 \u7684\u65F6\u5019\uFF0C\u5BF9\u5E94\u7684\u7EBF\u6027\u63D2\u503C\u7531\u4E8E\u7AEF\u70B9\u53D8\u5316\u5C31\u4F1A\u9020\u6210\u7A81\u53D8\uFF0C\u4ECE\u800C\u6700\u7EC8\u7ED8\u5236\u7684\u65F6\u5019\u90FD\u662F\u4E0D\u5149\u6ED1\u7684\u6298\u89D2\u4E86\uFF0C\u6298\u7EBF\u8FDE\u63A5\u5904\u4E0D\u8FDE\u7EED\u4EE5\u53CA\u5BFC\u6570\u4E0D\u4E3A 0"),
-                        React.createElement(P, null, "\u82E5\u662F\u6211\u4EEC\u80FD\u8BA9\u8FD9\u4E2A `\u5747\u5300` \u53D8\u5F97\u4E0D\u90A3\u4E48\u5747\u5300\uFF0C\u90A3\u4E48\u5C31\u80FD\u5B9E\u73B0\u566A\u58F0\u7684\u5E73\u6ED1\u5904\u7406\u4E86 \u2014\u2014 \u5982\u4E0B\u7EA2\u7EBF\u6240\u793A\u8FD9\u6837\u5F97\u5230\u7684 `N'` \u5C31\u5F62\u6210\u4E86\u4E00\u6761\u5149\u6ED1\u7684\u66F2\u7EBF\uFF0C\u4E0D\u518D\u662F\u6298\u89D2\u4E86\u3002"),
+                        React.createElement(P, null, "\u5F53 P \u8DE8\u8FC7 P1 \u7684\u65F6\u5019\uFF0C\u5BF9\u5E94\u7684\u7EBF\u6027\u63D2\u503C\u7531\u4E8E\u7AEF\u70B9\u53D8\u5316\u5C31\u4F1A\u9020\u6210\u7A81\u53D8\uFF0C\u4ECE\u800C\u6700\u7EC8\u7ED8\u5236\u7684\u65F6\u5019\u90FD\u662F\u4E0D\u5149\u6ED1\u7684\u6298\u89D2\u4E86\uFF0C\u5373\u6298\u7EBF\u8FDE\u63A5\u5904\u4E0D\u8FDE\u7EED"),
+                        React.createElement(P, null, "\u82E5\u662F\u6211\u4EEC\u80FD\u8BA9\u8FD9\u4E2A `\u6298\u7EBF` \u53D8\u6210\u66F2\u7EBF\uFF0C\u90A3\u4E48\u5C31\u80FD\u5B9E\u73B0\u566A\u58F0\u7684\u5E73\u6ED1\u5904\u7406\u4E86 \u2014\u2014 \u5982\u4E0B\u7EA2\u7EBF\u6240\u793A\u8FD9\u6837\u5F97\u5230\u7684 `N'` \u5C31\u5F62\u6210\u4E86\u4E00\u6761\u5149\u6ED1\u7684\u66F2\u7EBF\uFF0C\u4E0D\u518D\u662F\u6298\u89D2\u4E86\u3002"),
                         React.createElement(ImgDynamic, { file: imageLinearInterpolationBlending }),
                         React.createElement(P, null, "\u660E\u767D\u4E86\u5173\u952E\u8FD8\u662F\u7EBF\u6027\u63D2\u503C\u540E\uFF0C\u5C31\u77E5\u9053\u600E\u4E48\u6539\u4E86\uFF0C\u53EF\u4EE5\u7B80\u5355\u6309 $ f(x)=x^2 $ \u4F5C\u4E3A\u5E73\u6ED1\u51FD\u6570\u6765\u5904\u7406\u7EBF\u6027\u63D2\u503C\uFF0C\u5F97\u5230\u7B2C 2 \u7248\u5B9E\u73B0 `perlin1d_v2` \u4EE5\u53CA\u7ED8\u5236\u6548\u679C:"),
                         React.createElement(Code, { lang: 'tsx', source: props.codePerlin1d_v2 }),
@@ -155,7 +161,7 @@ System.register(['react', 'rally/@@', './canvas1d.js', './perlin1d_v1.js', './ha
                         React.createElement(P, null, "\u6211\u4EEC\u7279\u610F\u9009\u62E9\u7684\u56DB\u4E2A\u5411\u91CF\u5728\u5F52\u4E00\u5316\u5904\u7406\u8FD9\u91CC\u5C31\u53D1\u6325\u4F5C\u7528\u4E86\uFF0C\u7528\u7B26\u53F7 $A$ \u8868\u793A:"),
                         React.createElement(Formula, { source: `
         \\begin{align}
-          \\vec{A} &= \\{ (1, 1) (-1, 1) (1, -1) (-1, -1) \\} \\\\
+          \\vec{A} &= \\{ (1, 1) (-1, 1) (-1, -1) (1, -1) \\} \\\\
         \\end{align}
       ` }),
                         React.createElement(P, null, "\u7531\u4E8E\u8FD9\u56DB\u4E2A\u5411\u91CF\u4E0D\u662F $+1$ \u5C31\u662F $-1$, \u56E0\u6B64\u5BF9\u4E8E\u4EFB\u610F\u5411\u91CF (x, y) \u8BA1\u7B97\u70B9\u4E58\u6709:"),
@@ -202,11 +208,11 @@ System.register(['react', 'rally/@@', './canvas1d.js', './perlin1d_v1.js', './ha
                         React.createElement(H2, null, "\u6548\u679C"),
                         React.createElement(P, null, "\u62FF\u4E0A\u9762\u5B9E\u73B0\u7684 `perlin2d_v1` \u6765\u753B\u4E00\u4E0B\uFF1A"),
                         React.createElement(Col, null,
-                            React.createElement(RenderNoiseCanvas2d, { widthEm: 16, heightEm: 16, label: "n = 4", noise2d: (x, y) => perlin2d_v1(x / 4, y / 4) }),
-                            React.createElement(RenderNoiseCanvas2d, { widthEm: 16, heightEm: 16, label: "n = 8", noise2d: (x, y) => perlin2d_v1(x / 8, y / 8) })),
+                            React.createElement(RenderNoiseCanvas2d, { widthEm: 16, heightEm: 16, label: "n = 16", noise2d: (x, y) => perlin2d_v1(x / 16, y / 16) }),
+                            React.createElement(RenderNoiseCanvas2d, { widthEm: 16, heightEm: 16, label: "n = 32", noise2d: (x, y) => perlin2d_v1(x / 32, y / 32) })),
                         React.createElement(Col, null,
-                            React.createElement(RenderNoiseCanvas2d, { widthEm: 16, heightEm: 16, label: "n = 32", noise2d: (x, y) => perlin2d_v1(x / 32, y / 32) }),
-                            React.createElement(RenderNoiseCanvas2d, { widthEm: 16, heightEm: 16, label: "n = 64", noise2d: (x, y) => perlin2d_v1(x / 64, y / 64) }))),
+                            React.createElement(RenderNoiseCanvas2d, { widthEm: 16, heightEm: 16, label: "n = 64", noise2d: (x, y) => perlin2d_v1(x / 64, y / 64) }),
+                            React.createElement(RenderNoiseCanvas2d, { widthEm: 16, heightEm: 16, label: "n = 128", noise2d: (x, y) => perlin2d_v1(x / 128, y / 128) }))),
                     React.createElement(H1Block, { id: "reference", title: "\u53C2\u8003" },
                         React.createElement(P, null,
                             React.createElement(Link, { block: true, href: "https://zh.m.wikipedia.org/wiki/Perlin%E5%99%AA%E5%A3%B0" }, "Wiki - Perlin Noise")),
@@ -214,6 +220,8 @@ System.register(['react', 'rally/@@', './canvas1d.js', './perlin1d_v1.js', './ha
                             React.createElement(Link, { block: true, href: "https://www.bilibili.com/video/BV11V4y1M7N6" }, "Minecraft\u5730\u5F62\u751F\u6210\u4E0E\u67CF\u6797\u566A\u58F0 (\u4E00) \u8BE6\u89E3\u566A\u58F0")),
                         React.createElement(P, null,
                             React.createElement(Link, { block: true, href: "https://juejin.cn/post/7148448472205639687" }, "\u56FE\u5F62\u5B66\u7684\u6570\u5B66\u57FA\u7840\uFF08\u56DB\u5341\u56DB\uFF09\uFF1A\u67CF\u6797\u566A\u58F0")),
+                        React.createElement(P, null,
+                            React.createElement(Link, { block: true, href: "https://rtouti.github.io/graphics/perlin-noise-algorithm" }, "Perlin Noise: A Procedural Generation Algorithm")),
                         React.createElement(P, null)));
             });
 

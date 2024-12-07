@@ -14,8 +14,8 @@ System.register(['./hashes.js'], (function (exports) {
             const vecs = [
                 { x: 1, y: 1 },
                 { x: -1, y: 1 },
-                { x: 1, y: -1 },
                 { x: -1, y: -1 },
+                { x: 1, y: -1 },
             ];
             function randVecs(vec) {
                 // 将 x 和 y 坐标输入到 rand 生成一个合成的随机数
