@@ -8,6 +8,7 @@ System.register([], (function (exports, module) {
 			module.import('./binary-complement-principle/index.blog.js');
 			module.import('./create-game-map/index.blog.js');
 			module.import('./css-matrix3d-calc/index.blog.js');
+			module.import('./drawing-250101/index.blog.js');
 			module.import('./eczn-home-intro/index.blog.js');
 			module.import('./hello-css-vars/index.blog.js');
 			module.import('./ipod-spin-gesture/index.blog.js');
@@ -17,6 +18,7 @@ System.register([], (function (exports, module) {
 			module.import('./noise-perlin/index.blog.js');
 			module.import('./old-demos/index.blog.js');
 			module.import('./parser-combinator/index.blog.js');
+			module.import('./review-2024/index.blog.js');
 			module.import('./syuuchuuryoku/240310/index.blog.js');
 			module.import('./syuuchuuryoku/240320/index.blog.js');
 			module.import('./syuuchuuryoku/240322/index.blog.js');

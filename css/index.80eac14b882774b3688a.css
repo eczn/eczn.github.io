@@ -839,17 +839,21 @@ h6.std-title {
   border-bottom: 1px solid #ddd;
 }
 
-.std-img-dynamic {
-  position: relative;
+.std-img-dynamic-wrapper {
   margin-bottom: 1em;
-  box-sizing: border-box;
 }
-.std-img-dynamic .std-img-text {
+.std-img-text {
   text-align: center;
   line-height: 2;
   letter-spacing: 1px;
   padding-bottom: 1em;
-  border-bottom: 1px solid #ddd;
+  padding-top: 0.5em;
+  font: inherit;
+  font-size: 80%;
+}
+.std-img-dynamic {
+  position: relative;
+  box-sizing: border-box;
 }
 .std-img-dynamic .std-img-dymanic-main {
   display: block;
