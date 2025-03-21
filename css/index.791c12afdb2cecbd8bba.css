@@ -1225,6 +1225,8 @@ h6.std-title {
 .std-link._line {
   display: inline;
   transition: all 0.2s;
+  vertical-align: 1px;
+  font-size: 75%;
 }
 .std-link._line:hover {
   opacity: 0.7;
@@ -1544,6 +1546,86 @@ h6.std-title {
   min-height: 1em;
   box-sizing: border-box;
   border-radius: 2px;
+}
+
+.std-footnote-ref {
+  display: inline;
+  line-height: inherit;
+  position: relative;
+  font-size: inherit;
+  top: 4px;
+  z-index: 99999;
+  vertical-align: middle;
+}
+.std-footnote-ref > span {
+  vertical-align: top;
+}
+.std-footnote-ref .std-ref-link {
+  display: inline-block;
+  font-size: 75%;
+  font-family: var(--fontCode);
+  opacity: 0.7;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+  transform-origin: 100% 100%;
+}
+.std-footnote-ref .std-ref-link:hover {
+  opacity: 0.9;
+}
+.std-footnote-ref .std-ref-link:active {
+  opacity: 0.5;
+}
+.std-footnote-ref .std-ref-link.__active {
+  color: red;
+  background-color: yellow;
+  opacity: 1;
+}
+.std-ref-content {
+  display: block;
+  background-image: linear-gradient(90deg, #EEE 50%, transparent 0), linear-gradient(#EEE 50%, transparent 0);
+  background-color: white;
+  background-size: 3px 3px;
+  transition: height 0.3s, left 0.3s, box-shadow 0.3s;
+  overflow-y: hidden;
+  box-sizing: border-box;
+  position: absolute;
+  width: 100%;
+  top: 0;
+}
+.std-ref-content > span {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  padding-left: 2em;
+  padding-right: 2em;
+  margin: 0 auto;
+}
+.std-ref-content::before,
+.std-ref-content::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1em;
+  box-shadow: 0px 0px 0.5rem rgba(0, 0, 0, 0.4);
+}
+.std-ref-content::before {
+  bottom: 100%;
+}
+.std-ref-content::after {
+  top: 100%;
+}
+.std-ref-content.__inactive {
+  box-shadow: 0px 0px 0rem 0px rgba(0, 0, 0, 0);
+}
+.std-ref-content.__active {
+  box-shadow: 0px 0px 6rem -12px rgba(0, 0, 0, 0.3);
+}
+.std-ref-warp {
+  transition: height 0.3s;
+  display: inline-block;
+  background-color: #000;
+  top: 0;
 }
 
 .rally-page-smcphr {

@@ -1,6 +1,6 @@
 System.register(['react', 'rally/@@', './test_x86_asm.png.js', './add_benchmark.png.js', './slot_smi.png.js', './slot_any.png.js', './union_return.png.js', './turbofan_cost.png.js', './ShouldOptimize.png.js', './maglevBenchmark.svg.js', './c-point-read.png.js', './memStructPoint.png.js', './memMaybe1.png.js', './memMaybe2.png.js', './rt1.png.js', './rt2.png.js', './rt3.png.js', './rt4.png.js', './rt5.png.js', './v8-ics-03.svg.js', './v8-ics-04.svg.js', './v8-ics-11.svg.js', './v8-ics-05.svg.js', './v8-ics-06.svg.js', './v8-ics-06-2.svg.js', './v8-ics-04-2.svg.js', './serviceMap1.png.js', './serviceMap2.png.js', './serviceMap3.png.js', './v8-ics-12.svg.js', './delete.png.js', './v8-ics-09.svg.js'], (function (exports) {
     'use strict';
-    var React, P, H1Block, Code, H2, ImgDynamic, Numbering, Col, Link, metaBeauty, fileTestX86ASM, fileAddBenchmark, fileSlotSMI, fileSlotANY, fileUnionReturn, fileTurboFanCost, fileShouldOptimize, fileMaglevBenchmark, fileCPointRead, fileMemStructPoint, fileMemMaybe1, fileMemMaybe2, fileRt1, fileRt2, fileRt3, fileRt4, fileRt5, fileV8ICs03, fileV8ICs04, fileV8ICs11, fileV8ICs05, fileV8ICs06, fileV8ICs062, fileV8ICs042, fileServiceMap1, fileServiceMap2, fileServiceMap3, fileV8ICs12, fileDelete, fileV8ICs09;
+    var React, P, H1Block, Code, H2, ImgDynamic, Numbering, Col, Footnote, Link, metaBeauty, fileTestX86ASM, fileAddBenchmark, fileSlotSMI, fileSlotANY, fileUnionReturn, fileTurboFanCost, fileShouldOptimize, fileMaglevBenchmark, fileCPointRead, fileMemStructPoint, fileMemMaybe1, fileMemMaybe2, fileRt1, fileRt2, fileRt3, fileRt4, fileRt5, fileV8ICs03, fileV8ICs04, fileV8ICs11, fileV8ICs05, fileV8ICs06, fileV8ICs062, fileV8ICs042, fileServiceMap1, fileServiceMap2, fileServiceMap3, fileV8ICs12, fileDelete, fileV8ICs09;
     return {
         setters: [function (module) {
             React = module.default;
@@ -12,6 +12,7 @@ System.register(['react', 'rally/@@', './test_x86_asm.png.js', './add_benchmark.
             ImgDynamic = module.ImgDynamic;
             Numbering = module.Numbering;
             Col = module.Col;
+            Footnote = module.Footnote;
             Link = module.Link;
             metaBeauty = module.metaBeauty;
         }, function (module) {
@@ -394,7 +395,13 @@ System.register(['react', 'rally/@@', './test_x86_asm.png.js', './add_benchmark.
                             React.createElement(React.Fragment, null,
                                 React.createElement(P, null, "\u5982\u679C\u77E5\u9053 ICs \u6280\u672F\u5185\u6DB5\u7684\u8BDD\uFF0C\u7406\u89E3 Fast Properties \u548C Slow Properties (\u6216\u8005\u79F0\u5B57\u5178\u6A21\u5F0F) \u5C31\u4E0D\u4F1A\u6709\u56F0\u96BE\u4E86\u3002"),
                                 React.createElement(P, null, "\u53F3\u56FE\u63CF\u8FF0\u4E86 JSObject \u7684\u4E3B\u8981\u6784\u9020\uFF1A\u5F53\u628A\u5BF9\u8C61\u6210\u5458\u5B58\u50A8\u5230 in-object properties \u7684\u65F6\u5019\uFF0C\u6B64\u65F6\u79F0\u5BF9\u8C61\u662F Fast Properties \u6A21\u5F0F\uFF0C\u8FD9\u610F\u5473\u7740\u5BF9\u8C61\u8BBF\u95EE V8 \u4F1A\u5728\u5408\u9002\u7684\u65F6\u5019\u5C06\u5176 Inline Cache \u5230\u4F18\u5316\u540E\u7684\u6C47\u7F16\u91CC\uFF1B "),
-                                React.createElement(P, null, "\u53CD\u4E4B\uFF0C\u5F53\u6210\u5458\u5B58\u50A8\u5230 `*properties` \u7684\u65F6\u5019\uFF0C\u6B64\u65F6\u79F0\u4E3A Slow Properties\uFF0C\u6B64\u65F6\u5C31\u4E0D\u4F1A\u5BF9\u8FD9\u7C7B\u5BF9\u8C61\u505A inline cache \u4F18\u5316\u4E86\uFF0C\u6B64\u65F6\u5BF9\u8C61\u8BBF\u95EE\u6027\u80FD\u6700\u5DEE\uFF08\u56E0\u4E3A\u8981\u904D\u5386 `*properties` \u5B57\u5178\uFF0C\u901A\u5E38\u6162\u51E0\u5341\u5230\u51E0\u767E\u500D\uFF0C\u53D6\u51B3\u4E8E\u5BF9\u8C61\u6210\u5458\u6570\u91CF\uFF09"),
+                                React.createElement(P, null,
+                                    "\u53CD\u4E4B\uFF0C\u5F53\u6210\u5458\u5B58\u50A8\u5230 `*properties` \u7684\u65F6\u5019\uFF0C\u6B64\u65F6\u79F0\u4E3A Slow Properties\uFF0C\u6B64\u65F6\u5C31\u4E0D\u4F1A\u5BF9\u8FD9\u7C7B\u5BF9\u8C61\u505A inline cache \u4F18\u5316\u4E86\uFF0C\u6B64\u65F6\u5BF9\u8C61\u8BBF\u95EE\u6027\u80FD\u6700\u5DEE\uFF08\u56E0\u4E3A\u8981\u904D\u5386 `*properties` \u5B57\u5178",
+                                    React.createElement(Footnote, { content: React.createElement(React.Fragment, null,
+                                            "20250317 update: \u8FD9\u91CC\u6709\u4E2A\u9519\u8BEF\uFF0C*properties \u5B57\u6BB5\u4E5F\u53EF\u4EE5\u662F\u6570\u7EC4\u7684\u3001\u8FD9\u79CD\u60C5\u51B5\u4E5F\u80FD\u7B97\u662F Fast Properties\uFF0C\u611F\u8C22",
+                                            React.createElement(Link, { block: false, href: 'https://github.com/Doctor-wu' }, "@Doctor-wu"),
+                                            "\u7684\u6307\u6B63") }),
+                                    "\uFF0C\u901A\u5E38\u6162\u51E0\u5341\u5230\u51E0\u767E\u500D\uFF0C\u53D6\u51B3\u4E8E\u5BF9\u8C61\u6210\u5458\u6570\u91CF"),
                                 React.createElement(P, null, "\u6211\u4EEC\u53EF\u4EE5\u7528 `%HasFastProperties` \u6765\u6253\u5370\u5BF9\u8C61\u662F\u5426\u662F Fast Properties \u6A21\u5F0F\uFF0C\u5982\u4E0B\u56FE\u6240\u793A")),
                             React.createElement(ImgDynamic, { file: fileV8ICs12 })),
                         React.createElement(ImgDynamic, { file: fileDelete }),

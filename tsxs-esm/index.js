@@ -10,6 +10,8 @@ System.register([], (function (exports, module) {
 			module.import('./css-matrix3d-calc/index.blog.js');
 			module.import('./drawing-250101/index.blog.js');
 			module.import('./eczn-home-intro/index.blog.js');
+			module.import('./ecznscript/index.blog.js');
+			module.import('./he-learn-eda-teacher-jiehang/index.blog.js');
 			module.import('./hello-css-vars/index.blog.js');
 			module.import('./ipod-spin-gesture/index.blog.js');
 			module.import('./is-esm-robust-enough-in-broswer/index.blog.js');

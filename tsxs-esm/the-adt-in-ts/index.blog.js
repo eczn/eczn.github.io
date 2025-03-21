@@ -380,6 +380,52 @@ System.register(['react', 'rally/@@', './bool_x_uint8.png.js', './go-return-err.
                 / \\ 
                17  18 
       ` })),
+                    React.createElement(H1Block, { id: "best-practice-in-ts", title: "TypeSript ADT \u6700\u4F73\u5B9E\u8DF5" },
+                        React.createElement(P, null, "\u4E0B\u9762\u7ED9\u4E00\u4E2A\u6211\u8BA4\u4E3A\u6BD4\u8F83\u597D\u7684\u4E00\u4E2A\u7F16\u7801\u5B9E\u8DF5, \u914D\u5408 ESM Module \u80FD\u83B7\u5F97\u4E00\u4E2A\u4E0D\u7B97\u5DEE\u7684\u4F7F\u7528\u4F53\u9A8C: (not bad) "),
+                        React.createElement(Code, { lang: 'ts', source: `
+        // option.enum.ts
+        import { Enum, EnumTypes } from '..';
+
+        enum TypeNone { }
+        export type None = { type: typeof TypeNone };
+        function None<T>(d: T): None { return { type: TypeNone } };
+        function isNone(x: any): x is None { return !!(x && x.type === TypeNone) };
+
+        enum TypeSome { }
+        export type Some<T> = { type: typeof TypeSome, data: [_: T] };
+        function Some<T>(d: T): Some<T> { return { type: TypeSome, data: [d] } };
+        export function isSome<T>(x: Option<T>): x is Some<T> { return !!(x && x.type === TypeSome) };
+
+        export const Option = {
+          None, isNone, Some, isSome,
+          // 也可以这里补一个 unsafe_unwrap
+        }
+
+        export type Option<T> = ( // 注意要跟上面同名
+          | None
+          | Some<T>
+        );
+      ` }),
+                        React.createElement(Code, { lang: 'tsx', source: `
+        // test.ts
+        import { Option } from './option.enum';
+        function handle(maybe: Option<number>) {
+          if (Option.isSome(maybe)) {
+            const [val] = maybe.data; // maybe is Some<number>
+            return;
+          }
+
+          maybe // ⬅️ is None
+        }
+      ` }),
+                        React.createElement(P, null, "\u7B49\u4EF7\u4E8E: "),
+                        React.createElement(Code, { lang: 'rust', source: `
+        enum Option<T> {
+          None,
+          Some<T>
+        }
+      ` }),
+                        React.createElement(P, null, "\u5509\uFF0C\u4E0D\u7BA1\u600E\u6837\u7528\u7740\u90FD\u5F88\u96BE\u53D7\uFF0C\u603B\u4E4B\u6CA1\u6709 ADT \u6211\u8981\u6B7B\u4E86")),
                     React.createElement(H1Block, { id: "links", title: "\u53C2\u8003" },
                         React.createElement(P, null,
                             React.createElement(Link, { block: true, href: "https://en.wikipedia.org/wiki/Algebraic_data_type" }, "Wiki: Algebraic data type, ADT")),
