@@ -28,7 +28,8 @@ System.register(['react', 'rally/@@', './heavy-runtime.png.js'], (function (expo
                 // appTitle: 'app ?',
                 title: 'EcznScript ?',
                 author: 'eczn',
-                // category: '分类',
+                tags: ['TypeScript', '编程语言'],
+                category: 'EcznScript',
                 time: new Date('2025-03-19 22:55'),
             }));
             async function initialProps(context) {
@@ -115,9 +116,55 @@ System.register(['react', 'rally/@@', './heavy-runtime.png.js'], (function (expo
 
           console.log(user);
         ` })),
+                        React.createElement(P, null, "struct \u7F16\u8BD1\u671F\u5373\u53EF\u786E\u5B9A\u952E\u503C\u987A\u5E8F\uFF0C\u56E0\u6B64\u5373\u4FBF\u662F\u987A\u5E8F\u4E0D\u4E00\u6837\u4E86\u4E5F\u53EF\u4EE5\u901A\u8FC7\u7F16\u8BD1\u4FEE\u6B63"),
+                        React.createElement(Col, { units: [1, 1] },
+                            React.createElement(Code, { lang: 'rust', source: `
+          //
+          // EcznScript
+          // 
+
+
+          struct UserInfo {
+            uid: string,
+            name: string,
+          }
+
+
+
+
+          let user = UserInfo {
+            name: 'eczn', // 顺序不一样
+            uid: '001',
+          }
+
+          console.log(user)
+        ` }),
+                            React.createElement(Code, { overflow: 'visible', lang: 'javascript', source: `
+          //
+          // 编译输出 JS
+          //
+
+          // 自带构造器 & 类型 tag
+          const UserInfo$$Tag = {};
+          const UserInfo = (uid, name) => ({
+            tag: UserInfo$$Tag,
+            uid, name,
+          })
+
+          const __$0 = 'eczn';
+          const __$1 = '001';
+          let user = UserInfo(
+            /* uid  */ __$1,
+            /* name */ __$0,
+          );
+
+          console.log(user);
+        ` })),
                         React.createElement(H2, null, "\u7528 trait \u89E3\u51B3 class \u7684\u95EE\u9898"),
                         React.createElement(P, null, "class \u6700\u5927\u7684\u95EE\u9898\uFF1A\u4E3A\u4E86\u590D\u7528\u4EE3\u7801\uFF0C\u4F46\u662F\u5BF9\u4E8E js \u8FD9\u79CD\u52A8\u6001\u8BED\u8A00\u6765\u8BF4 class \u53CD\u800C\u662F\u4E00\u79CD\u675F\u7F1A\uFF0C\u800C\u4E14\u590D\u6742\u7684 class \u51E0\u4E4E\u65E0\u6CD5\u505A\u9AD8\u6027\u80FD JIT \uFF08\u56E0\u4E3A\u5BF9\u8C61\u662F\u591A\u6001\u7684\u3001\u751A\u81F3\u662F\u5DE8\u6001\u7684\uFF09\uFF0C\u56E0\u6B64\u4E0D\u8BBA\u662F\u5BF9\u6027\u80FD\u8FD8\u662F\u53EF\u8BFB\u6027\uFF0C\u5FC5\u987B\u8981\u5207\u5272 class"),
-                        React.createElement(P, null, "\u5BF9\u4E8E class \u7684\u95EE\u9898\u4E1A\u754C\u5DF2\u6709\u88AB\u5E7F\u6CDB\u63A5\u53D7\u7684\u65B9\u5F0F\uFF0C\u90A3\u5C31\u662F\u57FA\u4E8E interface / trait \u6765\u505A\u7EC4\u5408\u5F0F\u7F16\u7A0B\uFF0C\u5BF9\u5E94\u7684\u4EE3\u8868\u662F golang \u548C rust\uFF0C\u4E24\u8005\u90FD\u6709\u5F88\u4E0D\u9519\u7684\u751F\u6001\u548C\u63A5\u53D7\u5EA6\uFF0C\u56E0\u6B64\u6211\u8BA4\u4E3A\u629B\u5F03 class \u6CA1\u6709\u4EFB\u4F55\u95EE\u9898\uFF0C\u4E0B\u9762\u662F\u4E00\u6BB5\u4F8B\u5B50\uFF0C\u5176\u4E2D\u6211\u501F\u9274\u4E86 rust \u91CC\u5BF9 dyn trait \u5904\u7406\u7684\u4F18\u79C0\u7ECF\u9A8C\uFF0C\u8FD9\u4F7F\u5F97\u52A8\u6001\u6D3E\u53D1\u5B9E\u73B0\u6210\u4E3A\u53EF\u80FD\uFF0C\u800C\u4E14\u5C06\u8C03\u7528\u5F00\u9500\u964D\u5230\u4E86\u6700\u4F4E\u3002\uFF08\u6CE8\u610F\u52A8\u6001\u5206\u53D1\u90A3\u6BB5 JIT \u540E\u4F1A\u76F8\u5F53\u9AD8\u6548\uFF0C\u751A\u81F3\u53EF\u4EE5\u8003\u8651\u5185\u8054\u5206\u53D1\uFF09"),
+                        React.createElement(P, null,
+                            "\u5BF9\u4E8E class \u7684\u95EE\u9898\u4E1A\u754C\u5DF2\u6709\u88AB\u5E7F\u6CDB\u63A5\u53D7\u7684\u65B9\u5F0F\uFF0C\u90A3\u5C31\u662F\u57FA\u4E8E interface / trait \u6765\u505A\u7EC4\u5408\u5F0F\u7F16\u7A0B\uFF0C\u5BF9\u5E94\u7684\u4EE3\u8868\u662F golang \u548C rust\uFF0C\u4E24\u8005\u90FD\u6709\u5F88\u4E0D\u9519\u7684\u751F\u6001\u548C\u63A5\u53D7\u5EA6\uFF0C\u56E0\u6B64\u6211\u8BA4\u4E3A\u629B\u5F03 class \u6CA1\u6709\u4EFB\u4F55\u95EE\u9898\uFF0C\u4E0B\u9762\u662F\u4E00\u6BB5\u4F8B\u5B50\uFF0C\u5176\u4E2D\u6211\u501F\u9274\u4E86 rust \u91CC\u5BF9 dyn trait \u5904\u7406\u7684\u4F18\u79C0\u7ECF\u9A8C\uFF0C\u8FD9\u4F7F\u5F97\u52A8\u6001\u6D3E\u53D1\u5B9E\u73B0\u6210\u4E3A\u53EF\u80FD\uFF0C\u800C\u4E14\u5C06\u8C03\u7528\u5F00\u9500\u964D\u5230\u4E86\u6700\u4F4E",
+                            React.createElement(Footnote, { content: "\u52A8\u6001\u5206\u53D1\u90A3\u6BB5 JIT \u540E\u4F1A\u76F8\u5F53\u9AD8\u6548\uFF0C\u7B80\u5355\u8BD5\u4E86\u4E0B\uFF0Cm4 pro \u8DD1\u4E00\u4EBF\u6B21\u5206\u53D1\u53EA\u9700\u8981 30ms" })),
                         React.createElement(Col, { units: [1, 1] },
                             React.createElement(Code, { lang: 'swift', source: `
           //
@@ -148,8 +195,8 @@ System.register(['react', 'rally/@@', './heavy-runtime.png.js'], (function (expo
               print(self, arg)
             }
           }
-
-          func gg(): dyn Printable {
+          // 这里还有用很多细节没想好
+          func gg(): impl Printable {
             return UserInfo {
               uid: '001',
               name: 'eczn'
