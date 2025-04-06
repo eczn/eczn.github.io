@@ -3,6 +3,7 @@ System.register([], (function (exports, module) {
 	return {
 		execute: (function () {
 
+			module.import('./250329-markdown-editor/index.blog.js');
 			module.import('./ai-2023/index.blog.js');
 			module.import('./app-pinch/index.blog.js');
 			module.import('./binary-complement-principle/index.blog.js');
@@ -10,6 +11,7 @@ System.register([], (function (exports, module) {
 			module.import('./css-matrix3d-calc/index.blog.js');
 			module.import('./drawing-250101/index.blog.js');
 			module.import('./eczn-home-intro/index.blog.js');
+			module.import('./ecznscript-dev-250325/index.blog.js');
 			module.import('./ecznscript/index.blog.js');
 			module.import('./he-learn-eda-teacher-jiehang/index.blog.js');
 			module.import('./hello-css-vars/index.blog.js');

@@ -226,14 +226,14 @@ System.register(['react', 'rally/@@', './heavy-runtime.png.js'], (function (expo
           function impl$$Printable$$query(objTag, traitTag) {
             if (objTag === UserInfo$$Tag) {
               switch (traitTag) {
-                case: Printable$$Print$$Tag: return UserInfo$$impl$$Printable$$print
+                case Printable$$Print$$Tag: return UserInfo$$impl$$Printable$$print
               }
             }
           }
 
           function UserInfo$$impl$$Printable$$print(self, arg) {
 
-            console.lgo(self, arg);
+            console.log(self, arg);
 
           }
 
@@ -246,7 +246,7 @@ System.register(['react', 'rally/@@', './heavy-runtime.png.js'], (function (expo
 
           const r = gg()
           // 有静态类型，因此可以实现动态分发
-          impl$$Printable$$query(r.tag, Printable$$Print$$Tag)(obj, 2025)
+          impl$$Printable$$query(r.tag, Printable$$Print$$Tag)(r, 2025)
         ` })),
                         React.createElement(H2, null, "\u8BED\u8A00\u6807\u51C6\u7684\u6027\u80FD"),
                         React.createElement(P, null, "js \u91CC\u5B57\u7B26\u4E32\u662F\u4E0D\u53EF\u53D8\u7684\uFF0Cv8 \u91CC\u5BF9\u4E2D\u6587\u5B57\u7B26\u4E32\u7684\u64CD\u4F5C\u51E0\u4E4E\u90FD\u662F\u4F1A\u4EA7\u751F\u65B0\u7684\uFF0C\u6BD4\u5982\u8BF4 `\"\u4F60\"[0]` \u8FD9\u6837\u5C31\u4F1A\u590D\u5236\u4E00\u6B21 index=0 \u7684\u5730\u65B9\uFF0C\u53EA\u6709\u82F1\u6587\u624D\u4E0D\u4F1A\u6709\u590D\u5236 \u2014\u2014 \u800C\u4E00\u4E2A\u957F\u5EA6\u4E3A 1 \u7684\u5B57\u7B26\u4E32\u88C5\u7BB1\u540E\u5360\u7528 12 \u5B57\u8282\uFF0C\u8FD9\u4F1A\u9020\u6210\u4E00\u5B9A\u7684\u6027\u80FD\u6298\u635F \u2014\u2014 \u5F53\u7136\u591A\u6570\u60C5\u51B5\u4E0B\u5E76\u4E0D\u9700\u8981\u7279\u522B\u5173\u5FC3\uFF0C\u9664\u975E\u8FD9\u7C7B\u64CD\u4F5C\u53D8\u6210\u9AD8\u9891\u64CD\u4F5C\uFF0C\u6BD4\u5982\u6B63\u5728\u5B9E\u73B0\u7F16\u8BD1\u5668\u7684\u65F6\u5019\u5C31\u6D89\u53CA\u5927\u91CF\u7684\u5B57\u7B26\u4E32\u64CD\u4F5C\uFF0C\u6B64\u65F6\u4F1A\u6709\u5927\u91CF\u5B57\u7B26\u4E32\u64CD\u4F5C\uFF0C\u4F1A\u76F8\u5F53\u5F71\u54CD\u6027\u80FD"),
