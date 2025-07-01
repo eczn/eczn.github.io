@@ -32,6 +32,7 @@ System.register([], (function (exports, module) {
 			module.import('./syuuchuuryoku/index.blog.js');
 			module.import('./test-tsx-article-for-new-version/index.blog.js');
 			module.import('./the-adt-in-ts/index.blog.js');
+			module.import('./the-math-editor/index.blog.js');
 			module.import('./the-structure-and-interpretation-of-std-unicode-and-its-utf-encodings/index.blog.js');
 			module.import('./three-body-emulator/index.blog.js');
 			module.import('./typescript-52000-checker-ts/index.blog.js');
