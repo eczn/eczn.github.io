@@ -74,3 +74,4 @@ System.register(['react', './use-pinch.js'], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=index.js.map

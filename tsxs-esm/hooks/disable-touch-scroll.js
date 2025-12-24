@@ -41,3 +41,4 @@ System.register([], (function (exports) {
     })
   };
 }));
+//# sourceMappingURL=disable-touch-scroll.js.map

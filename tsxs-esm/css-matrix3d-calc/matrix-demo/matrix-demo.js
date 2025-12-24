@@ -124,3 +124,4 @@ System.register(['react', 'rally/@@', '../coordinate-axis/line.js', '../matrix/m
     })
   };
 }));
+//# sourceMappingURL=matrix-demo.js.map

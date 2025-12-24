@@ -14,3 +14,4 @@ System.register([], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=file-clickwheel-over-360.svg.js.map

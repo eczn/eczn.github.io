@@ -32,3 +32,4 @@ System.register(['react'], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=point.js.map

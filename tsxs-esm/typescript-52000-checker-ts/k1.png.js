@@ -14,3 +14,4 @@ System.register([], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=k1.png.js.map

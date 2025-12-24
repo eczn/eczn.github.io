@@ -14,3 +14,4 @@ System.register([], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=picexample.jpg.js.map

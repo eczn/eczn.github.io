@@ -14,3 +14,4 @@ System.register([], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=umaru-cola.gif.js.map

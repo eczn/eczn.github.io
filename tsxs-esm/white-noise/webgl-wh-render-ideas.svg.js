@@ -14,3 +14,4 @@ System.register([], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=webgl-wh-render-ideas.svg.js.map

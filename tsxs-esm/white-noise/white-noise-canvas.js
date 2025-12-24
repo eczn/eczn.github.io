@@ -61,3 +61,4 @@ System.register([], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=white-noise-canvas.js.map

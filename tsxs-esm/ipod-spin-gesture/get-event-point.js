@@ -45,3 +45,4 @@ System.register([], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=get-event-point.js.map

@@ -64,9 +64,9 @@ System.register(['react', './adt-drag-define.js', '../hooks/disable-touch-scroll
                             position: 'relative', height: '300px',
                             width: '100%', background: '#EEE',
                             cursor: 'pointer', userSelect: 'none',
-                        }, onMouseDown: (e) => onStart(e), onMouseMove: e => onMove(e), onMouseUp: e => onEnd(), 
+                        }, onMouseDown: (e) => onStart(e), onMouseMove: e => onMove(e), onMouseUp: e => onEnd(e), 
                         // 兼容 move 到浏览器外部的情况
-                        onMouseLeave: e => onEnd(), onTouchStart: e => {
+                        onMouseLeave: e => onEnd(e), onTouchStart: e => {
                             disableTouchScroll(); // 禁用滚动, 解决滚动穿透
                             onStart(e.touches[0]);
                         }, onTouchMove: e => {
@@ -131,3 +131,4 @@ System.register(['react', './adt-drag-define.js', '../hooks/disable-touch-scroll
         })
     };
 }));
+//# sourceMappingURL=adt-drag.js.map

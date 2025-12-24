@@ -79,3 +79,4 @@ System.register(['react', './matrix.js', './use-drag-states.js', './apply-states
         })
     };
 }));
+//# sourceMappingURL=use-pinch.js.map

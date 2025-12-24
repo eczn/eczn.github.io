@@ -12,3 +12,4 @@ System.register([], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=vec-dot.js.map

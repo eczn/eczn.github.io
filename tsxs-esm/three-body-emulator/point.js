@@ -63,3 +63,4 @@ System.register([], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=point.js.map

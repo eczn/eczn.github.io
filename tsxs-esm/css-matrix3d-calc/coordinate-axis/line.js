@@ -1,13 +1,13 @@
 System.register(['react', '../matrix-demo/matrix-demo.js', '../matrix/matrix-product.js'], (function (exports) {
     'use strict';
-    var React, matrixToCSS, getRotateMatrix, getTranslateMatrix, matrixProduct;
+    var React, getRotateMatrix, getTranslateMatrix, matrixToCSS, matrixProduct;
     return {
         setters: [function (module) {
             React = module.default;
         }, function (module) {
-            matrixToCSS = module.matrixToCSS;
             getRotateMatrix = module.getRotateMatrix;
             getTranslateMatrix = module.getTranslateMatrix;
+            matrixToCSS = module.matrixToCSS;
         }, function (module) {
             matrixProduct = module.matrixProduct;
         }],
@@ -26,7 +26,7 @@ System.register(['react', '../matrix-demo/matrix-demo.js', '../matrix/matrix-pro
                 const deg = toDegree(rad);
                 const rm = getRotateMatrix(0, 0, -deg);
                 const tm = getTranslateMatrix(0, b, 0);
-                matrixToCSS(matrixProduct(rm, tm));
+                const result = matrixToCSS(matrixProduct(rm, tm));
                 return (React.createElement("div", { style: {
                         width: '100%',
                         height: '1px',
@@ -62,3 +62,4 @@ System.register(['react', '../matrix-demo/matrix-demo.js', '../matrix/matrix-pro
         })
     };
 }));
+//# sourceMappingURL=line.js.map

@@ -152,3 +152,4 @@ System.register(['react', './finger-event.js'], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=use-drag-states.js.map

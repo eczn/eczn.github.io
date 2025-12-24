@@ -1,0 +1,1 @@
+{"version":3,"file":"shader-vertex-source.glsl.js","sources":["../../../src/tsxs/white-noise/shader-vertex-source.glsl"],"sourcesContent":["export default \"attribute vec4 position;\\nvoid main() {\\n  gl_Position = position;\\n}\\n\";"],"names":[],"mappings":";;;;;AAAA,+CAAe,0EAAyE;;;;;;;;"}

@@ -53,3 +53,4 @@ System.register(['./lerp.js', './vec-dot.js', './hashes-vec.js'], (function (exp
         })
     };
 }));
+//# sourceMappingURL=perlin2d_v1.js.map

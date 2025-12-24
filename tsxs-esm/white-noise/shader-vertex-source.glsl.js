@@ -8,3 +8,4 @@ System.register([], (function (exports) {
 		})
 	};
 }));
+//# sourceMappingURL=shader-vertex-source.glsl.js.map

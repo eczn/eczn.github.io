@@ -23,3 +23,4 @@ System.register(['react'], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=rect.js.map

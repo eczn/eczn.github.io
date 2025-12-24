@@ -24,3 +24,4 @@ System.register(['react', './render-clickwheel-state.js', './use-clickwheel.js']
         })
     };
 }));
+//# sourceMappingURL=clickwheel-demo.js.map

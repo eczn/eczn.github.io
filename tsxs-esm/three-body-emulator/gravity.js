@@ -82,7 +82,9 @@ System.register(['./point.js'], (function (exports) {
                     this.timer = requestAnimationFrame(this.render);
                 };
             } exports('Gravity', Gravity);
+            ;
 
         })
     };
 }));
+//# sourceMappingURL=gravity.js.map

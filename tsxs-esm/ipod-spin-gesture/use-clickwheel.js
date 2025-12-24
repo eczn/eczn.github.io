@@ -113,3 +113,4 @@ System.register(['react', './polar-point.js', './get-event-point.js'], (function
         })
     };
 }));
+//# sourceMappingURL=use-clickwheel.js.map

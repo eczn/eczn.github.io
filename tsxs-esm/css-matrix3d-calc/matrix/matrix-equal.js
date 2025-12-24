@@ -26,3 +26,4 @@ System.register(['react', './index.js', '../formula/index.js'], (function (expor
         })
     };
 }));
+//# sourceMappingURL=matrix-equal.js.map

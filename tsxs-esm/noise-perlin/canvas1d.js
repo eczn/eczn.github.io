@@ -40,3 +40,4 @@ System.register(['react', 'rally/@@'], (function (exports) {
         })
     };
 }));
+//# sourceMappingURL=canvas1d.js.map
