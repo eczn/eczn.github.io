@@ -1,0 +1,82 @@
+<!-- 3px_test.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>3px test</title>
+</head>
+<style>
+	* { /* css reset */
+		margin: 0; 
+		padding: 0; 
+	}
+	body {
+		max-width: 500px; 
+		min-width: 320px; 
+		margin: 0 auto; 
+		font-family: consolas; 
+	}
+
+	.img-container {
+		position: relative;
+		width: 100%; 
+		text-align: center;
+		padding: 32px 0; 
+		background-color: #EEE;
+		/*margin-bottom: 2em; */
+	}
+	.img-container::target-text {
+		font-size: 0;
+	}
+	.img-container > span {
+		display: inline-block;
+		width: 33.3%; 
+		height: 40px; 
+		color: white; 
+		line-height: 40px; 
+	}
+	.fix > span {
+		font-size: 1rem; 
+	}
+
+	.green {
+		background-color: #464; 
+	}
+	.red {
+		background-color: #644; 
+	}
+	.blue {
+		background-color: #446; 
+	}
+
+	.fix {
+		font-size: 0; 
+	}
+
+	h1 {
+		text-align: center;
+		font-weight: normal;
+		padding: .4em 0; 
+	}
+</style>
+<body>
+	<h1>实际得到的效果</h1>
+	<div class="img-container">
+		<span class="green">在同一行</span>
+		<span class="red">在同一行</span>
+		<span class="blue">不在同一行</span>
+	</div>
+
+	<h1>期望的效果</h1>
+	<div class="img-container fix">
+		<span class="green">在同一行</span>
+		<span class="red">在同一行</span>
+		<span class="blue">在同一行</span>
+	</div>
+
+<!-- 	<h1>修补</h1>
+	<div class="img-container"><span class="green">在同一行</span><span class="red">在同一行</span><span class="blue">在同一行</span>
+	</div> -->
+</body>
+</html>

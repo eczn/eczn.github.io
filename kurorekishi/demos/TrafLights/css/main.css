@@ -1,0 +1,142 @@
+* {
+	padding: 0;
+	margin: 0; 
+}
+
+body {
+	font-family: "Consolas", "Lucida Console", "Monaco", "Menlo", Courier;
+}
+
+.container {
+	text-align: center;
+	font-size: 0; 
+}
+
+h1 {
+	margin-top: 64px;
+	text-align: center;
+	font-size: 46px; 
+	color: #444; 
+}
+
+.cir {
+	position: relative;
+	width: 200px; 
+	height: 200px;
+	border-radius: 200px;
+	background-color: #444;
+	display: inline-block;
+	margin: 64px;
+	transition: background-color .2s;
+}
+
+.btns {
+	text-align: center;
+}
+
+.btns > button {
+	display: inline-block;
+	position: relative;
+	background-color: #444;
+	color: #EDD;
+	border: none;
+	padding: .4em 1.1em;
+	border-radius: 2px;
+	margin: 0 2em;
+	cursor: pointer;
+}
+
+.btns > button:hover {
+	color: #FFF;
+	background-color: #555;
+}
+
+.color-red {
+	background-color: #D43;
+}
+.color-yellow {
+	background-color: #EB5;
+}
+
+.color-green {
+	background-color: #5A5;
+}
+
+time {
+	display: block;
+	/*margin-top: 32px; */
+	position: relative;
+	font-size: 128px;
+	color: #444;  
+	text-align: center;
+}
+time:after {
+	content: "Transition Per 30s"; 
+	display: block;
+	text-align: center;
+	position: absolute;
+	text-align: center;
+	width: 100%; 
+	bottom: 1em;
+	font-size: 12px; 
+	color: #AAA;
+	margin-top: .6em; 
+}
+
+@media screen and (max-width: 1024px) {
+	.cir {
+		display: block;
+		width: 64px; 
+		height: 64px;
+		margin: 16px auto; 
+	}
+
+
+	.btns > button {
+		/*display: block;*/
+		margin: 1.5em auto 0 auto; 
+		font-size: 16px; 
+	}
+
+	h1 {
+		margin-top: 4px;
+	}
+}
+
+footer {
+	max-width: 700px; 
+	min-width: 320px; 
+	border-top: 2px dashed; 
+	margin: 2.5em auto 0 auto; 
+	
+	color: #DDD; 
+	text-align: center; 
+}
+
+footer > a {
+	color: #444;
+	font-style: italic;
+}
+
+@media screen and (min-width: 1024px) {
+	button[more]:hover::after { 
+		content: attr(more); 
+		position: absolute; 
+		display: block; 
+		max-width: 12em;
+		left: -50%;
+		bottom: 115%;
+		padding: 4px 8px;
+		
+		font-size: 12px; 
+		text-align: left;
+		line-height: 1em;
+
+		color: white;
+		background-color: #444;
+
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	} 
+}

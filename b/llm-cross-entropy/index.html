@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,minimal-ui"/>
+<meta name="format-detection" content="telephone=no" />
+<title>大模型与交叉熵 | Eczn's Home</title>
+<meta name="description" content="今天补充一篇关于训练的，介绍大模型损失函数内最重要的一个数学对象：交叉熵，来源于信息论，在大模型中应用广泛，可以说是除了注意力机制之外最核心的数学建模了。然而市面上关于交叉熵的文章多数在堆砌概念，看了只会让我感到不安，靠比喻是没有形成自洽且体系化理解的。" />
+<link rel="icon" href="/favicon.png">
+
+<style id="CSS_VARS"></style>
+<style>html { font-size: var(--rem); }</style>
+<script>
+(function() {
+console.log('INIT CSS VAR');
+function loadCSSVars() {
+    const j = localStorage.getItem("CSS_VARS_3" /* STORAGE_KEY.CSS_VARS */);
+    const initialVars = initialCSSVars();
+    if (!j)
+        return initialVars;
+    try {
+        const result = {
+            ...initialVars,
+            ...JSON.parse(j)
+        };
+        console.log('loadCSSVars from storage', result);
+        return result;
+    }
+    catch (error) {
+        console.error('load css vars with error', error);
+        return initialVars;
+    }
+}
+function renderCSSVars(vars, style) {
+    const allDefine = Object.keys(vars).map(k => {
+        const v = vars[k];
+        const cssValue = typeof v === 'number' ? `${v}px` : v;
+        return `--${k}:${cssValue};`;
+    }).join('\n');
+    if (style) {
+        style.innerHTML = `:root { ${allDefine} }`;
+    }
+    else {
+        console.error(`style#CSS_VARS NotFound !`);
+    }
+}
+function initialCSSVars() {
+    let rem = 16;
+    // 移动端
+    if (typeof window !== 'undefined' && window.innerWidth <= 500) {
+        rem = Number(((window.innerWidth - 20) / 42).toFixed(1));
+        console.log('mobile calculated rem =>', rem);
+    }
+    return {
+        rem,
+        enableSmallerFont: false,
+        fontSmcp: 'source serif pro, serif',
+        fontCode: 'consolas, Menlo, monospace',
+        fontTitle: 'Noto Serif SC, serif',
+        fontArticle: 'source serif pro, LXGW WenKai',
+        fontSansSerif: 'sans-serif',
+    };
+}
+window.__initialCSSVars = loadCSSVars();
+renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
+})();
+</script>
+
+<!-- 站点自带的 Tailwind CSS CDN 全量加载，等价于 https://cdn.tailwindcss.com -->
+<script src="/cdn.tailwindcss.com/3.4.17.js"></script>
+<!-- MathJax 3 配置：TeX 输入 + SVG 输出 -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      processEscapes: true
+    },
+    svg: {
+      fontCache: 'local',
+      scale: 1
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+      ignoreHtmlClass: '.*',
+      processHtmlClass: 'math-content',
+      enableAssistiveMml: false,
+      menuOptions: {
+        settings: {
+          assistiveMml: false,
+          collapsible: false,
+          explorer: false
+        }
+      }
+    },
+    startup: {
+      typeset: false
+    }
+  };
+</script>
+<!-- 站点自带的 MathJax 3: 实现公式渲染 -->
+<script src="/cdn.jsdelivr.net/mathjax/tex-svg.0516.js"></script>
+<!-- 站点自带的 Prism.js: 代码高亮：只引入核心 + 语言组件；主题使用本文件内定制的 Stone + Amber 配色 -->
+<script src="/cdn.jsdelivr.net/prismjs/prism-core.min.js"></script>
+<script src="/cdn.jsdelivr.net/prismjs/prism-clike.min.js"></script>
+<script src="/cdn.jsdelivr.net/prismjs/prism-javascript.min.js"></script>
+<script src="/cdn.jsdelivr.net/prismjs/prism-typescript.min.js"></script>
+<script src="/cdn.jsdelivr.net/prismjs/prism-bash.min.js"></script>
+
+<style>
+  /* ===========================================================
+      Prism 定制主题：Stone + Amber
+      - 与正文暖灰衬线风统一；所有颜色取自 Tailwind stone/amber/sky/emerald/rose
+      - 不设定 <pre> 的背景/内边距/圆角，交给页面里 Tailwind 的 <pre> 控制
+      =========================================================== */
+  code[class*="language-"],
+  pre[class*="language-"] {
+    color: #f5f5f4;                                             /* stone-100 */
+    text-shadow: none;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    /* font-size: inherit; */
+    line-height: 1.6;
+    tab-size: 2;
+    white-space: pre;
+  }
+  pre[class*="language-"],
+  pre > code[class*="language-"],
+  code[class*="language-"] {
+    /* background: transparent; */
+    /* padding: 0;
+    margin: 0; */
+  }
+
+  /* --- token 颜色 --- */
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata          { color: #78716c; font-style: italic; }   /* stone-500 */
+  .token.punctuation,
+  .token.operator       { color: #a8a29e; }                        /* stone-400 */
+  .token.keyword,
+  .token.boolean,
+  .token.atrule,
+  .token.important,
+  .token.selector       { color: #7dd3fc; }                        /* sky-300 */
+  .token.string,
+  .token.char,
+  .token.regex,
+  .token.attr-value     { color: #6ee7b7; }                        /* emerald-300 */
+  .token.number,
+  .token.constant,
+  .token.symbol         { color: #fcd34d; }                        /* amber-300 */
+  .token.function,
+  .token.function-name  { color: #fde68a; }                        /* amber-200 */
+  .token.class-name,
+  .token.builtin,
+  .token.tag            { color: #fda4af; }                        /* rose-300 */
+  .token.variable,
+  .token.parameter      { color: #f5f5f4; }                        /* stone-100 */
+  .token.property,
+  .token.attr-name      { color: #7dd3fc; }                        /* sky-300 */
+  .token.deleted        { color: #fb7185; }                        /* rose-400 */
+  .token.inserted       { color: #34d399; }                        /* emerald-400 */
+  .token.url            { color: #fcd34d; text-decoration: underline; }
+  .token.italic         { font-style: italic; }
+  .token.bold           { font-weight: 700; }
+</style>
+<style>
+  .math-content { display: inline; }
+  .math-content svg { width: 100%; }
+  .math-content[data-display="1"] { display: block; text-align: center; margin: 2.5rem 0; font-size: 135%; text-align: center; }
+  .math-content[data-display="1"] > * { display: inline-block; }
+  .MathJax[display="true"] { display: flex; justify-content: center;}
+
+  table caption {
+    caption-side: bottom;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+  }
+
+  body {
+    padding: 0 .75rem;
+  }
+
+  @media (min-width: 80rem) {
+    main {
+      margin-left: calc(50vw - 28rem + 8rem) !important;
+      margin-right: auto !important;
+    }
+  }
+
+  @media (min-width: 80rem) {
+    aside {
+      left: auto !important;
+      right: calc(50vw + 28rem - 8rem + 0.75rem) !important;
+    }
+  }
+  aside {
+    scrollbar-width: none;
+  }
+
+</style>
+</head>
+<body class="text-stone-800 font-serif">
+<!-- ============ 粘性导航（两个按钮：首页 | 返回） ============ -->
+<nav class="sticky top-0 z-40 bg-stone-50/90 backdrop-blur border-b border-stone-200">
+  <div class="max-w-4xl mx-auto px-6 py-3 flex items-center justify-center gap-4 text-sm">
+    <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-stone-600 hover:text-amber-800 hover:bg-amber-100 transition-all duration-150">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>
+      首页
+    </a>
+    <span class="text-stone-300">|</span>
+    <a href="javascript:history.back()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-stone-600 hover:text-amber-800 hover:bg-amber-100 transition-all duration-150">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      返回
+    </a>
+  </div>
+</nav>
+
+<!-- ============ 左侧 fixed 目录（由 JS 根据正文 <h2> 动态生成） ============ -->
+<aside class="hidden xl:block fixed top-1/2 -translate-y-1/2 z-30 w-56 max-h-[80vh] overflow-y-auto pr-2 border-r border-stone-200"></aside>
+<main class="max-w-4xl mx-auto mt-16 px-6 pb-24 text-stone-800 leading-relaxed">
+  <!-- ====== Header ====== -->
+  <header id="top" class="pt-16 pb-10">
+    <h1 data-no-numbering class="font-serif text-6xl font-semibold tracking-tight text-stone-900 leading-tight">大模型与交叉熵</h1>
+    <div class="mt-2 flex items-center gap-2 text-sm text-stone-500">
+      <span>阅读 ≈ 1~2h</span>
+      <span class="text-stone-300">·</span>
+      <span>推荐使用 Mac 阅读</span>
+      <span class="text-stone-300">·</span>
+      <span>powered by ecznlai</span>
+      <span class="text-stone-300">·</span>
+      <span>2026-05-10</span>
+    </div>
+  </header>
+
+  <!-- ====== 引言 ====== -->
+  <p class="mt-6">我在过去的三篇文章介绍了大模型的许多内容:</p>
+
+  <table class="w-full border-collapse my-6 text-sm">
+    <thead>
+      <tr>
+        <th class="border border-gray-300 bg-gray-100 font-semibold px-4 py-3 w-16 text-center">#</th>
+        <th class="border border-gray-300 bg-gray-100 font-semibold px-4 py-3 w-72 text-left">标题</th>
+        <th class="border border-gray-300 bg-gray-100 font-semibold px-4 py-3 text-left">简介</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3">1</td>
+        <td class="border border-gray-300 px-4 py-3 align-middle">
+          <a href="/b/what-is-llm-inference/" class="text-indigo-700 hover:underline" target="_blank" rel="noreferrer">什么是大模型的「推理」？</a>
+          <div class="text-xs text-stone-500 mt-1">浅谈神经网络的训练和推理</div>
+        </td>
+        <td class="border border-gray-300 px-4 py-3 align-middle">从线性映射出发，讲神经网络的<strong>训练与推理</strong>、Transformer 的原始认知</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3">2</td>
+        <td class="border border-gray-300 px-4 py-3 align-middle">
+          <a href="/b/tool-use-impl/" class="text-indigo-700 hover:underline" target="_blank" rel="noreferrer">Tool Use 具体是如何实现的？</a>
+          <div class="text-xs text-stone-500 mt-1">Special Token、Chat Template 与 Token Parser</div>
+        </td>
+        <td class="border border-gray-300 px-4 py-3 align-middle">从词表 Special Token 起手，讲 <strong>Chat Template</strong> 与 <strong>Token Parser</strong> 如何托起 Tool Use</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3">3</td>
+        <td class="border border-gray-300 px-4 py-3 align-middle">
+          <a href="/b/ts-gpt2-inference/" class="text-indigo-700 hover:underline" target="_blank" rel="noreferrer">实现 GPT-2 的推理</a>
+          <div class="text-xs text-stone-500 mt-1">纯 TypeScript 从零实现</div>
+        </td>
+        <td class="border border-gray-300 px-4 py-3 align-middle">纯 TypeScript 实现 GPT-2 的推理，只用原生 Float32Array 进行推理计算</td>
+      </tr>
+    </tbody>
+    <caption data-no-numbering class="caption-bottom text-center px-3 pr-12 py-2 text-stone-700">先前的三篇前作, 没读过也没关系可以试着读一下本文</caption>
+  </table>
+
+  <p class="mt-6">今天一篇关于训练的，介绍大模型损失函数内最重要的一个数学对象：交叉熵。</p>
+
+  <!-- ====== 主线五步图 ====== -->
+  <figure class="mt-4">
+    <svg viewBox="0 0 720 110" role="img" class="w-full h-auto" font-family="Georgia, serif">
+      <title>从概率到 nextToken 预测：贯穿全文的五步主线</title>
+      <defs>
+        <path id="legend-chevron" d="M0,0 H124 L138,40 L124,80 H0 L14,40 Z"></path>
+        <path id="legend-chevron-first" d="M0,0 H124 L138,40 L124,80 H0 Z"></path>
+      </defs>
+      <g fill="none" stroke="#d6d3d1" stroke-width="1.1" stroke-linejoin="round">
+        <use href="#legend-chevron-first" x="6" y="15"></use>
+        <use href="#legend-chevron" x="146" y="15"></use>
+        <use href="#legend-chevron" x="286" y="15"></use>
+        <use href="#legend-chevron" x="426" y="15"></use>
+        <use href="#legend-chevron" x="566" y="15"></use>
+      </g>
+      <!-- Step 1: 概率 -->
+      <g>
+        <g fill="none" stroke="#57534e" stroke-width="1.4"><circle cx="34" cy="55" r="13"></circle></g>
+        <text x="34" y="60" font-size="14" font-style="italic" font-weight="700" fill="#b45309" text-anchor="middle" font-family="Georgia, serif">P</text>
+        <text x="56" y="52" font-size="13" font-weight="600" fill="#1c1917">概率</text>
+        <text x="56" y="68" font-size="11" fill="#57534e">probability</text>
+        <text x="56" y="82" font-size="11" fill="#57534e">P(xᵢ)</text>
+      </g>
+      <!-- Step 2: 信息量 -->
+      <g>
+        <g font-family="Georgia, serif" font-size="10" font-weight="700" text-anchor="middle">
+          <rect x="172" y="41" width="12" height="14" fill="none" stroke="#57534e" stroke-width="1.1"></rect>
+          <text x="178" y="52" fill="#57534e">1</text>
+          <rect x="184" y="41" width="12" height="14" fill="none" stroke="#57534e" stroke-width="1.1"></rect>
+          <text x="190" y="52" fill="#57534e">0</text>
+          <rect x="172" y="55" width="12" height="14" fill="#b45309" stroke="#b45309" stroke-width="1.1"></rect>
+          <text x="178" y="66" fill="#ffffff">1</text>
+          <rect x="184" y="55" width="12" height="14" fill="none" stroke="#57534e" stroke-width="1.1"></rect>
+          <text x="190" y="66" fill="#57534e">1</text>
+        </g>
+        <text x="212" y="46" font-size="13" font-weight="600" fill="#1c1917">信息量</text>
+        <text x="212" y="62" font-size="11" fill="#57534e">self-info</text>
+        <text x="212" y="76" font-size="11" fill="#57534e">单位 bit</text>
+      </g>
+      <!-- Step 3: 信息熵 -->
+      <g>
+        <g transform="translate(0, 2)">
+          <rect x="314" y="50" width="4" height="16" fill="#d6d3d1"></rect>
+          <rect x="320" y="42" width="4" height="24" fill="#b45309"></rect>
+          <rect x="326" y="54" width="4" height="12" fill="#d6d3d1"></rect>
+          <rect x="332" y="58" width="4" height="8" fill="#d6d3d1"></rect>
+          <line x1="312" y1="68" x2="330" y2="68" stroke="#57534e" stroke-width="1.2"></line>
+        </g>
+        <text x="348" y="50" font-size="13" font-weight="600" fill="#1c1917">信息熵</text>
+        <text x="348" y="66" font-size="11" fill="#57534e">entropy</text>
+        <text x="348" y="80" font-size="11" fill="#57534e">H(X)</text>
+      </g>
+      <!-- Step 4: 交叉熵 -->
+      <g>
+        <g transform="translate(0, 2)">
+          <rect x="454" y="44" width="4" height="22" fill="#1e3a8a" opacity="0.85"></rect>
+          <rect x="458" y="50" width="4" height="16" fill="#1e3a8a" opacity="0.85"></rect>
+          <rect x="466" y="56" width="4" height="10" fill="#1e3a8a" opacity="0.85"></rect>
+          <rect x="458" y="52" width="4" height="14" fill="#b45309" opacity="0.7"></rect>
+          <rect x="464" y="46" width="4" height="20" fill="#b45309" opacity="0.7"></rect>
+          <rect x="470" y="54" width="4" height="12" fill="#b45309" opacity="0.7"></rect>
+          <line x1="472" y1="68" x2="468" y2="68" stroke="#57534e" stroke-width="1.2"></line>
+        </g>
+        <text x="484" y="50" font-size="13" font-weight="600" fill="#1c1917">交叉熵</text>
+        <text x="484" y="66" font-size="11" fill="#57534e">cross-entropy</text>
+        <text x="484" y="80" font-size="11" fill="#57534e">H(P, Q)</text>
+      </g>
+      <!-- Step 5: nextToken -->
+      <g>
+        <g transform="translate(0, 2)">
+          <rect x="590" y="56" width="3.5" height="10" fill="#d6d3d1"></rect>
+          <rect x="595.5" y="50" width="3.5" height="16" fill="#d6d3d1"></rect>
+          <rect x="601" y="42" width="3.5" height="24" fill="#9d174d"></rect>
+          <rect x="606.5" y="48" width="3.5" height="18" fill="#d6d3d1"></rect>
+          <rect x="612" y="54" width="3.5" height="12" fill="#d6d3d1"></rect>
+          <line x1="590" y1="68" x2="613" y2="68" stroke="#57534e" stroke-width="1.2"></line>
+        </g>
+        <text x="628" y="48" font-size="13" font-weight="600" fill="#1c1917">nextToken</text>
+        <text x="628" y="64" font-size="11" fill="#57534e">argmax over</text>
+        <text x="628" y="78" font-size="11" fill="#57534e">the vocab</text>
+      </g>
+    </svg>
+  </figure>
+
+  <!-- ====== 本文目标说明 ====== -->
+  <img class="max-w-64 float-right mt-16" src="./lgtm.jpg" />
+  <h1 class="mt-16 mb-4 text-3xl font-bold text-stone-900">本文目标说明</h1>
+  <p class="mt-6">交叉熵这个概念来源于信息论，在大模型中应用广泛，可以说是除了注意力机制之外最核心的数学建模了。然而市面上关于交叉熵的文章多数在堆砌概念，看了只会让我感到<strong>不安</strong>，靠比喻是没有形成自洽且体系化理解的。</p>
+  <p class="mt-6">我将从几个基本直觉出发，逐步推导信息论里的基础命题和结论，给出信息量和信息熵的定义，最后引出交叉熵并解释为什么它是针对大模型 nextToken 预测任务最理想的损失函数。</p>
+  <p class="mt-6">本文目标：阐释损失函数的构造和解释，本文推导路线为直觉 → 概率 → 信息量 → 信息熵 → 交叉熵 → KL 散度 → 分类即分布逼近 → softmax + 交叉熵 → 方案对比和梯度 → 反向传播。</p>
+
+  <!-- ====== 信息论与信息量 ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">信息论与信息量</h1>
+
+  <div class="mt-6 grid grid-cols-6 gap-8 items-start">
+    <div class="col-span-5">
+      <p class="my-0">
+        <a href="https://zh.wikipedia.org/wiki/%E5%85%8B%E5%8A%B3%E5%BE%B7%C2%B7%E9%A6%99%E5%86%9C" class="text-indigo-700 hover:underline" target="_blank">克劳德·香农 (Claude Shannon)</a>
+        在 1948 年发表《A Mathematical Theory of Communication》奠定了信息论，其核心命题是：为信息的表达做精确的数学建模，以便于分析和优化信息传输。
+      </p>
+      <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+        <span class="font-serif mr-2 font-semibold tracking-wider">TIPS</span>
+        <span>顺带一提，Anthropic 的 Claude 普遍被认为正是致敬这位信息论之父。</span>
+      </div>
+    </div>
+    <img src="./claude-shannon.webp" class="r-link col-span-1 w-full h-auto" />
+  </div>
+
+  <p class="mt-6">信息量这个词，大多数人（包括我）第一次听到还以为说的是 "这条消息有几个字"，但其实不是这样的，信息量是描述事件所蕴含的信息的度量，直观的来说对比以下两个事件其蕴含的信息量并不同：</p>
+
+  <div class="mt-6 grid grid-cols-2 gap-4">
+    <div class="border border-stone-300 bg-stone-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-stone-500">事件 A</span>
+        <span class="text-xs text-stone-500">日常 · 习以为常</span>
+      </div>
+      <p class="text-xl text-stone-500 my-0">明天太阳会从<strong>东边</strong>升起</p>
+      <div class="mt-2 flex items-baseline gap-3 border-t border-stone-200 pt-2">
+        <span class="text-xs text-stone-500">概率</span>
+        <span class="font-serif text-lg text-stone-800">P 几乎为 1</span>
+      </div>
+      <div class="flex items-baseline gap-3">
+        <span class="text-xs text-stone-500">信息量</span>
+        <span class="font-serif text-lg text-stone-400">极小</span>
+      </div>
+    </div>
+    <div class="border border-amber-400 bg-amber-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-amber-700">事件 B</span>
+        <span class="text-xs text-amber-700">罕见 · 令人震惊</span>
+      </div>
+      <p class="text-xl text-stone-500 my-0">明天太阳会从<strong>西边</strong>升起</p>
+      <div class="mt-2 flex items-baseline gap-3 border-t border-amber-200 pt-2">
+        <span class="text-xs text-amber-700">概率</span>
+        <span class="font-serif text-lg text-stone-800">P 几乎为 0</span>
+      </div>
+      <div class="flex items-baseline gap-3">
+        <span class="text-xs text-amber-700">信息量</span>
+        <span class="font-serif text-lg text-amber-700">极大</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">DIRECT</span>
+    <span>同样是一句话，"太阳东升" 是废话，几乎不传递任何新信息；而 "太阳西升" 一旦发生，足以颠覆已有认知，信息量并非由字数决定，而是由事件发生的概率决定，概率越小的事件发生蕴含的信息量越大，对于概率趋于 0 的事件来说其信息量趋于无穷大</span>
+  </div>
+
+  <p class="mt-6">为了计算信息量，不妨假设有个 <span class="math-content">I</span> 函数能依据概率算出信息量，那么我们可以这样来定义信息量：</p>
+
+  <div class="math-content" data-display="1">
+    \begin{aligned}
+      令 \, I_1 &= 抛硬币得到正面的信息量 = I( \, \frac{1}{2} \, ) \\
+      令 \, I_2 &= 抛骰子得到 1 点的信息量 = I( \, \frac{1}{6} \, )
+    \end{aligned}
+  </div>
+
+  <p class="mt-6">当两个独立事件同时发生时所产生信息量应该是两者独立发生时的信息量之和，比如 "抛硬币得到正面" 和 "抛骰子得到 1 点" 同时发生时，我们会认为两个信息叠加在一起，即<strong>我们认为信息量是可加的</strong>：</p>
+
+  <div class="math-content" data-display="1">
+    I_1 + I_2 = I( \, \frac{1}{2} \,) + I( \, \frac{1}{6}\,)
+  </div>
+
+  <p class="mt-6">很自然的，当两个独立事件同时发生时，其信息量应该也可以用两个独立事件同时发生的概率配合 <span class="math-content">I</span> 函数计算得到，独立事件发生的概率为各个事件概率之乘积 (独立事件的乘法法则)，可得：</p>
+
+  <div class="math-content" data-display="1">I_1 + I_2 = I(\underbrace{ \frac{1}{2} \,\, \cdot \,\, \frac{1}{6} }_{ \text{同时发生的概率} })</div>
+
+  <p class="mt-6">联立上面的方程，可以得到 <span class="math-content">I</span> 的重要性质：</p>
+
+  <div class="math-content" data-display="1">
+    \begin{aligned} I( \, \frac{1}{2} \, ) + I( \, \frac{1}{6} \, ) &= I( \, \frac{1}{2} \, \cdot \, \frac{1}{6} \, ) \\ \\ 即 \qquad I(p_1) + I(p_2) &= I(p_1 \cdot p_2) \end{aligned}
+  </div>
+
+  <p class="mt-6">想想看谁有这种乘法转加法的性质，答案呼之欲出，<span class="math-content">I</span> 就是对数函数：</p>
+
+  <div class="math-content" data-display="1">I(p) = \log_b ( p )</div>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">DeepSeek</span>
+    <span>在更严肃的证明中我们还需要证明这是唯一解，这本质上是柯西函数方程的一种形式。在合理的连续性或单调性假设下，满足这个关系的函数只能是对数函数</span>
+  </div>
+
+  <p class="mt-6">其中对数的底将决定信息量的量纲单位，通常取 2，对应单位就是 bit，不同的底计算得到的信息量本质上也就是换一个常数项系数而已，可以通过对数函数的换底公式证明：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} \text{引入换底公式} \quad \log_b (x) &= \frac{1}{\log_a (b)} \cdot \log_a (x) \\ \\ \text{所以给信息量计算换底可得} \quad \log_b ( p ) &= \frac{1}{\log_a b} \cdot \log_a p \\ \\ \text{显然 a 和 b 是确定的常数, 所以} \quad K &= \frac{1}{\log_a b} \quad \text{是一个常数项} \\ \\ 即 \quad \log_b(p) &= K \,\, \cdot \,\, \log_a (p) \\ \\ \text{也就是说换底只是换个系数、} & \text{或者说换个单位量纲而已} \end{aligned}</div>
+
+  <p class="mt-6">注意到当概率 <span class="math-content">p &lt; 1</span> 时，对数函数的值是负数，为了让信息量是一个正数量纲以符合我们对信息的认知，引入一个负号即可，至此我们得到了信息论的第一条公式，自信息的定义式（self-information），可堪优雅：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} I(p) &= - \log_2 ( p ) = \log_2 ( \frac{1}{p} ) \quad \text{单位为 bit} \end{aligned}</div>
+
+  <p class="mt-6">基于自信息定义，带入之前给的几个例子事件，计算它们的信息量：</p>
+
+  <div class="mt-6 grid grid-cols-2 gap-4">
+    <div class="border border-stone-300 bg-stone-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-stone-500">抛硬币, 正面和反面</span>
+        <span class="text-xs text-stone-500">等概率分布</span>
+      </div>
+      <p class="text-xl text-stone-700 my-0">概率各为 <strong>0.5</strong></p>
+      <div class="mt-2 flex items-baseline gap-3 border-t border-stone-200 pt-2">
+        <span class="text-xs text-stone-500">计算</span>
+        <span class="font-serif text-base text-stone-800"><span class="math-content">I(0.5) = \log_2(2)</span></span>
+      </div>
+      <div class="flex items-baseline gap-3">
+        <span class="text-xs text-stone-500">信息量</span>
+        <span class="font-serif text-lg text-stone-800"><span class="math-content">= \, 1 \,\, bit</span></span>
+      </div>
+    </div>
+    <div class="border border-amber-400 bg-amber-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-amber-700">抛骰子，1 ~ 6 点数</span>
+        <span class="text-xs text-amber-700">等概率分布</span>
+      </div>
+      <p class="text-xl text-stone-700 my-0">1 ~ 6 点，概率各为 <strong>1/6</strong></p>
+      <div class="mt-2 flex items-baseline gap-3 border-t border-amber-200 pt-2">
+        <span class="text-xs text-amber-700">计算</span>
+        <span class="font-serif text-base text-stone-800"><span class="math-content">I(1/6) = \log_2(6)</span></span>
+      </div>
+      <div class="flex items-baseline gap-3">
+        <span class="text-xs text-amber-700">信息量</span>
+        <span class="font-serif text-lg text-amber-700"><span class="math-content">\approx \, 2.585 \,\, bit</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <div class="border border-indigo-400 bg-indigo-50 px-6 py-5 flex flex-col gap-3">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-indigo-700">独立事件 · 抛硬币然后抛骰子</span>
+        <span class="text-xs text-indigo-700">联合独立事件</span>
+      </div>
+      <p class="text-xl text-stone-700 my-0">抛硬币出现<strong>正面</strong> <span class="text-red-500">且</span> 抛骰子出现 <strong>1 点</strong></p>
+      <div class="grid grid-cols-3 gap-6 border-t border-indigo-200 pt-3">
+        <div class="flex flex-col gap-1">
+          <span class="text-xs mb-2 text-indigo-700">联合概率计算</span>
+          <span class="font-serif text-lg text-stone-800"><span class="math-content">P = \frac{1}{2} \cdot \frac{1}{6} = \frac{1}{12}</span></span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-xs mb-2 text-indigo-700">由可加性计算</span>
+          <span class="font-serif text-lg text-stone-800"><span class="math-content">\begin{aligned} I &= \log_2(2) + \log_2(6) \\ &\approx 1 + 2.585 \end{aligned}</span></span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-xs mb-2 text-indigo-700">由自信息定义计算</span>
+          <span class="font-serif text-lg text-indigo-700"><span class="math-content">\begin{aligned} I &= \log_2(12) \\ &\approx 3.585 \,\, bit \end{aligned}</span></span>
+        </div>
+      </div>
+      <div class="text-xs text-stone-600 leading-relaxed border-t border-indigo-200 pt-3">
+        联合事件的信息量恰好等于两个独立事件信息量之和（<code>1 + 2.585</code>），这正是我们在假设的可加性 <span class="math-content">I(p_1) + I(p_2) = I(p_1 \cdot p_2)</span> 说明对信息量的定义是自洽的。
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-6">但是我很不安，因为出现了小数 bit，这与平时开发的直觉完全不同，信息论里的 bit 比计算机存储中的 bit 的含义要更为深刻。</p>
+
+  <!-- ====== 信息熵 (香农熵) ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">信息熵 (香农熵)</h1>
+
+  <p class="mt-6">信息熵即事件发生时的平均信息量。</p>
+
+  <p class="mt-6">在我们前面讨论抛骰子中：每次抛骰子得到点数的概率是均匀分布的，6 种点数的概率都是 1/6，因此对于连续的若干次抛骰子试验中，单次事件的信息量就等于平均信息量，为 <span class="math-content">\log_2(6) \approx 2.585 \, bit</span>，此时可以说抛掷骰子的信息熵为 2.585 bit。</p>
+
+  <p class="mt-6">但是对于非等概率的分布来说，就必须考虑不同事件发生的概率了，以抛掷一个不均匀的硬币为例，引入这几个概念辨析：</p>
+
+  <table class="w-full border-collapse my-6 text-sm">
+    <thead>
+      <tr>
+        <th class="border border-gray-300 bg-gray-100 font-semibold px-4 py-3 w-32 text-center">概念</th>
+        <th class="border border-gray-300 bg-gray-100 font-semibold px-4 py-3 text-left">含义</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3 w-32">试验</td>
+        <td class="border border-gray-300 px-4 py-3">抛一枚不公平硬币（正面概率 <code>0.1</code>，反面概率 <code>0.9</code>）</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3 w-32">基本事件</td>
+        <td class="border border-gray-300 px-4 py-3">两个：<strong>正</strong> 和 <strong>反</strong></td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3 w-32">随机变量 <span class="math-content">X</span></td>
+        <td class="border border-gray-300 px-4 py-3"><span class="math-content">P(\text{正}) = 0.1, \quad P(\text{反}) = 0.9</span><br/>描述的是事件的概率分布，对所有事件发生的概率求和为 1</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3 w-32">自信息</td>
+        <td class="border border-gray-300 px-4 py-3">
+          单个特定的事件 <span class="math-content">x</span> 发生时，所蕴含的信息量，比如此处正面和反面：<br/>
+          正面: <span class="math-content">I(\text{正}) = -\log_2(0.1) \approx 3.322 \, bit</span><br/>
+          反面: <span class="math-content">I(\text{反}) = -\log_2(0.9) \approx 0.152 \, bit</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3 w-32">信息熵 (香农熵)</td>
+        <td class="border border-gray-300 px-4 py-3">试验若干次后，单次试验结果的平均蕴含的信息量（数学期望）</td>
+      </tr>
+    </tbody>
+    <caption class="caption-bottom text-center px-3 pr-12 py-2 text-stone-700">抛掷不公平硬币试验中的核心概念辨析</caption>
+  </table>
+
+  <p class="mt-6">很显然，比如抛掷 1000 次时，以数学期望来说，其中会有 100 次正面和 900 次反面，所以平均每次抛掷的信息量就是:</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} I_\text{正面} &= -\log_2(0.1) \approx 3.322 \quad bit \\ I_\text{反面} &= -\log_2(0.9) \approx 0.152 \quad bit \\ \\ 平均每次抛掷的信息量 &= \frac{100 \cdot 3.322 + 900 \cdot 0.152}{1000} = 0.469 \quad bit \end{aligned}</div>
+
+  <p class="mt-6">信息熵就是此处平均抛掷的信息量，用于衡量随机变量 X 的平均信息量，上述是一次具体的计算，显然可以注意到平均信息量的计算就是对所有事件信息量按概率的加权平均，至此可以得到信息论的第二条核心公式<strong>信息熵 (Entropy)</strong>：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} H(X) &= \quad \sum_{i=1}^{n} p_i \cdot I(p_i) \\ &= - \sum_{i=1}^{n} p_i \cdot \log_2(p_i) \end{aligned}</div>
+
+  <p class="mt-6">熵这个词代表 "混乱"，而信息熵则表示随机变量 X 的平均信息量，也就是说信息熵越小，随机变量 X 的不确定性就越小，反之则说明随机变量 X 的不确定性越大，即更混乱。</p>
+
+  <p class="mt-6">想象一下对于前面抛掷硬币的例子来说，如果是一个均匀硬币，每次正反都是对半 1/2，抛一千次可以得到一个序列 <code>正反正反正反正反正反正反正....</code> 一个正反两个字极度混乱的序列，但是对于前的那个正面概率是 0.1 反面是 0.9 的概率来说，它的序列明显就有序的多 <code>反反反反反反反正反反反反反反反反反正反反反...</code>，大部分是反 —— 信息熵则以加权平均计算每个事件自信息的方式，给出了这种 "混乱程度" 的统计学表征，故得名信息熵。</p>
+
+  <p class="mt-6">至此，可以给出信息熵 <span class="math-content">H(X)</span> 的定义：对随机变量 <span class="math-content">X</span> 混乱程度，或者说不确定性的度量，其计算方式是将所有事件信息量按概率进行加权平均，继续带入对比几个例子来感受一下：</p>
+
+  <div class="mt-6 grid grid-cols-3 gap-4">
+    <div class="border border-stone-300 bg-stone-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-stone-500">公平硬币</span>
+        <span class="text-xs text-stone-500">最不确定</span>
+      </div>
+      <p class="text-base text-stone-700 my-0"><span class="math-content">P(\text{正}) = P(\text{反}) = 0.5</span></p>
+      <div class="mt-2 flex flex-col gap-1 border-t border-stone-200 pt-2">
+        <span class="text-xs text-stone-500">计算</span>
+        <span class="font-serif text-sm text-stone-800"><span class="math-content">H = -(0.5\log_2 0.5 + 0.5\log_2 0.5)</span></span>
+      </div>
+      <div class="flex items-baseline gap-3">
+        <span class="text-xs text-stone-500">熵</span>
+        <span class="font-serif text-lg text-stone-800"><span class="math-content">= \, 1 \,\, bit</span></span>
+      </div>
+    </div>
+    <div class="border border-stone-300 bg-stone-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-stone-500">不公平硬币</span>
+        <span class="text-xs text-stone-500">分布偏斜</span>
+      </div>
+      <p class="text-base text-stone-700 my-0"><span class="math-content">P(\text{正}) = 0.1, P(\text{反}) = 0.9</span></p>
+      <div class="mt-2 flex flex-col gap-1 border-t border-stone-200 pt-2">
+        <span class="text-xs text-stone-500">计算</span>
+        <span class="font-serif text-sm text-stone-800"><span class="math-content">H = -(0.1\log_2 0.1 + 0.9\log_2 0.9)</span></span>
+      </div>
+      <div class="flex items-baseline gap-3">
+        <span class="text-xs text-stone-500">熵</span>
+        <span class="font-serif text-lg text-stone-800"><span class="math-content">\approx \, 0.469 \,\, bit</span></span>
+      </div>
+    </div>
+    <div class="border border-amber-400 bg-amber-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-amber-700">投掷猫</span>
+        <span class="text-xs text-amber-700">完全确定</span>
+      </div>
+      <p class="text-base text-stone-700 my-0"><span class="math-content">P(\text{正}) = 1, P(\text{反}) = 0</span></p>
+      <div class="mt-2 flex flex-col gap-1 border-t border-amber-200 pt-2">
+        <span class="text-xs text-amber-700">计算</span>
+        <span class="font-serif text-sm text-stone-800"><span class="math-content">H = -(1 \cdot \log_2 1 + 0 \cdot \log_2 0)</span></span>
+      </div>
+      <div class="flex items-baseline gap-3">
+        <span class="text-xs text-amber-700">熵</span>
+        <span class="font-serif text-lg text-amber-700"><span class="math-content">= \, 0 \,\, bit</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">DIRECT</span>
+    <span>这里投掷猫是玩猫总能四脚着地的梗，意思是如果一个试验只有一种结果，那么其信息熵为 0，对应每次试验的信息量为 0，也就是毫无悬念根本不需要解释。</span>
+  </div>
+
+  <!-- == 讨论：等概率分布的信息熵 == -->
+  <h2 class="mt-12 mb-4 text-2xl font-bold text-stone-900">讨论：等概率分布的信息熵</h2>
+
+  <p class="mt-6">我们已经知道了信息熵的概念，现在回过来考察一下前面频繁提到的抛骰子这类等概率分布的信息熵，对于这类分布只有一个唯一特征那就是 "有多少个 case"，比如均匀骰子就是 6 个 case，均匀硬币就是 2 case，此时试验一次命中某个子 case 的概率为 <span class="math-content">1/n</span>，对应信息量 <span class="math-content">I(1/n)</span> 为：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} I(1/n) &= -\log_2(\frac{1}{n}) = \log_2(n) \quad 某个子 \, case \, 的信息量 \end{aligned}</div>
+
+  <p class="mt-6">特别地、当把 <span class="math-content">1/n</span> 带入信息熵 <span class="math-content">H(X)</span> 进行计算，可以发现信息熵退化为单次的抛掷的信息量了，完整推导：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} H(X) &= \quad \sum_{i=1}^{n} p_i \cdot I(p_i) \\ &= - \sum_{i=1}^{n} p_i \cdot \log_2(p_i) \quad 等概率分布 \, p_i \, 就是 \frac{1}{n} \\ &= \quad \sum_{i=1}^{n} \frac{1}{n} \cdot I(\frac{1}{n}) \\ &= \quad \frac{1}{n} \cdot I(\frac{1}{n}) + \frac{1}{n} \cdot I(\frac{1}{n}) + ... \quad 展开求和 \, n \, 个 \\ &= \quad I(\frac{1}{n}) \cdot ( \underbrace{ \frac{1}{n} + \frac{1}{n} + \frac{1}{n} + ... }_{ \text{注意到一共 n 个} } ) \quad 提取公因子 \\ &= \quad I(\frac{1}{n}) \cdot 1 = -\log_2(\frac{1}{n}) \\ \\ &= \quad \log_2(n) \end{aligned}</div>
+
+  <!-- == 讨论：均匀程度 == -->
+  <h2 class="mt-12 mb-4 text-2xl font-bold text-stone-900">讨论：均匀程度</h2>
+
+  <p class="mt-6">到目前为止本文对概率分布用了很多修辞方式，最主要的就是 "混乱程度" 和 "不确定性"，这里给出一个更全局的视角：<strong>信息熵表征了概率分布的均匀程度</strong>，配合信息熵的定义：</p>
+
+  <div class="math-content" data-display="1">H(X) = - \sum_{i=1}^{n} p_i \cdot \log_2(p_i)</div>
+
+  <p class="mt-6">在这个定义的基础上我们就能回答为什么两种不同硬币抛掷的序列所得到的 <code>正反正反正反正反正反正反正....</code> 会比 <code>反反反反反反反正反反反反反反反反反正反反反...</code> 更混乱，因为前者的信息熵更大，因为熵表征了其中概率分布的均匀性：</p>
+
+  <div class="mt-6 grid grid-cols-2 gap-4">
+    <div class="border border-stone-300 bg-stone-50 px-5 py-4 flex flex-col gap-2">
+      <span class="text-xl mt-4 text-center font-serif font-semibold tracking-wider text-stone-800">分布越均匀，熵越大</span>
+      <p class="text-sm my-0 text-stone-700 leading-relaxed">数学上可以证明当且仅当所有 <span class="math-content">p_i</span> 取 1/n 时，H(X) 达到唯一最大值，意味着对于一个概率分布来说最混乱最难以预料的情况就是平均分布，不确定性最高难以预测。</p>
+    </div>
+    <div class="border border-stone-300 bg-stone-50 px-5 py-4 flex flex-col gap-2">
+      <span class="text-xl mt-4 text-center font-serif font-semibold tracking-wider text-stone-800">分布越尖锐，熵越小</span>
+      <p class="text-sm my-0 text-stone-700 leading-relaxed">从前面的讨论也可以轻易得到，H(X) 的定义就是平均信息量，那么什么时候毫无悬念呢？那就是对应某个事件 <span class="math-content">p_i</span> 概率为 1，其他均为 0 的情况，此时说明不确定性消失，即完全确定。</p>
+    </div>
+  </div>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">Claude:</span>
+    <span>关于这里平均分布对应信息熵的极大值的证明可搜拉格朗日乘子法证明信息熵极大值获取，不展开</span>
+  </div>
+
+  <!-- 信息熵从尖锐到均匀的 SVG 图 -->
+  <figure class="mt-8">
+    <svg viewBox="0 0 720 300" role="img" class="w-full h-auto border border-stone-200 rounded bg-white" font-family="Georgia, serif">
+      <text x="360" y="26" text-anchor="middle" font-size="16" fill="#1c1917" font-weight="600">信息熵 H(X) 表征了分布的均匀程度：从尖锐 → 均匀</text>
+      <text x="360" y="44" text-anchor="middle" font-size="11" fill="#78716c" font-style="italic">以抛掷不同质地的骰子为例，都是 6 面，仅改变概率分布</text>
+      <!-- 子图 1：尖锐 -->
+      <g>
+        <text x="130" y="78" text-anchor="middle" font-size="12" fill="#44403c" font-weight="600">尖锐分布</text>
+        <text x="130" y="94" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">毫无悬念</text>
+        <line x1="50" y1="230" x2="210" y2="230" stroke="#44403c" stroke-width="1.2"/>
+        <rect x="60" y="229" width="16" height="1" fill="#d6d3d1" stroke="#a8a29e"/>
+        <rect x="84" y="229" width="16" height="1" fill="#d6d3d1" stroke="#a8a29e"/>
+        <rect x="108" y="115" width="16" height="115" fill="#b45309" stroke="#78350f"/>
+        <rect x="132" y="229" width="16" height="1" fill="#d6d3d1" stroke="#a8a29e"/>
+        <rect x="156" y="229" width="16" height="1" fill="#d6d3d1" stroke="#a8a29e"/>
+        <rect x="180" y="229" width="16" height="1" fill="#d6d3d1" stroke="#a8a29e"/>
+        <text x="116" y="109" text-anchor="middle" font-size="10" fill="#92400e" font-weight="600">1.0</text>
+        <text x="130" y="245" text-anchor="middle" font-size="10" fill="#78716c">p = [0, 0, 1, 0, 0, 0]</text>
+        <text x="130" y="270" text-anchor="middle" font-size="13" fill="#1c1917" font-weight="600">H(X) = 0 bit</text>
+        <text x="130" y="285" text-anchor="middle" font-size="10" fill="#57534e">这还是骰子吗</text>
+      </g>
+      <line x1="230" y1="70" x2="230" y2="275" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      <!-- 子图 2：偏态 -->
+      <g>
+        <text x="360" y="78" text-anchor="middle" font-size="12" fill="#44403c" font-weight="600">偏态分布</text>
+        <text x="360" y="94" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">某些类别更可能出现</text>
+        <line x1="280" y1="230" x2="440" y2="230" stroke="#44403c" stroke-width="1.2"/>
+        <rect x="290" y="115" width="16" height="115" fill="#b45309" stroke="#78350f"/>
+        <rect x="314" y="184" width="16" height="46" fill="#fed7aa" stroke="#b45309"/>
+        <rect x="338" y="196" width="16" height="34" fill="#fed7aa" stroke="#b45309"/>
+        <rect x="362" y="212" width="16" height="18" fill="#fef3c7" stroke="#b45309"/>
+        <rect x="386" y="218" width="16" height="12" fill="#fef3c7" stroke="#b45309"/>
+        <rect x="410" y="225" width="16" height="5" fill="#fef3c7" stroke="#b45309"/>
+        <text x="298" y="109" text-anchor="middle" font-size="10" fill="#92400e" font-weight="600">0.5</text>
+        <text x="360" y="245" text-anchor="middle" font-size="10" fill="#78716c">p ≈ [0.5, 0.2, 0.15, 0.08, 0.05, 0.02]</text>
+        <text x="360" y="270" text-anchor="middle" font-size="13" fill="#1c1917" font-weight="600">H(X) ≈ 1.85 bit</text>
+        <text x="360" y="285" text-anchor="middle" font-size="10" fill="#57534e">你这骰子有吸铁石</text>
+      </g>
+      <line x1="460" y1="70" x2="460" y2="275" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      <!-- 子图 3：均匀 -->
+      <g>
+        <text x="590" y="78" text-anchor="middle" font-size="12" fill="#44403c" font-weight="600">均匀分布</text>
+        <text x="590" y="94" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">公平骰子 · 最混乱</text>
+        <line x1="510" y1="230" x2="670" y2="230" stroke="#44403c" stroke-width="1.2"/>
+        <rect x="520" y="170" width="16" height="60" fill="#dbeafe" stroke="#1e40af"/>
+        <rect x="544" y="170" width="16" height="60" fill="#dbeafe" stroke="#1e40af"/>
+        <rect x="568" y="170" width="16" height="60" fill="#dbeafe" stroke="#1e40af"/>
+        <rect x="592" y="170" width="16" height="60" fill="#dbeafe" stroke="#1e40af"/>
+        <rect x="616" y="170" width="16" height="60" fill="#dbeafe" stroke="#1e40af"/>
+        <rect x="640" y="170" width="16" height="60" fill="#dbeafe" stroke="#1e40af"/>
+        <text x="590" y="164" text-anchor="middle" font-size="10" fill="#1e3a8a" font-weight="600">各为 1/6 ≈ 0.167</text>
+        <text x="590" y="245" text-anchor="middle" font-size="10" fill="#78716c">p = [1/6, 1/6, 1/6, 1/6, 1/6, 1/6]</text>
+        <text x="590" y="270" text-anchor="middle" font-size="13" fill="#1e3a8a" font-weight="600">H(X) ≈ 2.585 bit</text>
+        <text x="590" y="285" text-anchor="middle" font-size="10" fill="#57534e">标准 6 面均匀骰 熵最大</text>
+      </g>
+    </svg>
+    <figcaption class="mt-2 text-sm text-stone-500 text-center italic">分布越接近均匀，信息熵越大；分布越尖锐，信息熵越小；</figcaption>
+  </figure>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">Direct</span>
+    <span>像这里 [0, 0, 1, 0, 0, 0] 这样的没有悬念的分布，通常还称作 one-hot 分布</span>
+  </div>
+
+  <!-- ====== 交叉熵 ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">交叉熵</h1>
+
+  <p class="mt-6">然而，有一个悬而未决的问题：</p>
+  <p class="mt-6">信息熵理论上要求我们明确给出 <span class="math-content">P</span> 的分布的情况下才能算出其信息熵，然而世界上你很难知道某个先验 <span class="math-content">P</span> 的概率分布（比方说某支股票上涨的概率）；</p>
+  <p class="mt-6">那么必然的，当你只能给出一个猜的、近似的分布 <span class="math-content">Q</span> 那么此时，用它去计算信息熵时，得到的东西是什么？ 答：你得到了交叉熵。</p>
+
+  <p class="mt-6">对于给定的两个分布 <span class="math-content">P_\text{真实}</span> 和 <span class="math-content">Q_\text{猜的}</span> 来说，交叉熵 <span class="math-content">H(P, Q)</span> 衡量的是：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} H(P, Q) \quad &= \quad 使用分布 \, Q \, 来计算分布 \, P \, 的平均信息量 \\ \\ \quad &= \quad \,\, ? \end{aligned}</div>
+
+  <p class="mt-6">要如何展开这里问号里的具体式子呢？先来回顾下依据给定分布信息熵的计算方式：</p>
+
+  <div class="math-content" data-display="1">\quad H(P) = - \sum_{i=1}^{n} p_i \cdot \log_2(p_i)</div>
+
+  <h2 class="mt-12 mb-4 text-2xl font-bold text-stone-900">H(P, P)</h2>
+
+  <p class="mt-6">从特例入手，注意到，当 <span class="math-content">P = Q</span> 时 <span class="math-content">H(P, Q)</span> 可以表述为 <span class="math-content">H(P, P)</span>，可得：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} H(P, P) \quad &= \quad 使用分布 \, P \, 来计算分布 \, P \, 的平均信息量 \\ \\ 显然 \quad H (P, P) \quad &= \quad H(P) \\ \\ 即 \quad H(P, P) \quad &= \underbrace{ - \sum_{i=1}^{n} p_i \cdot \log_2(p_i) }_{\substack{ 其中一个 \, p \, 换成 \, q \, 就成了 \, ? \\ 是前面那个还是后面那个? }} \end{aligned}</div>
+
+  <p class="mt-6">我们还没得到具体的 <span class="math-content">H(P, Q)</span> 公式，但我这里通过构造特例能得到他的一个重要性质即当 <span class="math-content">P = Q</span> 时他必须能完成退化，使得 <span class="math-content">H(P, P) = H(P)</span></p>
+
+  <h2 class="mt-12 mb-4 text-2xl font-bold text-stone-900">从 H(P, P) 到 H(P, Q)</h2>
+
+  <p class="mt-6">然而，这立即引起了我的不安，<span class="math-content">H(P, P)</span> 展开如下，其中两个 <span class="math-content">p_i</span> 值得玩味，可以肯定的是把其中一个换成 <span class="math-content">q_i</span> 我们就能给出 <span class="math-content">H(P, Q)</span> 的完整定义：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} H(P, P) \quad &= \quad - \sum_{i=1}^{n} \underbrace{p_i}_{\substack{\text{位置 A} \\ \text{事件概率}}} \cdot \log_2( \, \underbrace{p_i}_{\substack{\text{位置 B} \\ \text{事件信息量}}} \, ) \\ \\ H(P, Q) \quad &= \quad - \sum_{i=1}^{n} \quad A \quad \cdot \log_2( \, B \, ) \end{aligned}</div>
+
+  <p class="mt-6">然而在我们前面的讨论中，P 和 Q 代表着 <span class="math-content">P_\text{真实}</span> 和 <span class="math-content">Q_\text{猜的}</span>:</p>
+
+  <div class="mt-6 grid grid-cols-2 gap-4">
+    <div class="border border-stone-300 bg-stone-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-stone-500">位置 A · 事件发生概率</span>
+        <span class="text-xs text-stone-500">由真实分布 P 决定</span>
+      </div>
+      <p class="text-base text-stone-700 my-0">事件实际发生的概率，只能由<strong>真实分布 <span class="math-content">P</span></strong> 决定，所以外层加权权重仍是 <span class="math-content">p_i</span> 不能变，我们无法改变真实世界的概率发生</p>
+    </div>
+    <div class="border border-amber-400 bg-amber-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-amber-700">位置 B · 信息量算法</span>
+        <span class="text-xs text-amber-700">由我们猜的 Q 决定</span>
+      </div>
+      <p class="text-base text-stone-700 my-0">用什么去估算每个事件的信息量，只能用<strong>猜测分布 <span class="math-content">Q</span></strong>，<span class="math-content">\log</span> 里的 <span class="math-content">p_i</span> 替换为 <span class="math-content">q_i</span>，猜错时就会带来额外的信息量增加</p>
+    </div>
+  </div>
+
+  <p class="mt-4">位置 A 是不能变的，只有改变位置 B 的时候，我们猜错时才能带来额外的信息量增加，对应就是我们成功使用分布 Q 来计算分布 P 的平均信息量出现增加，至此，我的不安解除了，得到：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} H(P, Q) \quad &= \quad 使用分布 \, Q \, 来计算分布 \, P \, 的平均信息量 \\ \\ \quad &= \quad - \sum_{i=1}^{n} p_i \cdot \log_2(q_i) \quad \checkmark \end{aligned}</div>
+
+  <p class="mt-6">最后，我们就得到了信息论的第三条核心公式 —— <strong>交叉熵 (Cross-Entropy)</strong>：</p>
+
+  <div class="math-content" data-display="1">H(P, Q) = - \sum_{i=1}^{n} p_i \cdot \log_2(q_i)</div>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">Claude:</span>
+    <span>交叉熵之"交叉"，正在于此：外层权重来自真实分布 <span class="math-content">P</span>，<span class="math-content">\log</span> 里却来自猜测分布 <span class="math-content">Q</span>，两个分布在同一条公式里彼此交错。当 <span class="math-content">Q</span> 越接近 <span class="math-content">P</span>，交叉熵就越接近 <span class="math-content">P</span> 自己的信息熵 <span class="math-content">H(P)</span>；当 <span class="math-content">Q</span> 偏离 <span class="math-content">P</span>，交叉熵就比 <span class="math-content">H(P)</span> 更大，多出来的那部分恰好刻画了"猜错"的代价。</span>
+  </div>
+
+  <!-- 交叉熵的「交叉」SVG 图 -->
+  <figure class="mt-8">
+    <svg viewBox="0 0 720 320" role="img" class="w-full h-auto border border-stone-200 rounded bg-white" font-family="Georgia, serif">
+      <text x="360" y="26" text-anchor="middle" font-size="16" fill="#1c1917" font-weight="600">交叉熵的「交叉」：两条分布在同一个求和里彼此错位</text>
+      <text x="360" y="44" text-anchor="middle" font-size="11" fill="#78716c" font-style="italic">外层权重 pᵢ 来自真实分布 P（蓝），log 里的 qᵢ 来自猜测分布 Q（橙）</text>
+      <!-- 左半：两分布并排 -->
+      <g>
+        <text x="200" y="76" text-anchor="middle" font-size="12" fill="#44403c" font-weight="600">两个分布的柱状对比（4 个类别）</text>
+        <line x1="70" y1="230" x2="330" y2="230" stroke="#44403c" stroke-width="1.2"/>
+        <rect x="85" y="130" width="22" height="100" fill="#1e3a8a" opacity="0.85"/>
+        <rect x="107" y="170" width="22" height="60" fill="#b45309" opacity="0.7"/>
+        <text x="107" y="248" text-anchor="middle" font-size="10" fill="#1c1917">类 1</text>
+        <rect x="150" y="180" width="22" height="50" fill="#1e3a8a" opacity="0.85"/>
+        <rect x="172" y="170" width="22" height="60" fill="#b45309" opacity="0.7"/>
+        <text x="172" y="248" text-anchor="middle" font-size="10" fill="#1c1917">类 2</text>
+        <rect x="215" y="200" width="22" height="30" fill="#1e3a8a" opacity="0.85"/>
+        <rect x="237" y="180" width="22" height="50" fill="#b45309" opacity="0.7"/>
+        <text x="237" y="248" text-anchor="middle" font-size="10" fill="#1c1917">类 3</text>
+        <rect x="280" y="210" width="22" height="20" fill="#1e3a8a" opacity="0.85"/>
+        <rect x="302" y="200" width="22" height="30" fill="#b45309" opacity="0.7"/>
+        <text x="302" y="248" text-anchor="middle" font-size="10" fill="#1c1917">类 4</text>
+        <rect x="90" y="265" width="14" height="10" fill="#1e3a8a" opacity="0.85"/>
+        <text x="110" y="275" font-size="11" fill="#1c1917">P 真实分布（决定权重）</text>
+        <rect x="90" y="285" width="14" height="10" fill="#b45309" opacity="0.7"/>
+        <text x="110" y="295" font-size="11" fill="#1c1917">Q 猜测分布（决定 log 里的值）</text>
+      </g>
+      <line x1="360" y1="70" x2="360" y2="310" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      <!-- 右半：逐项计算表 -->
+      <g>
+        <text x="540" y="76" text-anchor="middle" font-size="12" fill="#44403c" font-weight="600">交叉熵按项累加</text>
+        <text x="540" y="92" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">H(P, Q) = -∑ pᵢ · log₂ qᵢ</text>
+        <g font-size="10" fill="#57534e">
+          <text x="405" y="115">类别 i</text>
+          <text x="455" y="115" fill="#1e3a8a" font-weight="600">pᵢ</text>
+          <text x="500" y="115" fill="#b45309" font-weight="600">qᵢ</text>
+          <text x="545" y="115">-log₂ qᵢ</text>
+          <text x="645" y="115" text-anchor="end">pᵢ·(-log₂ qᵢ)</text>
+        </g>
+        <line x1="395" y1="120" x2="700" y2="120" stroke="#a8a29e" stroke-width="0.8"/>
+        <g font-size="10" fill="#1c1917">
+          <text x="405" y="140">1</text><text x="455" y="140" fill="#1e3a8a">0.50</text><text x="500" y="140" fill="#b45309">0.30</text><text x="560" y="140" text-anchor="middle">1.737</text><text x="645" y="140" text-anchor="end" font-weight="600">0.868</text>
+          <text x="405" y="160">2</text><text x="455" y="160" fill="#1e3a8a">0.25</text><text x="500" y="160" fill="#b45309">0.30</text><text x="560" y="160" text-anchor="middle">1.737</text><text x="645" y="160" text-anchor="end" font-weight="600">0.434</text>
+          <text x="405" y="180">3</text><text x="455" y="180" fill="#1e3a8a">0.15</text><text x="500" y="180" fill="#b45309">0.25</text><text x="560" y="180" text-anchor="middle">2.000</text><text x="645" y="180" text-anchor="end" font-weight="600">0.300</text>
+          <text x="405" y="200">4</text><text x="455" y="200" fill="#1e3a8a">0.10</text><text x="500" y="200" fill="#b45309">0.15</text><text x="560" y="200" text-anchor="middle">2.737</text><text x="645" y="200" text-anchor="end" font-weight="600">0.274</text>
+        </g>
+        <line x1="395" y1="210" x2="700" y2="210" stroke="#a8a29e" stroke-width="0.8"/>
+        <text x="540" y="228" text-anchor="end" font-size="11" fill="#1c1917" font-weight="600">H(P, Q) =</text>
+        <text x="645" y="228" text-anchor="end" font-size="13" fill="#b45309" font-weight="700">1.876</text>
+        <text x="670" y="228" font-size="11" fill="#78716c">bit</text>
+        <text x="540" y="252" text-anchor="end" font-size="11" fill="#1c1917">H(P) =</text>
+        <text x="645" y="252" text-anchor="end" font-size="12" fill="#1e3a8a" font-weight="600">1.743</text>
+        <text x="670" y="252" font-size="11" fill="#78716c">bit</text>
+        <text x="540" y="276" text-anchor="end" font-size="11" fill="#1c1917">多出 D_KL(P‖Q) =</text>
+        <text x="645" y="276" text-anchor="end" font-size="12" fill="#9d174d" font-weight="600">0.133</text>
+        <text x="670" y="276" font-size="11" fill="#78716c">bit</text>
+        <text x="545" y="300" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">多出来的部分就是「猜错的代价」</text>
+      </g>
+    </svg>
+    <figcaption class="mt-2 text-sm text-stone-500 text-center italic">蓝柱决定加权权重（真实），橙柱决定 log 里的值（猜测）；当 Q 偏离 P 时，交叉熵就大于 H(P)</figcaption>
+  </figure>
+
+  <table class="w-full border-collapse text-sm my-6">
+    <thead>
+      <tr>
+        <th class="border border-indigo-200 bg-white/60 font-semibold px-3 py-2 text-left">公式</th>
+        <th class="border border-indigo-200 bg-white/60 font-semibold px-3 py-2 text-left">含义</th>
+        <th class="border border-indigo-200 bg-white/60 font-semibold px-3 py-2 text-left">是否合理</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="border border-indigo-200 px-3 py-2 font-serif"><span class="math-content">-\sum p_i \log_2 q_i</span></td>
+        <td class="border border-indigo-200 px-3 py-2">事件按真实 <span class="math-content">P</span> 发生，但我们只能用猜的 <span class="math-content">Q</span> 来估算信息量</td>
+        <td class="border border-indigo-200 px-3 py-2 text-indigo-700">✅ 符合现实场景</td>
+      </tr>
+      <tr>
+        <td class="border border-indigo-200 px-3 py-2 font-serif"><span class="math-content">-\sum q_i \log_2 p_i</span></td>
+        <td class="border border-indigo-200 px-3 py-2">事件按我们猜的 <span class="math-content">Q</span> 发生，但用上帝视角的 <span class="math-content">P</span> 算信息量</td>
+        <td class="border border-indigo-200 px-3 py-2 text-stone-500">❌ 现实里不存在这种情况</td>
+      </tr>
+    </tbody>
+    <caption class="caption-bottom text-center px-3 pr-12 py-2 text-stone-700">两种公式形态的物理含义对比，后者的构造不具备物理意义</caption>
+  </table>
+
+  <!-- ====== KL 散度 ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">KL 散度</h1>
+
+  <p class="mt-6">当得到交叉熵公式后，一个很自然的想法是，在分布 P 上用分布 Q 猜错的代价就可以表达为计算 <span class="math-content">H(P, Q)</span> 和 <span class="math-content">H(P)</span> 的差值:</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} 差值 \quad &= \quad H(P, Q) \,\, - \,\, H(P) \\ \\ &= \quad \underbrace{- \sum_{i=1}^{n} p_i \cdot \log_2(q_i)}_{\text{交叉熵}} \,\, - \,\, \underbrace{\bigg( - \sum_{i=1}^{n} p_i \cdot \log_2(p_i) \bigg)}_{\text{真实信息熵}} \\ \\ &= \quad \sum_{i=1}^{n} \left( \, p_i \cdot \log_2(p_i) - p_i \cdot \log_2(q_i) \, \right) \qquad 合并求和 \\ \\ &= \quad \sum_{i=1}^{n} p_i \cdot \log_2 \frac{p_i}{q_i} \end{aligned}</div>
+
+  <p class="mt-6">在数学上这称为 KL 散度，其中的 K 和 L 分别是两位提出者的姓氏首字母 <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence" class="text-indigo-700 hover:underline" target="_blank" rel="noreferrer">Kullback-Leibler Divergence</a>，用来衡量 <span class="math-content">P</span> 和 <span class="math-content">Q</span> 的差异程度，完整记作 <span class="math-content">D_{KL}(P \, \| \, Q)</span> 可以直接缩写为 <span class="math-content">D_{KL}</span>：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} D_{KL}(P \, \| \, Q) = \sum_{i=1}^{n} p_i \cdot \log_2 \frac{p_i}{q_i} \end{aligned}</div>
+
+  <p class="mt-6">我们把这个 KL 散度的计算交换一下顺序，把交叉熵放在等式的左边，可以展示出其实际意义：</p>
+
+  <div class="math-content" data-display="1">\underbrace{H(P, Q)}_{\text{交叉熵}} \quad = \, \underbrace{H(P)}_{\substack{\text{真实分布 P 的熵} \\ \text{与猜的分布 Q 无关}}} \, + \, \underbrace{D_{KL}(P \, \| \, Q)}_{\substack{\text{猜错的代价} \\ \text{或者说距离} \\ \text{由分布 Q 决定}}}</div>
+
+  <!-- 交叉熵结构分解 SVG -->
+  <figure class="mt-8">
+    <svg viewBox="0 0 720 260" role="img" class="w-full h-auto border border-stone-200 rounded bg-white" font-family="Georgia, serif">
+      <text x="360" y="26" text-anchor="middle" font-size="16" fill="#1c1917" font-weight="600">交叉熵的结构分解：固定底座 + 距离</text>
+      <text x="360" y="44" text-anchor="middle" font-size="11" fill="#78716c" font-style="italic">横轴按 bit 累加：H(P, Q) = H(P) + D_KL</text>
+      <!-- 情形 A -->
+      <g>
+        <text x="80" y="80" text-anchor="start" font-size="12" fill="#44403c" font-weight="600">情形 A · Q 接近 P</text>
+        <rect x="80" y="95" width="200" height="34" fill="#1e3a8a" opacity="0.85"/>
+        <rect x="280" y="95" width="20" height="34" fill="#9d174d" opacity="0.85"/>
+        <text x="180" y="117" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="600">H(P) = 1.74</text>
+        <text x="290" y="117" text-anchor="middle" font-size="10" fill="#ffffff" font-weight="600">0.05</text>
+        <text x="640" y="117" text-anchor="end" font-size="12" fill="#1c1917" font-weight="600">H(P, Q) ≈ 1.79 bit</text>
+        <line x1="80" y1="135" x2="640" y2="135" stroke="#a8a29e" stroke-width="0.6"/>
+        <line x1="80" y1="132" x2="80" y2="138" stroke="#44403c" stroke-width="1"/>
+        <line x1="280" y1="132" x2="280" y2="138" stroke="#44403c" stroke-width="1"/>
+        <line x1="640" y1="132" x2="640" y2="138" stroke="#44403c" stroke-width="1"/>
+        <text x="80" y="150" text-anchor="middle" font-size="9" fill="#78716c">0</text>
+        <text x="280" y="150" text-anchor="middle" font-size="9" fill="#78716c">H(P)</text>
+        <text x="640" y="150" text-anchor="middle" font-size="9" fill="#78716c">bits</text>
+      </g>
+      <!-- 情形 B -->
+      <g>
+        <text x="80" y="180" text-anchor="start" font-size="12" fill="#44403c" font-weight="600">情形 B · Q 偏离 P</text>
+        <rect x="80" y="195" width="200" height="34" fill="#1e3a8a" opacity="0.85"/>
+        <rect x="280" y="195" width="200" height="34" fill="#9d174d" opacity="0.85"/>
+        <text x="180" y="217" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="600">H(P) = 1.74</text>
+        <text x="380" y="217" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="600">D_KL = 1.50</text>
+        <text x="640" y="217" text-anchor="end" font-size="12" fill="#1c1917" font-weight="600">H(P, Q) ≈ 3.24 bit</text>
+        <line x1="80" y1="235" x2="640" y2="235" stroke="#a8a29e" stroke-width="0.6"/>
+        <line x1="80" y1="232" x2="80" y2="238" stroke="#44403c" stroke-width="1"/>
+        <line x1="280" y1="232" x2="280" y2="238" stroke="#44403c" stroke-width="1"/>
+        <line x1="480" y1="232" x2="480" y2="238" stroke="#44403c" stroke-width="1"/>
+        <text x="80" y="250" text-anchor="middle" font-size="9" fill="#78716c">0</text>
+        <text x="280" y="250" text-anchor="middle" font-size="9" fill="#78716c">H(P)</text>
+        <text x="480" y="250" text-anchor="middle" font-size="9" fill="#78716c">H(P, Q)</text>
+      </g>
+      <!-- 图例 -->
+      <g>
+        <rect x="530" y="68" width="14" height="10" fill="#1e3a8a" opacity="0.85"/>
+        <text x="548" y="78" font-size="10" fill="#1c1917">H(P) · 与 Q 无关</text>
+        <rect x="530" y="82" width="14" height="10" fill="#9d174d" opacity="0.85"/>
+        <text x="548" y="92" font-size="10" fill="#1c1917">D_KL · 猜错的代价（≥ 0）</text>
+      </g>
+    </svg>
+    <figcaption class="mt-2 text-sm text-stone-500 text-center italic">后文里将展开：训练模型就是在压缩粉色部分，让模型输出的概率分布逐步逼近原始数据的概率分布(蓝色分布)</figcaption>
+  </figure>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">DeepSeek</span>
+    <span>这里还需要严格证明 <span class="math-content">D_{KL}(P \, \| \, Q) \ge 0</span> 才完整，可以用 Jensen 不等式配合对数不等式 <span class="math-content">\ln x \le x - 1</span> 来证明，不展开</span>
+  </div>
+
+  <!-- ====== 分类问题与概率分布 ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">分类问题与概率分布</h1>
+
+  <p class="mt-6">分类问题是神经网络最擅长的问题种类之一，前面提到过一个简单的动物分类模型，判断是猫、狗还是兔子，一个最朴素的设计是模型直接输出单个标签 <code>'猫'|'狗'|'兔'</code>，但<strong>现代深度学习最佳实践是让模型输出所有类别的概率分布</strong>：</p>
+
+  <div class="mt-6 grid grid-cols-2 gap-6">
+    <div class="border border-stone-300 bg-stone-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-stone-500">朴素做法</span>
+        <span class="text-xs text-stone-500">硬分类</span>
+      </div>
+      <p class="text-base text-stone-700 my-0">模型直接输出: <strong>"猫"</strong> | <strong>"狗"</strong> | <strong>"兔"</strong> 中的一个</p>
+      <p class="text-xs text-stone-600 leading-relaxed border-t border-stone-200 pt-2 my-0">问题：表达是离散的、绝对的、或者说取值空间是不连续的，是一个三值空间、无法体现连续差距、无法求梯度做反向传播（只有连续函数才能求导求梯度）</p>
+    </div>
+    <div class="border border-indigo-400 bg-indigo-50 px-5 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-indigo-700">最佳实践</span>
+        <span class="text-xs text-indigo-700">输出概率分布</span>
+      </div>
+      <p class="text-base text-stone-700 my-0">模型输出: <strong>{ 猫: 0.7, 狗: 0.2, 兔: 0.1 }</strong></p>
+      <p class="text-xs text-stone-600 leading-relaxed border-t border-indigo-200 pt-2 my-0">可以表达置信度、可以与真实分布做差异度量、连续可导，完美契合梯度下降，模型要解决的问题是依据给定图片映射到 <span class="math-content">[0,1]^3</span> 空间内的一个点上（概率分布）可以说算是神经网络最甜点的问题域了</p>
+    </div>
+  </div>
+
+  <p class="mt-6">关键来了，训练时我们能明确知道这张图是猫/狗/兔的那一种，因此我们可以通过人工标注，为猫的图片设定 "真实概率分布 P"，这里再放一个模型输出的预测分布 Q 作为对比，模型的任务就是让它输出的 Q 逼近真实分布 P:</p>
+
+  <div class="math-content" data-display="1">P_{原图标签} \,\, = \,\, [\, \underbrace{1}_{\text{猫}}, \, \underbrace{0}_{\text{狗}}, \, \underbrace{0}_{\text{兔}} \,] \qquad Q_{模型猜的} \,\, = \,\, [\, \underbrace{0.7}_{\text{猫}}, \, \underbrace{0.2}_{\text{狗}}, \, \underbrace{0.1}_{\text{兔}} \,]</div>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">Tips</span>
+    <span>类似这里的 <span class="math-content">P</span> 这种只有一个 1 的概率分布模式称为 <strong>one-hot 分布</strong>，100% 确定性的表述由训练数据提供，<strong>其信息熵为 0</strong> (这句话请务必仔细品味)</span>
+  </div>
+
+  <p class="mt-6">此时，模型的效果好不好就是在问 P 和 Q 的概率分布的差异度，如果差异度越小则说明模型效果越好，而在前面我们已完整推出关于交叉熵和 KL 散度公式，并确信这是衡量这种差异度绝佳数学工具，引用前面的结论可得：</p>
+
+  <div class="math-content" data-display="1">D_{KL}(P \, \| \, Q) = \sum_{i=1}^{n} p_i \cdot \log_2 \frac{p_i}{q_i}</div>
+
+  <p class="mt-6">模型最后一层会输出 <span class="math-content">n</span> 个原始数值 (logits)，再通过 <strong>Softmax</strong> 函数压成一个合法的概率分布 <span class="math-content">Q</span> —— 各分量在 <span class="math-content">[0,1]</span> 之间且总和为 1：</p>
+
+  <div class="math-content" data-display="1">q_i \,\, = \,\, \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}} \quad , \qquad \sum_{i=1}^{n} q_i = 1</div>
+
+  <p class="mt-6">在此之前，我们已经通过信息论拿到了足够强大的数学工具去衡量两个概率分布的差异度，也就是 KL 散度，它可以用来衡量概率分布之间的差异度：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} D_{KL} = \sum_{i=1}^{n} p_i \cdot \log_2 \frac{p_i}{q_i} \end{aligned}</div>
+
+  <p class="mt-6">模型最后输出的 logits 会过一次 softmax，在这个基础上配合 KL 散度用来衡量模型的输出和真实分布之间的差异度或许是一个不错的选择，写在一起看看：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} D_{KL} = \sum_{i=1}^{n} p_i \cdot \log_2 \frac{p_i}{q_i} \quad , \qquad q_i \,\, = \,\, \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}} \end{aligned}</div>
+
+  <p class="mt-6">此时<strong>分类问题被巧妙地转化为"两个概率分布之间的逼近问题"</strong>，打通了信息论和机器学习，可以说是呼之欲出了，但在此之前，我们先看看大模型 nextToken 预测是一个什么样的任务、以及训练过程中的损失函数指的是什么。</p>
+
+  <!-- ====== 大模型 nextToken 预测也是一个分类问题 ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">大模型 nextToken 预测也是一个分类问题</h1>
+
+  <p class="mt-6">大模型 (LLM) 的训练任务用一句话概括就是 <strong>文字接龙 (next-token prediction)</strong>：给定一段上文，预测下一个 token 是什么，看起来这好像是一个"生成"问题，但预测这件事需要一个概率分布，实际上就是在一张巨大的词表里告诉我哪个词是最有可能的，返回的是 { "hello": 0.1, "world": 0.6, ... } 这样的跟完整词表一样长的概率分布：</p>
+
+  <!-- nextToken 预测 SVG -->
+  <figure class="mt-8">
+    <svg viewBox="0 0 720 320" role="img" class="w-full h-auto border border-stone-200 rounded bg-white" font-family="Georgia, serif">
+      <text x="360" y="26" text-anchor="middle" font-size="16" fill="#1c1917" font-weight="600">nextToken 预测：在词表上输出一条超长的概率分布</text>
+      <text x="360" y="44" text-anchor="middle" font-size="11" fill="#78716c" font-style="italic">上文 → 模型 → 词表上的 Q（这里以 50257 词表为例，每根柱子代表一个 token）</text>
+      <!-- 上文 token -->
+      <g>
+        <text x="60" y="86" text-anchor="start" font-size="11" fill="#44403c" font-weight="600">给定上下文 token 序列让模型预测 nextToken</text>
+        <rect x="60" y="96" width="60" height="28" fill="#dbeafe" stroke="#1e40af"/>
+        <rect x="120" y="96" width="60" height="28" fill="#dbeafe" stroke="#1e40af"/>
+        <rect x="180" y="96" width="60" height="28" fill="#dbeafe" stroke="#1e40af"/>
+        <text x="90" y="115" text-anchor="middle" font-size="11" fill="#1e3a8a">今天</text>
+        <text x="150" y="115" text-anchor="middle" font-size="11" fill="#1e3a8a">天气</text>
+        <text x="210" y="115" text-anchor="middle" font-size="11" fill="#1e3a8a">真</text>
+        <text x="245" y="115" text-anchor="start" font-size="14" fill="#44403c">→ ?</text>
+      </g>
+      <!-- 大模型黑盒 -->
+      <g>
+        <rect x="320" y="92" width="120" height="36" fill="#1c1917" stroke="#44403c" rx="4"/>
+        <text x="380" y="115" text-anchor="middle" font-size="12" fill="#fcd34d" font-weight="600">大模型 LLM</text>
+        <line x1="440" y1="110" x2="475" y2="110" stroke="#44403c" stroke-width="1.5"/>
+        <polygon points="475,110 467,106 467,114" fill="#44403c"/>
+        <text x="480" y="113" text-anchor="start" font-size="11" fill="#44403c">输出 logits 并通过 softmax 得到概率分布</text>
+      </g>
+      <!-- 词表分布 -->
+      <g>
+        <text x="60" y="160" text-anchor="start" font-size="11" fill="#44403c" font-weight="600">输出 Q · 在词表上的概率分布（GPT-2 词表共 50257 项，仅示意）</text>
+        <line x1="60" y1="280" x2="660" y2="280" stroke="#44403c" stroke-width="1"/>
+        <g fill="#fed7aa" stroke="none">
+          <rect x="62" y="277" width="3" height="3"/><rect x="68" y="276" width="3" height="4"/><rect x="74" y="278" width="3" height="2"/><rect x="80" y="275" width="3" height="5"/><rect x="86" y="277" width="3" height="3"/><rect x="92" y="276" width="3" height="4"/><rect x="98" y="278" width="3" height="2"/><rect x="104" y="277" width="3" height="3"/><rect x="110" y="275" width="3" height="5"/><rect x="116" y="276" width="3" height="4"/><rect x="122" y="278" width="3" height="2"/><rect x="128" y="277" width="3" height="3"/><rect x="134" y="276" width="3" height="4"/><rect x="140" y="278" width="3" height="2"/><rect x="146" y="275" width="3" height="5"/>
+        </g>
+        <rect x="166" y="190" width="6" height="90" fill="#9d174d" stroke="#831843"/>
+        <text x="169" y="180" text-anchor="middle" font-size="11" fill="#9d174d" font-weight="700">好 / 0.6</text>
+        <g fill="#fed7aa" stroke="none">
+          <rect x="180" y="277" width="3" height="3"/><rect x="186" y="276" width="3" height="4"/><rect x="192" y="278" width="3" height="2"/><rect x="198" y="275" width="3" height="5"/><rect x="204" y="277" width="3" height="3"/><rect x="210" y="276" width="3" height="4"/><rect x="216" y="278" width="3" height="2"/><rect x="222" y="275" width="3" height="5"/><rect x="228" y="277" width="3" height="3"/>
+        </g>
+        <rect x="246" y="245" width="6" height="35" fill="#b45309" stroke="#78350f"/>
+        <text x="249" y="240" text-anchor="middle" font-size="10" fill="#92400e" font-weight="600">冷 / 0.2</text>
+        <g fill="#fed7aa" stroke="none">
+          <rect x="260" y="277" width="3" height="3"/><rect x="266" y="276" width="3" height="4"/><rect x="272" y="278" width="3" height="2"/><rect x="278" y="275" width="3" height="5"/><rect x="284" y="277" width="3" height="3"/><rect x="290" y="276" width="3" height="4"/><rect x="296" y="278" width="3" height="2"/><rect x="302" y="275" width="3" height="5"/><rect x="308" y="277" width="3" height="3"/><rect x="314" y="276" width="3" height="4"/>
+        </g>
+        <rect x="322" y="262" width="6" height="18" fill="#b45309" stroke="#78350f"/>
+        <text x="325" y="257" text-anchor="middle" font-size="10" fill="#92400e">热 / 0.1</text>
+        <g fill="#fed7aa" stroke="none">
+          <rect x="335" y="277" width="3" height="3"/><rect x="341" y="276" width="3" height="4"/><rect x="347" y="278" width="3" height="2"/><rect x="353" y="275" width="3" height="5"/><rect x="359" y="277" width="3" height="3"/><rect x="365" y="276" width="3" height="4"/><rect x="371" y="278" width="3" height="2"/><rect x="377" y="275" width="3" height="5"/><rect x="383" y="277" width="3" height="3"/><rect x="389" y="276" width="3" height="4"/><rect x="395" y="278" width="3" height="2"/><rect x="401" y="275" width="3" height="5"/><rect x="407" y="277" width="3" height="3"/><rect x="413" y="276" width="3" height="4"/><rect x="419" y="278" width="3" height="2"/><rect x="425" y="275" width="3" height="5"/><rect x="431" y="277" width="3" height="3"/><rect x="437" y="276" width="3" height="4"/><rect x="443" y="278" width="3" height="2"/><rect x="449" y="275" width="3" height="5"/><rect x="455" y="277" width="3" height="3"/><rect x="461" y="276" width="3" height="4"/><rect x="467" y="278" width="3" height="2"/><rect x="473" y="275" width="3" height="5"/><rect x="479" y="277" width="3" height="3"/><rect x="485" y="276" width="3" height="4"/><rect x="491" y="278" width="3" height="2"/><rect x="497" y="275" width="3" height="5"/><rect x="503" y="277" width="3" height="3"/><rect x="509" y="276" width="3" height="4"/><rect x="515" y="278" width="3" height="2"/><rect x="521" y="275" width="3" height="5"/><rect x="527" y="277" width="3" height="3"/><rect x="533" y="276" width="3" height="4"/><rect x="539" y="278" width="3" height="2"/><rect x="545" y="275" width="3" height="5"/><rect x="551" y="277" width="3" height="3"/><rect x="557" y="276" width="3" height="4"/><rect x="563" y="278" width="3" height="2"/><rect x="569" y="275" width="3" height="5"/><rect x="575" y="277" width="3" height="3"/><rect x="581" y="276" width="3" height="4"/><rect x="587" y="278" width="3" height="2"/><rect x="593" y="275" width="3" height="5"/><rect x="599" y="277" width="3" height="3"/><rect x="605" y="276" width="3" height="4"/><rect x="611" y="278" width="3" height="2"/><rect x="617" y="275" width="3" height="5"/><rect x="623" y="277" width="3" height="3"/><rect x="629" y="276" width="3" height="4"/><rect x="635" y="278" width="3" height="2"/><rect x="641" y="275" width="3" height="5"/><rect x="647" y="277" width="3" height="3"/><rect x="653" y="276" width="3" height="4"/>
+        </g>
+        <text x="62" y="296" text-anchor="start" font-size="9" fill="#78716c">token #0</text>
+        <text x="660" y="296" text-anchor="end" font-size="9" fill="#78716c">token #50256</text>
+        <text x="360" y="312" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">通过采样从这个概率分布中挑选 token 比如 argmax 代表选最大的「好」</text>
+      </g>
+    </svg>
+    <figcaption class="mt-2 text-sm text-stone-500 text-center italic">「下一个 token」本质是在词表上做 50257 维的分类，结构与猫狗兔分类完全同构，只是输出维度极大</figcaption>
+  </figure>
+
+  <table class="w-full border-collapse my-6 text-sm">
+    <thead>
+      <tr>
+        <th class="border border-gray-300 bg-gray-100 font-semibold px-4 py-3 w-40 text-center">概念</th>
+        <th class="border border-gray-300 bg-gray-100 font-semibold px-4 py-3 text-left">含义</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3">上下文序列</td>
+        <td class="border border-gray-300 px-4 py-3">上文 token 序列，如 <code>"今天 天气 真"</code></td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3">大模型给出预测</td>
+        <td class="border border-gray-300 px-4 py-3">词表上的概率分布 <span class="math-content">Q</span>，比如 <span class="math-content">\{\text{好}: 0.6, \, \text{冷}: 0.2, \, \text{热}: 0.1, \, \dots\}</span> 注意这个分布极长</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3">动物判断分类模型</td>
+        <td class="border border-gray-300 px-4 py-3">输出的也是概率分布 { 猫: 0.7, 狗: 0.2, 兔: 0.1 } 与大模型输出同构</td>
+      </tr>
+    </tbody>
+    <caption class="caption-bottom text-center px-3 pr-12 py-2 text-stone-700">nextToken 预测本质是分类问题，通过拟合预测概率分布可以解决</caption>
+  </table>
+
+  <!-- ====== 损失函数、偏导数、权重 ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">损失函数、偏导数、权重</h1>
+
+  <p class="mt-6">模型就是神经网络，是用来拟合输出结果的，而损失函数 (Loss) 就是用来衡量模型输出与预期输出的差异度，如何选择合适的损失函数具体得看任务类型。</p>
+
+  <p class="mt-6">模型训练的目标是让损失函数尽可能小，通常记作 <span class="math-content">\mathcal{L}</span> 或者单个 <span class="math-content">L</span> 也行，它越小说明模型对数据的拟合程度越高。</p>
+
+  <p class="mt-6">所以训练的第一个问题就是函数极小值搜索问题，工程上通常采用梯度下降法来寻找损失函数极小值，这是一个基于偏导数的方法，先回顾下二元函数偏导数的定义，从一般走向通用:</p>
+
+  <div class="math-content" data-display="1">\frac{\partial f(x,y)}{\partial x} \quad , \quad 固定 \; y \; 时 \; f \; 随 \; x \; 变化的速率</div>
+
+  <p class="mt-6">对 <span class="math-content">x</span> 的偏导数越大则表示函数对 <span class="math-content">x</span> 的变化越敏感，即 <span class="math-content">x</span> 微小的变化也会导致函数值的剧烈变化，在这个基础上就可以配合偏导数找极小值：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} \frac{\partial f(x,y)}{\partial x} > 0 \quad , \quad &固定 \; y \; 时 \; f \; 随 \; x \; 的增加而增加 \\ 此时让 \; x \; 变小一点点则 \; f \; & 也会变小一点点 \to 即我们离极小值更近了 \\ \\ \frac{\partial f(x,y)}{\partial x} < 0 \quad , \quad &固定 \; y \; 时 \; f \; 随 \; x \; 的增加而减少 \\ 此时让 \; x \; 变大一点点则 \; f \; & 也会变小一点点 \to 即我们离极小值更近了 \end{aligned}</div>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">Direct</span>
+    <span>这里还需要再强调一次为什么是 "一点点"：为了保证函数是连续的，不能一次性跳过太多，否则导数就没意义了，只有连续函数才能求导</span>
+  </div>
+
+  <p class="mt-6">从以上讨论中，我们可以得知只要让 <span class="math-content">x</span> 朝着偏导数的反方向进行调整，就可以让损失函数慢慢变小，从而找到极小值，上述是对 <span class="math-content">x</span> 而言的，对于 <span class="math-content">y</span> 来说也是对称成立的，不展开，下图以 <span class="math-content">f(x, y) = x + y</span> 为例子说明这个变小的过程：</p>
+
+  <!-- 梯度下降法 SVG -->
+  <figure class="mt-8">
+    <svg viewBox="0 -10 720 370" role="img" class="w-full h-auto border border-stone-200 rounded bg-white" font-family="Georgia, serif">
+      <defs>
+        <pattern id="cutX" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
+          <rect width="8" height="8" fill="#fff7ed"/>
+          <line x1="0" y1="0" x2="0" y2="8" stroke="#c2410c" stroke-width="2"/>
+        </pattern>
+        <pattern id="cutY" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
+          <rect width="8" height="8" fill="#eef2ff"/>
+          <line x1="0" y1="0" x2="0" y2="8" stroke="#3730a3" stroke-width="2"/>
+        </pattern>
+      </defs>
+      <text x="360" y="26" text-anchor="middle" font-size="16" fill="#1c1917" font-weight="600">梯度下降法：偏导的反方向可以让函数值变小</text>
+      <text x="360" y="44" text-anchor="middle" font-size="11" fill="#78716c" font-style="italic">以二元函数 f(x, y) = x + y 为例，将函数值拆成 x、y 两段长度，观察微调 dx dy 前后的变化</text>
+      <!-- 上部 -->
+      <g>
+        <text x="130" y="80" text-anchor="left" font-size="15" fill="#1c1917" font-weight="700">f(x, y)  =  x  +  y</text>
+        <rect x="120" y="92" width="280" height="44" fill="#fed7aa" stroke="#b45309" stroke-width="1.5"/>
+        <text x="260" y="121" text-anchor="middle" font-size="16" fill="#7c2d12" font-weight="700" font-style="italic">x</text>
+        <rect x="400" y="92" width="200" height="44" fill="#c7d2fe" stroke="#3730a3" stroke-width="1.5"/>
+        <text x="500" y="121" text-anchor="middle" font-size="16" fill="#1e3a8a" font-weight="700" font-style="italic">y</text>
+      </g>
+      <!-- 中部 -->
+      <g>
+        <text x="115" y="213" text-anchor="end" font-size="12" fill="#44403c" font-weight="600">函数值随 dx dy 变化</text>
+        <text x="130" y="174" text-anchor="left" font-size="15" fill="#1c1917" font-weight="700">f(x + dx, y + dy)  =  x + dx  +  y + dy</text>
+        <rect x="120" y="186" width="280" height="44" fill="#fed7aa" stroke="#b45309" stroke-width="1.5"/>
+        <text x="260" y="215" text-anchor="middle" font-size="16" fill="#7c2d12" font-weight="700" font-style="italic">x</text>
+        <rect x="400" y="186" width="40" height="44" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+        <text x="420" y="215" text-anchor="middle" font-size="13" fill="#7c2d12" font-weight="700" font-style="italic">dx</text>
+        <rect x="440" y="186" width="200" height="44" fill="#c7d2fe" stroke="#3730a3" stroke-width="1.5"/>
+        <text x="540" y="215" text-anchor="middle" font-size="16" fill="#1e3a8a" font-weight="700" font-style="italic">y</text>
+        <rect x="640" y="186" width="30" height="44" fill="#e0e7ff" stroke="#3730a3" stroke-width="1.5"/>
+        <text x="655" y="215" text-anchor="middle" font-size="12" fill="#1e3a8a" font-weight="700" font-style="italic">dy</text>
+      </g>
+      <!-- 下部 -->
+      <g>
+        <text x="115" y="305" text-anchor="end" font-size="12" fill="#44403c" font-weight="600">-dx -dy 呢 ?</text>
+        <text x="130" y="268" text-anchor="left" font-size="15" fill="#1c1917" font-weight="700">f(x − dx, y − dy)  =  x − dx  +  y − dy</text>
+        <rect x="120" y="280" width="240" height="44" fill="#fed7aa" stroke="#b45309" stroke-width="1.5"/>
+        <text x="240" y="309" text-anchor="middle" font-size="16" fill="#7c2d12" font-weight="700" font-style="italic">x</text>
+        <rect x="360" y="280" width="40" height="44" fill="url(#cutX)" stroke="#c2410c" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <text x="380" y="310" text-anchor="middle" font-size="12" fill="#7c2d12" font-weight="700" font-style="italic">−dx</text>
+        <rect x="400" y="280" width="170" height="44" fill="#c7d2fe" stroke="#3730a3" stroke-width="1.5"/>
+        <text x="485" y="309" text-anchor="middle" font-size="16" fill="#1e3a8a" font-weight="700" font-style="italic">y</text>
+        <rect x="570" y="280" width="30" height="44" fill="url(#cutY)" stroke="#3730a3" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <text x="585" y="310" text-anchor="middle" font-size="11" fill="#1e3a8a" font-weight="700" font-style="italic">−dy</text>
+        <text x="610" y="309" text-anchor="start" font-size="14" fill="#b45309" font-weight="700">函数值 f 变小</text>
+      </g>
+      <!-- 参考线 -->
+      <defs>
+        <marker id="grad-shrink-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#b45309"/>
+        </marker>
+      </defs>
+      <g>
+        <line x1="600" y1="60" x2="600" y2="344" stroke="#b45309" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <line x1="570" y1="60" x2="570" y2="344" stroke="#b45309" stroke-width="2" stroke-dasharray="6 4"/>
+        <line x1="530" y1="60" x2="530" y2="344" stroke="#b45309" stroke-width="2" stroke-dasharray="6 4"/>
+        <line x1="600" y1="160" x2="532" y2="160" stroke="#b45309" stroke-width="2" marker-end="url(#grad-shrink-arrow)"/>
+        <text x="585" y="153" text-anchor="middle" font-size="12" fill="#b45309" font-style="italic" font-weight="600">-dy</text>
+        <text x="550" y="153" text-anchor="middle" font-size="12" fill="#b45309" font-style="italic" font-weight="600">-dx</text>
+      </g>
+    </svg>
+    <figcaption class="mt-2 text-sm text-stone-500 text-center italic">图中偏导数的反方向就是 -dx 和 -dy，沿着偏导反方向调整就可以让函数值变小</figcaption>
+  </figure>
+
+  <p class="mt-6">以上配合偏导数的反方向搜索极小值的工程化实现就是就是所谓的<strong>梯度下降法</strong>，梯度是函数的所有偏导数所构成的向量，或者说 n 元组、数组啥的、只要是能装东西的容器都行，这是一个复合值，代表了函数的所有偏导数。</p>
+
+  <p class="mt-6">为了使用方便，通常把梯度记作 <span class="math-content">\nabla f</span> 这个倒三角符号代表 <span class="math-content">f</span> 所有的偏导数构成的向量，对于二元函数的梯度：</p>
+
+  <div class="math-content" data-display="1">\nabla f = (\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y})</div>
+
+  <p class="mt-6">现在来讨论下更一般的场景，把结论推广到 N 元函数，可以直接给出 N 元函数偏导数的定义：</p>
+
+  <div class="math-content" data-display="1">\frac{\partial f(x_1, x_2, ..., x_n)}{\partial x_i} \quad , \quad 固定其他变量时 \; f \; 随 \; x_i \; 变化的速率</div>
+
+  <p class="mt-6">此时，它的梯度的定义也可以给出：</p>
+
+  <div class="math-content" data-display="1">\nabla f = (\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, ..., \frac{\partial f}{\partial x_n})</div>
+
+  <p class="mt-6">套入机器学习的语境，上述的变量 <span class="math-content">x_1, x_2, ..., x_n</span> 就是模型的权重，而 <span class="math-content">f</span> 就是损失函数，而 <span class="math-content">\nabla f</span> 就是损失函数的梯度。</p>
+
+  <p class="mt-6">最后，串起来之前谈过的术语：模型训练就是通过梯度下降法不断调整权重来寻找损失函数极小值，配合损失函数的梯度表示进行：</p>
+
+  <div class="math-content" data-display="1">\nabla \mathcal{L}(\theta) = (\frac{\partial L}{\partial \theta_1}, \frac{\partial L}{\partial \theta_2}, ..., \frac{\partial L}{\partial \theta_n})</div>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">Direct</span>
+    <span>本文会混用梯度和偏导这两个术语，通常指的是同一个东西，依据上下文决定指代完整的梯度向量，或仅仅只是单个偏导标量</span>
+  </div>
+
+  <p class="mt-6">但是理论是美好的，现实很残酷，训练过程中梯度下降法并不总是能够找到极小值，这主要是因为梯度下降法是局部优化算法，也就是说，它只能找到局部极小值，而不是全局极小值，这会导致模型训练失败。（这又是一个比较大的问题，不展开）</p>
+
+  <p class="mt-6">另外还有梯度的数值问题，比如你发现某个偏导数求出来是 <span class="math-content">0</span> 这意味着不论怎么训都没办法更新权重参数了，训练过程停滞了，这称为梯度消失，此时模型学不到东西了：</p>
+
+  <div class="math-content" data-display="1">\frac{\partial f}{\partial x_i} = 0 \quad \Rightarrow \quad \text{梯度消失}</div>
+
+  <p class="mt-6">还有一种则是梯度爆炸，指的是偏导数的绝对值非常大，这会导致模型训练失败，这称为梯度爆炸，此时学一次会导致权重更新极度剧烈，同样会让模型学不到东西：</p>
+
+  <div class="math-content" data-display="1">\frac{\partial f}{\partial x_i} \rightarrow \infty \quad \Rightarrow \quad \text{梯度爆炸}</div>
+
+  <p class="mt-6">后文将会揭示，交叉熵很好了避免了梯度消失和爆炸的问题，成为大模型训练的最佳实践。</p>
+
+  <!-- ====== 回到交叉熵：为什么是它？ ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">回到交叉熵：为什么是它？</h1>
+
+  <p class="mt-6">大模型训练时，我们有大量的数据，对于给定的一段文字其下一个 token 是确定的，通过将其编码为 one-hot 分布作为 P，而不断训练模型的输出 <span class="math-content">Q</span>，为了衡量 <span class="math-content">Q</span> 与 <span class="math-content">P</span> 的差异度，前面提出通过 <span class="math-content">D_{KL}</span> 来衡量差异度或许是一个不错的选择：</p>
+
+  <div class="math-content" data-display="1">\underbrace{H(P, Q)}_{\text{交叉熵}} \qquad = \, \underbrace{H(P)}_{\substack{\text{[1, 0, 0, ...]} \\ 来自训练数据 \, one\text{-}hot }} \, + \quad D_{KL}</div>
+
+  <p class="mt-6">此处的 P 由训练数据提供，编码成 <strong>one-hot 分布</strong> 代表一种 100% 确定性的表述，因此<strong>其信息熵为 0</strong>，即 <span class="math-content">H(P)</span> 为 0，证明这个过程也就是逐项展开，相当优雅，下面证明了 one-hot 编码的信息熵为 0：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} H(P) = - \sum_{i=1}^{n} p_i \log p_i &= \underbrace{ 1 \cdot \log 1 + 0 \cdot \log 0 + 0 \cdot \log 0 \,\, + \,\, ... }_{ \substack{\text{[1, 0, 0, ...]} \\ 来自训练数据 \, one\text{-}hot \\ 总长度 = 词表长度 } } \\ \\ &= 1 \cdot \log 1 = 0 \end{aligned}</div>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">Claude:</span>
+    <span>这里对 <span class="math-content">0 \cdot \log 0</span> 的处理略有偷懒因为这里 log 0 是未定义的，作者的直觉是有个 0 系数所以是 0，但严格来说，信息论中通常约定 <span class="math-content">0 \cdot \log 0 := 0</span>，其依据是极限 <span class="math-content">\lim_{p \to 0^+} p \log p = 0</span>（用洛必达法则即可证明）</span>
+  </div>
+
+  <p class="mt-6">因此在 one-hot 场景下，交叉熵计算出来的数值跟 <span class="math-content">D_{KL}</span> 一样，两者都可以衡量两个分布之间的差异度：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} \underbrace{H(P, Q)}_{\text{交叉熵}} \qquad = \, 0 \, + \quad \underbrace{D_{KL}}_{\text{KL 散度}} \end{aligned}</div>
+
+  <p class="mt-6">也就是说，我们面临一个分歧点，对于大模型损失函数的设计，这两个都可以：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} \mathcal{L}(P, Q) &= \underbrace{H(P, Q)}_{\text{交叉熵}} \\ &= \underbrace{D_{KL}}_{\text{KL 散度}} \end{aligned}</div>
+
+  <p class="mt-6">另外我又萌生出了新的不安：一方面是交叉熵和 KL 散度都可以作为损失函数，另外是没别的方案了？为什么不直接对着概率做加减直接扭成 MSE 作为损失函数呢？这几个看上去都能跑，后文将逐步展开：</p>
+
+  <div class="mt-6 grid grid-cols-4 gap-4">
+    <div class="border border-stone-300 bg-stone-50 px-4 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-stone-500">方案 1</span>
+        <span class="text-xs text-stone-500">❌</span>
+      </div>
+      <p class="text-lg font-semibold text-stone-800 my-0">MSE 均方差</p>
+      <p class="text-xs text-stone-600 my-0 leading-relaxed"><span class="math-content">\frac{1}{n}\sum(q_i - p_i)^2</span></p>
+      <p class="text-xs text-stone-500 my-0 border-t border-stone-200 pt-2">几何视角、不涉及信息论；配合 softmax 求导后含 <span class="math-content">q_k(1-q_k)</span> 项，两端梯度消失</p>
+    </div>
+    <div class="border border-stone-300 bg-stone-50 px-4 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-stone-500">方案 2</span>
+        <span class="text-xs text-stone-500">❌</span>
+      </div>
+      <p class="text-lg font-semibold text-stone-800 my-0">MAE 绝对误差</p>
+      <p class="text-xs text-stone-600 my-0 leading-relaxed"><span class="math-content">\sum|q_i - p_i|</span></p>
+      <p class="text-xs text-stone-500 my-0 border-t border-stone-200 pt-2">绝对值在 0 处不可导，梯度只有 ±1 无法自适应；优化时来回跳动难以收敛</p>
+    </div>
+    <div class="border border-stone-300 bg-stone-50 px-4 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-stone-500">方案 3</span>
+        <span class="text-xs text-stone-500">⚠️</span>
+      </div>
+      <p class="text-lg font-semibold text-stone-800 my-0">KL 散度</p>
+      <p class="text-xs text-stone-600 my-0 leading-relaxed"><span class="math-content">\sum p_i \log \frac{p_i}{q_i}</span></p>
+      <p class="text-xs text-stone-500 my-0 border-t border-stone-200 pt-2">理论可行但含分母 <span class="math-content">q_i</span>；当 <span class="math-content">q_i \to 0</span> 时损失与梯度双双爆炸</p>
+    </div>
+    <div class="border border-indigo-400 bg-indigo-50 px-4 py-4 flex flex-col gap-2">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs font-serif font-semibold tracking-wider text-indigo-700">方案 4</span>
+        <span class="text-xs text-indigo-700">✅</span>
+      </div>
+      <p class="text-lg font-semibold text-indigo-900 my-0">交叉熵</p>
+      <p class="text-xs text-stone-600 my-0 leading-relaxed"><span class="math-content">-\sum p_i \log q_i</span></p>
+      <p class="text-xs text-stone-500 my-0 border-t border-indigo-200 pt-2">梯度 = <span class="math-content">q_k - p_k</span>，数值稳定、自适应强度、无发散风险，最佳实践</p>
+    </div>
+  </div>
+
+  <!-- ====== MSE 线性拟合 ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">MSE 线性拟合</h1>
+
+  <p class="mt-6">首先介绍 MSE 对应公式如下即线性回归拟合，计算均方差作为损失，配合这份损失的直觉是：衡量所有事件之间的均方差用于逼近概率分布:</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} MSE_\text{(均方差)} &= \frac{1}{n} \sum_{i=1}^{n} ( \hat{y}_i - y_i )^2 \\ \\ 分布 \, Q \, 带入 \, \hat{y}_i \, 代表 &预测 ; \, 分布 \, P \, 带入 \, y_i \, 代表真实概率 \\ \\ \mathcal{L} &= \dfrac{1}{n} \sum_{i=1}^{n} (q_i - p_i)^2 \\ \\ 特别地，对于 \, one&\text{-}hot \, 编码的 \, p_t \, 而言，展开可得 \\ \\ \mathcal{L} &= \frac{1}{n} \cdot \left( \quad \underbrace{(q_k - 1)^2}_{第一个惩罚项} + \underbrace{\sum_{i \neq k} q_i^2}_{第二个惩罚项} \quad \right) \end{aligned}</div>
+
+  <p class="mt-6">训练的目标是让 <span class="math-content">\mathcal{L}</span> 达到极小值，而其中由两项构成，在深度学习理论中称为惩罚项，刚好这里两个惩罚项都是带平方的，也就是他们非负，性质很好讨论：</p>
+
+  <ol class="list-decimal list-inside my-4 space-y-2 text-sm">
+    <li>第一个惩罚项 <span class="math-content">(q_k - 1)^2</span>：比如给定的标签独热编码是 {world:1, ...} 这里惩罚的意思是只会对 world 有梯度调整</li>
+    <li>第二个惩罚项 <span class="math-content">\sum_{i \neq k} q_i^2</span>：比如给定的标签独热编码是 {world:1, ...} 这里惩罚的意思是会对所有错误类别都均匀的惩罚</li>
+  </ol>
+
+  <p class="mt-6">单看上述两点似乎没啥毛病，但有一个问题是：猜的越好的和猜的很差的情况，惩罚项是一样的。当然这不是最主要的问题</p>
+
+  <p class="mt-6">更关键的是把 MSE 套上 softmax 求导后会拖着 <span class="math-content">q_k(1 - q_k)</span> 这样的项，这意味着在 <span class="math-content">q_k \to 1</span> 或 <span class="math-content">q_k \to 0</span> 时趋于 0，最该给梯度的点位反而消失了，作为反向传播的起点来说这非常不好。</p>
+
+  <!-- ====== MAE 绝对值误差 ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">MAE 绝对值误差</h1>
+
+  <p class="mt-6">MAE 是对两个概率分布直接求差值绝对值求和，公式如下</p>
+
+  <div class="math-content" data-display="1">\mathcal{L}_{MAE} \,\, = \,\, \sum_{i=1}^{n} |q_i - p_i|</div>
+
+  <p class="mt-6">看起来似乎挺好的，但是跟均方差是一个毛病，也是几何视角，并不涉及概率的信息论本质，而且绝对值函数在 0 处不连续不可导，梯度只有 <span class="math-content">\pm 1</span>，在数值优化里非常粗糙，这会导致梯度下降时来回跳动，因为我们期望越靠近极小值时梯度能越来越小以方便更好的逼近极小值。</p>
+
+  <!-- ====== KL 散度（作为损失函数） ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">KL 散度</h1>
+
+  <p class="mt-6">前面已经说明了，KL 散度确实是一个诱人的方向，理论上是完全可行的但其数学构造会导致梯度消失和爆炸：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} \mathcal{L}(P, Q) = D_{KL} = \sum_{i=1}^{n} p_i \cdot \log_2 \underbrace{ \frac{p_i}{q_i} }_{\text{分母项}} \end{aligned}</div>
+
+  <div class="math-content" data-display="1">\begin{aligned} p_i \to 0 \; , \;\; p_i \cdot \log_2 \frac{p_i}{q_i} \to \; ? \qquad 情况一 \\ \\ q_i \to 0 \; , \;\; p_i \cdot \log_2 \frac{p_i}{q_i} \to \; ? \qquad 情况二 \end{aligned}</div>
+
+  <p class="mt-6">对于情况一，其实是在问 <span class="math-content">\lim_{x \to 0^+} x \cdot \log_2 x = 0</span> 发不发散，配合洛必达洛一下能得知其不会发散（相关过程省略）；关于在于情况二，那是真的标准的发散，当模型预测的概率 <span class="math-content">q_i</span> 趋近于 0 而 <span class="math-content">p_i > 0</span> 时：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} \frac{p_i}{q_i} \;\; &\to \;\; +\infty \\ \\ \log_2 \frac{p_i}{q_i} \;\; &\to \;\; +\infty \\ \\ p_i \cdot \log_2 \frac{p_i}{q_i} \;\; &\to \;\; +\infty \end{aligned}</div>
+
+  <p class="mt-6">损失函数直接飞了，更难受的是反向传播时对 <span class="math-content">q_i</span> 求梯度会出现 <span class="math-content">\frac{p_i}{q_i}</span> 这一项，<span class="math-content">q_i \to 0</span> 时梯度直接爆炸，参数更新一步就把网络打飞。当然对于这种带分母项的问题，工程上也有一些解决办法，但总的来说会让整体训练过程变得更加复杂，那就只剩下交叉熵了。</p>
+
+  <!-- ====== 交叉熵（最终方案推导） ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">✅ 交叉熵</h1>
+
+  <p class="mt-6">现在只剩下交叉熵方案，对于大模型来说最后输出的是 logits 然后通过 softmax 的方式将其压成一个概率分布，因此计算其偏导时，需要把前面构造的基于交叉熵损失函数完全展开：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} \mathcal{L} &= - \sum_{i=1}^{n} p_i \log q_i \quad , \qquad q_i = \frac{e^{z_i}}{\sum_{j} e^{z_j}} \\ \\ &= - \sum_{i=1}^{n} p_i \log \frac{e^{z_i}}{\sum_{j} e^{z_j}} \qquad 带入 \, q_i \\ \\ &= - \sum_{i=1}^{n} p_i \left( \log e^{z_i} \,\, - \,\, \log \sum_{j=1}^{n} e^{z_j} \right) \qquad 按分母拆开 \log \\ \\ &= - \sum_{i=1}^{n} p_i \, z_i \,\, + \,\, \underbrace{\left( \sum_{i=1}^{n} p_i \right)}_{ \substack{对所有事件\\概率求和 \, = \, 1} } \cdot \log \sum_{j=1}^{n} e^{z_j} \qquad 展开求和 \\ \\ \mathcal{L} &= - \sum_{i=1}^{n} p_i \, z_i \,\, + \,\, \log \sum_{j=1}^{n} e^{z_j} \qquad \mathcal{L} \; 最终化简为两个加和项 \end{aligned}</div>
+
+  <p class="mt-6">接下来对 <span class="math-content">\mathcal{L}</span> 求 <span class="math-content">z_k</span> 的偏导 <span class="math-content">\frac{\partial \mathcal{L}}{\partial z_k}</span>，分别求导刚刚化简的 <span class="math-content">\mathcal{L}</span> 里的两个加和项就行：</p>
+
+  <div class="math-content" data-display="1">\begin{aligned} \text{第一项} \quad \frac{\partial}{\partial z_k} \left( - \sum_{i=1}^{n} p_i \, z_i \right) &= \underbrace{ - \frac{\partial (p_1 z_1) }{\partial z_k} - \cdots - \frac{\partial (p_k z_k) }{\partial z_k} - \cdots + \frac{\partial (p_n z_n) }{\partial z_k} }_{ 只有 \, i \, = \, k \, 项保留, 因为其他的项对于求偏导来说完全不相关 } \\ \\ &= - \frac{\partial (p_k z_k) }{\partial z_k} = - p_k \\ \\ \\ \text{第二项} \quad \frac{\partial}{\partial z_k} \log \sum_{j=1}^{n} e^{z_j} &= \frac{1}{\sum_{j} e^{z_j}} \cdot \frac{\partial}{\partial z_k} \sum_{j=1}^{n} e^{z_j} \qquad \text{链式法则} \\ \\ &= \frac{e^{z_k}}{\sum_{j=1}^{n} e^{z_j}} \,\, = \,\, q_k \qquad \text{恰好是 softmax 定义} \end{aligned}</div>
+
+  <p class="mt-6">这里求第二项用到了<a href="https://zh.wikipedia.org/wiki/%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99" class="text-indigo-700 hover:underline" target="_blank" rel="noreferrer">链式法则</a>这个结论，直接拿来用就行； 最后可以得到一个极度简洁的偏导结果：</p>
+
+  <div class="mt-6 border border-indigo-400 px-6 py-5 rounded-lg" style="background: repeating-linear-gradient(135deg, #eef2ff, #eef2ff 8px, #e0e7ff 8px, #e0e7ff 10px)">
+    <div class="text-center text-xs font-serif font-semibold tracking-widest text-indigo-700 mb-3">Softmax + 交叉熵 的梯度</div>
+    <p class="text-center text-3xl text-stone-800 my-8"><span class="math-content">\dfrac{\partial \mathcal{L}}{\partial z_k} \,\, = \,\, q_k - p_k</span></p>
+    <div class="text-xs text-stone-600 leading-relaxed border-t border-indigo-200 pt-3 mt-3 text-center">独热码 + 交叉熵的梯度定义: 对应就是分类预测的偏差</div>
+  </div>
+
+  <table class="w-full border-collapse my-6 text-sm">
+    <thead>
+      <tr>
+        <th class="border border-gray-300 bg-gray-100 font-semibold px-4 py-3 w-40 text-center">特性</th>
+        <th class="border border-gray-300 bg-gray-100 font-semibold px-4 py-3 text-left">含义</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3 w-40">数值稳定</td>
+        <td class="border border-gray-300 px-4 py-3">这个梯度定义极度简洁，你懂的求导最喜欢的就是求出来这么简洁的东西，没有 <span class="math-content">\log</span>、没有除法、没有指数项残留，<span class="math-content">q_k - p_k</span> 永远落在 <span class="math-content">[-1, 1]</span>，不会发散也不会消失</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3 w-40">梯度强度自适应</td>
+        <td class="border border-gray-300 px-4 py-3">这个计算就是在描述预测偏差越大时给出越重的惩罚，接近预测时梯度自动变小，自带防止过拟合的效果</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3 w-40">简洁的工程实现</td>
+        <td class="border border-gray-300 px-4 py-3">框架内通常把 softmax 与 cross-entropy 融合成一个 fused kernel（如 PyTorch 的 <code>cross_entropy</code>），既省了一次显存读写，又顺手用 log-sum-exp 解决了数值溢出。</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 bg-gray-50 font-semibold text-center align-middle px-4 py-3 w-40">语义自洽</td>
+        <td class="border border-gray-300 px-4 py-3">梯度本身就是对应事件概率的差，它告诉模型该把哪一维概率往上抬、把哪一维往下压，配合这份梯度就是在做<strong>逼近分布</strong>。</td>
+      </tr>
+    </tbody>
+    <caption class="caption-bottom text-center px-3 pr-12 py-2 text-stone-700">Softmax + 交叉熵梯度 q_k - p_k 的四个核心优势</caption>
+  </table>
+
+  <!-- 梯度柱状图 SVG -->
+  <figure class="mt-8">
+    <svg viewBox="0 0 720 320" role="img" class="w-full h-auto border border-stone-200 rounded bg-white" font-family="Georgia, serif">
+      <text x="360" y="26" text-anchor="middle" font-size="16" fill="#1c1917" font-weight="600">交叉熵损失 + softmax 输出层，损失对 logits 的梯度 = 模型预测概率 - 真实概率</text>
+      <text x="360" y="44" text-anchor="middle" font-size="11" fill="#78716c" font-style="italic">以 4 类 one-hot（真实 = 类 2）为例，梯度直接告诉每一维该抬还是该压</text>
+      <!-- ① 预测 Q -->
+      <g>
+        <text x="130" y="80" text-anchor="middle" font-size="12" fill="#44403c" font-weight="600">① 预测概率</text>
+        <text x="130" y="94" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">softmax 输出</text>
+        <line x1="50" y1="230" x2="230" y2="230" stroke="#44403c" stroke-width="1"/>
+        <rect x="65" y="140" width="30" height="90" fill="#fed7aa" stroke="#b45309"/>
+        <text x="80" y="134" text-anchor="middle" font-size="10" fill="#92400e">0.30</text>
+        <rect x="105" y="185" width="30" height="45" fill="#fef3c7" stroke="#b45309"/>
+        <text x="120" y="179" text-anchor="middle" font-size="10" fill="#92400e">0.15</text>
+        <rect x="145" y="110" width="30" height="120" fill="#b45309" stroke="#78350f"/>
+        <text x="160" y="104" text-anchor="middle" font-size="10" fill="#b45309" font-weight="700">0.40</text>
+        <rect x="185" y="185" width="30" height="45" fill="#fef3c7" stroke="#b45309"/>
+        <text x="200" y="179" text-anchor="middle" font-size="10" fill="#92400e">0.15</text>
+        <g font-size="10" fill="#1c1917" text-anchor="middle">
+          <text x="80" y="248">类 1</text><text x="120" y="248">类 2</text><text x="160" y="248">类 3</text><text x="200" y="248">类 4</text>
+        </g>
+      </g>
+      <text x="255" y="185" text-anchor="middle" font-size="22" fill="#44403c" font-weight="700">−</text>
+      <!-- ② 真实 P -->
+      <g>
+        <text x="360" y="80" text-anchor="middle" font-size="12" fill="#44403c" font-weight="600">② 真实概率 P（one-hot）</text>
+        <text x="360" y="94" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">只有类 2 为 1，其他为 0</text>
+        <line x1="280" y1="230" x2="460" y2="230" stroke="#44403c" stroke-width="1"/>
+        <rect x="295" y="229" width="30" height="1" fill="#d6d3d1" stroke="#a8a29e"/>
+        <text x="310" y="248" text-anchor="middle" font-size="10" fill="#1c1917">类 1</text>
+        <rect x="335" y="110" width="30" height="120" fill="#1e3a8a" stroke="#1e3a8a"/>
+        <text x="350" y="104" text-anchor="middle" font-size="10" fill="#1e3a8a" font-weight="700">1.00</text>
+        <text x="350" y="248" text-anchor="middle" font-size="10" fill="#1c1917">类 2</text>
+        <rect x="375" y="229" width="30" height="1" fill="#d6d3d1" stroke="#a8a29e"/>
+        <text x="390" y="248" text-anchor="middle" font-size="10" fill="#1c1917">类 3</text>
+        <rect x="415" y="229" width="30" height="1" fill="#d6d3d1" stroke="#a8a29e"/>
+        <text x="430" y="248" text-anchor="middle" font-size="10" fill="#1c1917">类 4</text>
+      </g>
+      <text x="485" y="185" text-anchor="middle" font-size="22" fill="#44403c" font-weight="700">=</text>
+      <!-- ③ 梯度 -->
+      <g>
+        <text x="590" y="80" text-anchor="middle" font-size="12" fill="#44403c" font-weight="600">③ 梯度 = Q - P</text>
+        <text x="590" y="94" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">正值「压低」，负值「抬升」</text>
+        <line x1="510" y1="180" x2="690" y2="180" stroke="#44403c" stroke-width="1.2"/>
+        <rect x="525" y="180" width="30" height="23" fill="#fed7aa" stroke="#b45309"/>
+        <text x="540" y="220" text-anchor="middle" font-size="10" fill="#b45309">+0.30</text>
+        <rect x="565" y="116" width="30" height="64" fill="#1e3a8a" stroke="#1e3a8a"/>
+        <text x="580" y="110" text-anchor="middle" font-size="10" fill="#1e3a8a" font-weight="700">-0.85</text>
+        <rect x="605" y="180" width="30" height="30" fill="#b45309" stroke="#78350f"/>
+        <text x="620" y="226" text-anchor="middle" font-size="10" fill="#b45309" font-weight="700">+0.40</text>
+        <rect x="645" y="180" width="30" height="12" fill="#fef3c7" stroke="#b45309"/>
+        <text x="660" y="206" text-anchor="middle" font-size="10" fill="#92400e">+0.15</text>
+        <g font-size="10" fill="#1c1917" text-anchor="middle">
+          <text x="540" y="248">类 1</text><text x="580" y="248">类 2</text><text x="620" y="248">类 3</text><text x="660" y="248">类 4</text>
+        </g>
+        <text x="692" y="174" text-anchor="start" font-size="9" fill="#78716c" font-style="italic">0</text>
+      </g>
+      <!-- 底注 -->
+      <g font-size="11">
+        <text x="360" y="285" text-anchor="middle" fill="#1c1917">蓝色柱「往上抬」真实类的概率，橙色柱「往下压」其他类的概率</text>
+        <text x="360" y="302" text-anchor="middle" fill="#78716c" font-style="italic">所有梯度落在 [-1, 1]，幅度自适应 — 偏差越大梯度越强，靠近时自动收敛</text>
+      </g>
+    </svg>
+    <figcaption class="mt-2 text-sm text-stone-500 text-center italic">梯度 q_k - p_k 的意义就是「各项概率偏差」</figcaption>
+  </figure>
+
+  <!-- ====== 大模型的反向传播 ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">大模型的反向传播</h1>
+
+  <p class="mt-6">从前面的讨论中，我们已经确认了交叉熵配合 softmax 作为损失函数的方式是分类任务的最佳实践，本节进一步展开具体的反向传播过程。</p>
+
+  <p class="mt-6">损失函数对 <strong>logits</strong> <span class="math-content">z_k</span> 的偏导 <span class="math-content">\frac{\partial \mathcal{L}}{\partial z_k} = q_k - p_k</span> 是链条的起点，<span class="math-content">z_k</span> 本身来自最后一层的线性变换 <span class="math-content">z_k = \mathbf{w}_k^\top \mathbf{h} + b_k</span>，所以梯度要继续沿链式法则向下游传递，最终落在真正可训练的参数上：</p>
+
+  <div class="math-content" data-display="1">\underbrace{\frac{\partial \mathcal{L}}{\partial z_k}}_{q_k - p_k} \;\;\xrightarrow{\;z_k = \mathbf{w}_k^\top \mathbf{h} + b_k\;}\;\; \begin{aligned} \\ 对 \, \mathbf{w}_k \, 求偏导 : \quad &\frac{\partial \mathcal{L}}{\partial \mathbf{w}_k} = (q_k - p_k)\,\mathbf{h} \\[4pt] 对 \, b_k \, 求偏导 : \quad &\frac{\partial \mathcal{L}}{\partial b_k} = (q_k - p_k) \\[4pt] 对 \, \mathbf{h} \, 求偏导 : &\frac{\partial \mathcal{L}}{\partial \mathbf{h}} = \sum_{k}(q_k - p_k)\,\mathbf{w}_k \\ & \;\;\longrightarrow\;\; \text{继续链式法则处理前一层} \end{aligned}</div>
+
+  <p class="mt-6">然后利用梯度对权重直接进行原地更新赋值，这一步称为梯度下降，由训练过程中的优化器来做:</p>
+
+  <div class="math-content" data-display="1">\theta_{updated} = \theta_{current} - \eta \cdot \frac{\partial \mathcal{L}}{\partial \theta}</div>
+
+  <p class="mt-6">其中 <span class="math-content">\eta</span> 是学习率，是一个极小的数值，比如 <span class="math-content">0.000001</span>; 此处的偏导数 <span class="math-content">\frac{\partial \mathcal{L}}{\partial \theta}</span> 代表的是 <span class="math-content">\theta</span> 的变化对损失函数 <span class="math-content">\mathcal{L}</span> 的影响，如果我们期望损失函数变小，那么将 <span class="math-content">\theta</span> 朝着偏导数的反方向调整，就可以让损失函数变小，在上面的公式中把这个过程表达为一条赋值语句。</p>
+
+  <div class="my-4 border-l-2 border-stone-400 bg-stone-100/70 px-3 py-1.5 text-xs leading-relaxed text-stone-700">
+    <span class="font-serif mr-2 font-semibold tracking-wider">DIRECT</span>
+    <span>所以 <span class="math-content">q_k - p_k</span> 的真正身份是「反向传播的起点信号」它不直接修改参数，而是以链式法则为渠道，沿着网络从最后一层一路灌到最前面计算损失函数对每一个权重参数的偏导，再由优化器统一施加到参数上。</span>
+  </div>
+
+  <p class="mt-6">当然实践中处理的粒度不会这么细，而是向量化的处理全套偏导，推广成梯度张量这个概念，可以简单理解为就是偏导构成的向量，技术性的来说就是梯度是跟权重张量同形状的张量、代表每个权重 <span class="math-content">\theta</span> 都可以算出一个 <span class="math-content">\frac{\partial \mathcal{L}}{\partial \theta}</span></p>
+
+  <div class="math-content" data-display="1">\nabla \mathcal{L} \;=\; \begin{pmatrix} \frac{\partial \mathcal{L}}{\partial w_{11}} & \cdots & \frac{\partial \mathcal{L}}{\partial w_{1n}} \\ \vdots & \ddots & \vdots \\ \frac{\partial \mathcal{L}}{\partial w_{m1}} & \cdots & \frac{\partial \mathcal{L}}{\partial w_{mn}} \end{pmatrix} \;\in\; \mathbb{R}^{m \times n} \quad \text{与权重矩阵 } W \text{ 同形}</div>
+
+  <p class="mt-6">综合已有的几个候选方案来看，针对大模型 nextToken 预测任务最理想的损失函数显然是交叉熵 (Cross Entropy)，<strong>当任务被建模为分布逼近、输出层用 softmax 时，交叉熵是唯一能让"信息论意义"与"工程梯度"同时优雅的损失函数</strong>。</p>
+
+  <!-- 梯度更新流程 SVG -->
+  <figure class="mt-8">
+    <svg viewBox="0 0 740 340" role="img" class="w-full h-auto border border-stone-200 rounded bg-white" font-family="Georgia, serif">
+      <text x="360" y="26" text-anchor="middle" font-size="16" fill="#1c1917" font-weight="600">梯度更新：从损失到权重调整的完整链路</text>
+      <text x="360" y="44" text-anchor="middle" font-size="11" fill="#78716c" font-style="italic">θ_new = θ_old − η · ∂L/∂θ，每一步都朝着损失减小的方向微调</text>
+      <defs>
+        <marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#57534e"/>
+        </marker>
+      </defs>
+      <!-- 步骤 1: 前向传播 -->
+      <g>
+        <rect x="40" y="70" width="140" height="60" rx="2" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+        <text x="110" y="95" text-anchor="middle" font-size="12" fill="#1e3a8a" font-weight="600">前向传播</text>
+        <text x="110" y="113" text-anchor="middle" font-size="10" fill="#1e3a8a">输入 → logits → softmax</text>
+        <text x="110" y="145" text-anchor="middle" font-size="10" fill="#57534e">得到预测分布 Q</text>
+      </g>
+      <line x1="180" y1="100" x2="210" y2="100" stroke="#57534e" stroke-width="1.5" marker-end="url(#flow-arrow)"/>
+      <!-- 步骤 2: 计算损失 -->
+      <g>
+        <rect x="215" y="70" width="140" height="60" rx="2" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+        <text x="285" y="95" text-anchor="middle" font-size="12" fill="#92400e" font-weight="600">计算损失</text>
+        <text x="285" y="113" text-anchor="middle" font-size="10" fill="#92400e">L = −Σ pᵢ log qᵢ</text>
+        <text x="285" y="145" text-anchor="middle" font-size="10" fill="#57534e">交叉熵衡量 P 与 Q 差异</text>
+      </g>
+      <line x1="355" y1="100" x2="385" y2="100" stroke="#57534e" stroke-width="1.5" marker-end="url(#flow-arrow)"/>
+      <!-- 步骤 3: 计算梯度 -->
+      <g>
+        <rect x="390" y="70" width="140" height="60" rx="2" fill="#fce7f3" stroke="#9d174d" stroke-width="1.5"/>
+        <text x="460" y="95" text-anchor="middle" font-size="12" fill="#9d174d" font-weight="600">反向传播</text>
+        <text x="460" y="113" text-anchor="middle" font-size="10" fill="#9d174d">∂L/∂z_k = q_k − p_k</text>
+        <text x="460" y="145" text-anchor="middle" font-size="10" fill="#57534e">链式法则逐层回传梯度</text>
+      </g>
+      <line x1="530" y1="100" x2="560" y2="100" stroke="#57534e" stroke-width="1.5" marker-end="url(#flow-arrow)"/>
+      <!-- 步骤 4: 更新权重 -->
+      <g>
+        <rect x="565" y="70" width="140" height="60" rx="2" fill="#d1fae5" stroke="#065f46" stroke-width="1.5"/>
+        <text x="635" y="95" text-anchor="middle" font-size="12" fill="#065f46" font-weight="600">原地更新权重</text>
+        <text x="635" y="113" text-anchor="middle" font-size="10" fill="#065f46">θ ← θ − η · ∇L</text>
+        <text x="635" y="145" text-anchor="middle" font-size="10" fill="#57534e">优化器执行参数更新</text>
+      </g>
+      <!-- 循环箭头 -->
+      <path d="M635,130 L635,155 Q635,165 625,165 L110,165 Q100,165 100,155 L100,135" fill="none" stroke="#78716c" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <polygon points="100,138 96,148 104,148" fill="#78716c"/>
+      <text x="360" y="178" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">持续迭代：用更新后的权重再来一次</text>
+      <!-- 下方: 具体数值示例 -->
+      <g>
+        <text x="360" y="210" text-anchor="middle" font-size="13" fill="#1c1917" font-weight="600">数值示例：单步梯度更新（学习率 η = 0.01）</text>
+        <line x1="60" y1="220" x2="660" y2="220" stroke="#d6d3d1" stroke-width="0.8"/>
+        <!-- 旧权重 -->
+        <g>
+          <text x="80" y="248" text-anchor="start" font-size="11" fill="#44403c" font-weight="600">θ_old</text>
+          <rect x="140" y="234" width="80" height="24" fill="#f5f5f4" stroke="#a8a29e" rx="3"/>
+          <text x="180" y="251" text-anchor="middle" font-size="11" fill="#1c1917">0.5230</text>
+        </g>
+        <!-- 减号 -->
+        <text x="240" y="251" text-anchor="middle" font-size="16" fill="#44403c" font-weight="700">−</text>
+        <!-- η -->
+        <g>
+          <text x="265" y="248" text-anchor="start" font-size="11" fill="#44403c" font-weight="600">η</text>
+          <rect x="280" y="234" width="50" height="24" fill="#dbeafe" stroke="#1e40af" rx="3"/>
+          <text x="305" y="251" text-anchor="middle" font-size="11" fill="#1e3a8a">0.01</text>
+        </g>
+        <!-- 乘号 -->
+        <text x="345" y="251" text-anchor="middle" font-size="14" fill="#44403c" font-weight="700">×</text>
+        <!-- 梯度 -->
+        <g>
+          <text x="365" y="248" text-anchor="start" font-size="11" fill="#44403c" font-weight="600">∂L/∂θ</text>
+          <rect x="410" y="234" width="80" height="24" fill="#fce7f3" stroke="#9d174d" rx="3"/>
+          <text x="450" y="251" text-anchor="middle" font-size="11" fill="#9d174d">0.6000</text>
+        </g>
+        <!-- 等号 -->
+        <text x="510" y="251" text-anchor="middle" font-size="16" fill="#44403c" font-weight="700">=</text>
+        <!-- 新权重 -->
+        <g>
+          <text x="530" y="248" text-anchor="start" font-size="11" fill="#44403c" font-weight="600">θ_new</text>
+          <rect x="580" y="234" width="80" height="24" fill="#d1fae5" stroke="#065f46" rx="3"/>
+          <text x="620" y="251" text-anchor="middle" font-size="11" fill="#065f46" font-weight="600">0.5170</text>
+        </g>
+        <!-- 说明文字 -->
+        <text x="360" y="285" text-anchor="middle" font-size="11" fill="#57534e">0.5230 − 0.01 × 0.6000 = 0.5170</text>
+        <text x="360" y="305" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">梯度为正 → 权重减小 → 损失降低；每步只动一点点（η 极小），确保稳定收敛</text>
+        <text x="360" y="325" text-anchor="middle" font-size="10" fill="#78716c" font-style="italic">实际训练中会对模型内所有权重参数同时执行这一步，需要保存一个巨大的梯度张量</text>
+      </g>
+    </svg>
+    <figcaption class="mt-2 text-sm text-stone-500 text-center italic">训练: 不断循环上述「前向 → 损失 → 反向 → 原地更新」过程，每一轮让模型输出的分布更接近真实分布</figcaption>
+  </figure>
+
+  <!-- ====== 结语 ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">结语</h1>
+  <img class="r-link max-w-64 float-right" src="./lgtm.jpg" data-width="400" data-height="370" />
+
+  <p class="mt-6">一开始还感觉交叉熵会是很重的构造，大模型选它准是有过人的想法，结果求导出来才发现这种模式下的梯度就是预测概率和真实概率的差值，这一下子撞到对概率分布的直觉上：你不是想知道两个分布之间的差异吗？直接减法不就行了，可以很符合我对机器学习的想象，有种好像绕了一圈回来发现哦原来就这样的感觉。</p>
+
+  <p class="mt-6">通过大量的推导，至此我所有的不安都已解除，整体推导路线 review：<br/>直觉 → 概率 → 信息量 → 信息熵 → 交叉熵 → KL 散度 → 分类即分布逼近 → softmax + 交叉熵 → 方案对比和梯度 → 反向传播</p>
+
+  <blockquote class="my-8 border-l-4 border-amber-700 pl-5 text-stone-700 italic leading-relaxed">
+    &lt;|endoftext|&gt;
+  </blockquote>
+
+
+  <hr class="my-8 border-stone-300" />
+
+  <!-- giscus 占位符 -->
+  <div style="margin: 0 auto; max-width: 50rem; padding: 1rem; margin-top: 4rem;"><script src="https://giscus.app/client.js"
+          data-repo="eczn/eczn.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnk3OTQ1NjQ4OQ=="
+          data-category="文章评论区"
+          data-category-id="DIC_kwDOBLxo6c4CZPA4"
+          data-mapping="specific"
+          data-term="Article Discusstions: llm-cross-entropy"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="1"
+          data-input-position="top"
+          data-theme="preferred_color_scheme"
+          data-lang="zh-CN"
+          crossorigin="anonymous"
+          data-loading="lazy"
+          async></script></div>
+</main>
+
+<script class="r-link" src="./init-math-prism.js"></script>
+<script class="r-link" src="./aside.js"></script>
+<script> createAside(document.querySelector('main'), document.querySelector('aside')); </script>
+<script class="r-link" src="./numbering.js"></script>
+
+</body>
+</html>

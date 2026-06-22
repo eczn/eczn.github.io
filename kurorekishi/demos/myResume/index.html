@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Resume</title>
+    <script src="js/highlight.min.js"></script>
+    <script src="/kurorekishi/@public/jquery.min.js"></script>
+	<style>
+		@media screen and (max-width: 1800px) {
+			code, .resume, html {
+				font-size: 16px; 
+			}
+		}
+
+		@media screen and (max-width: 1024px) {
+			code, .resume, html {
+				font-size: 12px; 
+			}
+		}
+
+		@media screen and (max-width: 768px) {
+			code, .resume, html {
+				font-size: 10px; 
+			}
+			.css {
+				width: 100%!important;
+			}
+			.resume {
+				width: 100%!important;
+				background-color: rgba(255,255,255,.9)!important
+			}
+			h1:after {
+				background: none!important;
+			}
+
+			* {
+				transition: all .1s!important; 
+			}
+
+			img {
+				display: none; 
+			}
+		}
+
+		.resume {
+			font-family: "PT Sans", Menlo, Consolas, "-apple-system", BlinkMacSystemFont,"微软雅黑", Verdana, Arial, Helvetica, sans-serif;
+
+		}
+	</style>
+	<style class="sty-acc" id="sty"></style>
+	<style class="sty-acc" id="sty2"></style>
+	<style class="sty-acc" id="sty3"></style>
+</head>
+
+<body>
+    <div class="content">
+        <pre><code class="css" id="sty-input"></code></pre>
+    </div>
+    <pre><code class="resume"></code></pre>
+    <script src="dist2/bundle.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+/*layout.css*/
+img {
+	position: block; 
+	width: 30%; 
+}
+
+.container {
+	position: relative;
+	display: block;
+	width: 100%; 
+	height: 300px;
+}
+
+.abs {
+	position: absolute;
+}
+
+.rel {
+	position: relative;
+}
+.fix {
+	position: fixed;
+	z-index: -9;
+}
+
+.box {
+	position: relative;
+	margin-bottom: 128px;
+	display: block;
+	width: 500px; 
+	height: 500px;
+	background-color: #EBEBEB;
+	font-size: 12px;
+	text-align: center;
+	line-height: 50px;
+}
+.box > span {
+	width: 100px;
+	height: 100px;
+	display: block;
+
+	position: absolute;
+	top: 50%;
+	left: 50%; 
+	transform: translate(-50%, -50%);
+}
+.box > .mar {
+	width: 400px;
+	height: 400px;
+	background-color: rgb(250, 200, 150);
+}
+.box > .bor {
+	width: 300px;  
+	height: 300px; 
+	background-color: rgb(253, 220, 154);
+}
+.box > .pad {
+	width: 200px;
+	height: 200px;
+	background-color: rgb(194, 200, 137);
+}
+.box > .con {
+	width: 100px; 
+	height: 100px; 
+	background-color: rgb(137, 178, 190);
+}
+
+
+.dis {
+	font-size: 16px;
+}
+
+.dis span {
+	padding: .5em 0;
+	background-color: #EBEBEB;
+	margin: 2em 0; 
+}

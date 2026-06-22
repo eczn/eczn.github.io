@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>PraTice</title>
+	<link rel="stylesheet" href="css/mycss.css">
+	<script type="text/javascript" src="jquery-3.1.0.min.js"></script>
+</head>
+<body>
+	<!-- <div id="bg"></div> -->
+	<!-- 下面这个main包含了事实上的页面 -->
+	<div id="main" style="width: 600px;margin: 0 auto;">
+		<center id="pic12">
+			
+			<img src="image/001.jpg" width="300" align="top"><img src="image/002.jpg" height="300" align="top">
+		
+		
+			<img src="image/003.jpg" height="300" align="top"><img src="image/004.jpg" width="300" align="top">
+			
+		</center>
+		<div id="pixiv">Pixiv</div>
+
+		<!-- <h1>大家好，我是正文</h1> -->
+	</div>
+</body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#pixiv").mouseenter(function(){
+			var f = this; 
+			setTimeout(function(){
+				$(f).css("display","none");
+			},1000);
+		})
+	})
+</script>
+</html>

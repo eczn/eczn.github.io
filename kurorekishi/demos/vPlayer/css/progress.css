@@ -1,0 +1,47 @@
+/* progress.css */
+/* slide */
+
+.mp3-progress {
+	position: absolute;
+	bottom: 1px;
+
+	right: -174px;
+	z-index: -990;
+	width: 300px; 
+	height: 300px;
+	
+	border-radius: 200px;
+	border: 24px solid #FBB;
+	transition: all 1s!important;
+	clip: rect(0px 348px 348px 174px);
+}
+
+.rotating-init {
+	transform: rotate(0deg);
+	transition: all 1s;
+	/*transition: property duration timing-function delay;*/
+	animation-name: rotaing;
+	animation-duration: 1s;
+	animation-play-state: paused;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
+/*	animation-iteration-count: 2;
+	animation-direction: alternate;*/
+}
+
+.animation-go {
+	animation-play-state: running;
+}
+
+/*animation: name duration timing-function delay iteration-count direction;*/
+@keyframes rotaing {
+	0% {
+		transform: rotate(0deg);
+	} 100% {
+		transform: rotate(180deg);
+	}
+}
+
+.rotating-reset {
+
+}

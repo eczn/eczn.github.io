@@ -1,0 +1,60 @@
+/*image.css*/
+
+.img-container {
+	position: relative;
+	display: block;
+	color: #EEE;
+	font-size: 16px;
+	overflow: hidden;
+}
+
+.img-container img {
+	display: block;
+	width: 100%;
+}
+
+
+.img-container .intro-word {
+	position: relative;
+	z-index: 2;
+	padding: .5em 2px 1em 0;
+	border-right: 2px solid #BBB;
+
+	display: block;
+}
+
+.img-container .word-container {
+	opacity: 0;
+	position: absolute;
+	width: 30%; 
+	padding: 10% 5% 0 65%; 
+	bottom: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+	transition: opacity .6s;
+}
+
+.img-container:hover .word-container {
+	opacity: 1;
+}
+
+.img-container .circle {
+	display: block;
+	opacity: 0;
+	width: 130px;
+	height: 130px;
+	border: 2px solid #FFF;
+	border-radius: 100%; 
+	position: absolute;
+	top: 10%;
+	right: 5%;
+	background-color: rgba(0,0,0,.4);
+	transform: scale(2);
+	transition: opacity .6s, transform 1.2s; 
+}
+
+.img-container:hover .circle {
+	transform: scale(8);
+	opacity: 1;
+}

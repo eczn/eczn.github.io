@@ -1,0 +1,86 @@
+/*css-animate.css*/
+body > div {
+	transition: margin-top .3s; 
+}
+
+.ani-container {
+	position: relative;
+	display: block;
+	width: 100%; 
+	height: 600px; 
+	background-color: #EBEBEB;
+	background-image: url(../img/003.jpg);
+	background-repeat: no-repeat;
+	background-position: top center;
+	background-size: 100%;
+}
+
+.aniblock {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0; 
+
+	width: 20%;
+	height: 20%;
+
+	animation-name: ani;
+	animation-duration: 4s; 
+	animation-iteration-count: infinite;
+	animation-fill-mode: both; 
+}
+
+@keyframes ani {
+	0% {
+		top: 0;
+		left: 0%;
+		opacity: 1;
+	} 25% {
+		top: 0;
+		left: 80%;
+		opacity: .3;
+		background-color: #BBB;
+	} 50% {
+		top: 80%;
+		left: 80%;
+		opacity: .5;
+		background-color: #464;
+	} 75% {
+		top: 80%;
+		left: 0;
+		opacity: .8;
+		background-color: #446;
+	} 100% {
+		top: 0;
+		left: 0;
+		opacity: 1;
+	}
+}
+
+.aniblock + .aniblock {
+	animation-delay: .5s;
+}
+
+/* 为footer添加样式 */
+footer {
+	position: relative;
+	cursor: pointer;
+}
+
+footer:after {
+	content: "Night's Watch"; 
+	opacity: 0; 
+	position: absolute;
+	bottom: -128px;
+	font-size: 48px;
+	left: -20%;
+	display: block;
+	text-align: center;
+	width: 150%; 
+
+	transition: all .3s;
+}
+
+footer:hover::after {
+	opacity: 1; 
+}

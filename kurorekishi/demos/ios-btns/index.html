@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>iosBtn</title>
+	<link rel="stylesheet" href="test.css">
+</head>
+<body>
+	<div class="phone-container">
+		<header>
+			测试
+		</header>
+		<ul class="test">
+
+
+			<li class="word-00">
+				<span>全舰弹幕装填</span>
+			</li>
+
+			<li class="word-01">
+				<span>负载均衡</span>
+			</li>
+
+			<li class="word-02">
+				<span>超时重传</span>
+			</li>
+
+			<li class="word-03">
+				<span>抢占式进程调度</span>
+			</li>
+
+			<li class="word-04">
+				<span>PAC 模式</span>
+			</li>
+
+			<li class="word-05">
+				<span>尾递归优化</span>
+			</li>
+
+			<li class="word-06">
+				<span>模版缓存</span>
+			</li>
+
+			<li class="word-07">
+				<span>采用递归算法</span>
+			</li>
+
+			<li class="word-08">
+				<span>飞行模式</span>
+			</li>
+
+			<li class="word-09">
+				<span>自动登录</span>
+			</li>
+		</ul>
+	</div>
+
+	<script src="./ios.checkbox.js" type="text/javascript"></script>
+	<script>
+		var onClk = function(status){
+			console.log(status)
+		}
+
+		var btns = new Array(10).fill(0).map((_, idx) => {
+			var c = new IosCheckbox(); 
+
+			var targetClass = `.word-0${idx}`; 
+
+			c.launch(targetClass);
+			c.addEvt(onClk); 
+
+			return c; 
+		})
+	</script>
+</body>
+</html>

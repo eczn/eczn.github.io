@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>布局</title>
+	<!-- 适配移动端 -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<!-- ========== -->
+	<link rel="stylesheet" href="css/basic.css">
+	<link rel="stylesheet" href="css/footer.css">
+	<link rel="stylesheet" href="css/css-animate.css">
+	<link rel="stylesheet" href="css/layout.css">
+	<link rel="stylesheet" href="css/article.css">
+</head>
+
+<body>
+	<div>
+		<div></div>
+	</div>
+	<div class="red"></div>
+	<div class="green"></div>
+	<div class="blue"></div>
+	<div class="pink"></div>
+
+	<article>
+		<h1><a href="index.html">&lt; Return</a></h1>
+		<h1>CSS 盒式模型</h1>
+	</article>
+	<span class="box">
+		虚空
+		<span class="mar">margin</span>
+		<span class="bor">border</span>
+		<span class="pad">padding</span>
+		<span class="con">content</span>
+	</span>
+
+	<article>
+		<h1>行内元素、块级元素、行块元素</h1>
+		<h2>inline, block, inline-block</h2>
+	</article>
+	<span class="dis">
+		<span style="display: inline;">我是行内元素，你信吗？</span>
+		<span style="display: inline;">我是行内元素，你信吗？</span>
+		<span style="display: inline;">我是行内元素，你信吗？</span>
+		<span style="display: inline;">我是行内元素，你信吗？</span>
+		<span style="display: inline;">padding会造成覆盖，整个记事本似的</span>
+		<span style="display: block;text-align: center;">块级元素表示很赞</span>
+
+		<span style="display: inline-block;width: 200px;vertical-align: middle;">
+			我是个行块元素，拥有上面两种叼毛玩意的共同特性
+		</span>
+		<span style="display: inline-block;width: 150px;vertical-align: middle;">
+			比如我有块级元素的margin, padding, border 但是又不一定独占一行，可以像行内元素一样写在一行，
+			可以用text-align来水平居中，也可以用vertical-align来垂直居中 （其实就是中线对齐）
+		</span>
+		<span style="display: inline-block;width: 100px;vertical-align: middle;">
+			<h1>大标题</h1>
+		</span>
+	</span>
+
+	<article>
+		<h1>布局控制：position</h1>
+	</article>
+	<span class="container">
+		<span class="rel">
+			<img src="img/002.jpg" alt="">
+		</span>
+
+		<span style="top: 20px;left: 20px;" class="rel">
+			<img src="img/001.jpg" alt="">
+		</span>
+
+		<span class="rel">
+			<img src="img/002.jpg" alt="">
+		</span>
+
+		<span style="bottom: 0;left: 50%;" class="abs">
+			<img src="img/001.jpg" alt="">
+		</span>
+
+		<span style="bottom: 0;left: 0;width: 100%" class="fix">
+			<img src="img/001.jpg" alt="">
+		</span>
+	</span>
+	<footer>CSS.Layout V0.01</footer>
+
+	<!-- 为移动端优化 可以不看 -->
+	<script type="text/javascript" src="js/fastclick.min.js"></script>
+	<script>
+	document.addEventListener('DOMContentLoaded', function(){FastClick.attach(document.body);console.info('Fastclick Ready');}, false);
+	</script>
+</body>
+</html>

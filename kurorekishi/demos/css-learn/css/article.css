@@ -1,0 +1,33 @@
+/*article.css*/
+article {
+	font-size: 16px;
+}
+
+article h1 {
+	margin: .75em 0; 
+}
+
+article h2 {
+	font-size: 20px; 
+	margin: .4em 0;
+}
+
+article p {
+	margin-bottom: 1.5em; 
+}
+
+article code {
+	background-color: rgb(46,46,46);
+	color: #EEE;
+	display: block;
+	padding: 1em 1.4em;
+	font-family: "consolas";
+}
+
+article h1 {
+	margin: 1em 0; 
+}
+article h1 a{
+	color: #444;
+
+}

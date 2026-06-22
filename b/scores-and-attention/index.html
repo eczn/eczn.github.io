@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,minimal-ui"/>
+<meta name="format-detection" content="telephone=no" />
+<title>得分与注意力 | Eczn's Home</title>
+<meta name="description" content="关于这两天的一些新想法记录" />
+<link rel="icon" href="/favicon.png">
+
+<style id="CSS_VARS"></style>
+<style>html { font-size: var(--rem); }</style>
+<script>
+(function() {
+console.log('INIT CSS VAR');
+function loadCSSVars() {
+    const j = localStorage.getItem("CSS_VARS_3" /* STORAGE_KEY.CSS_VARS */);
+    const initialVars = initialCSSVars();
+    if (!j)
+        return initialVars;
+    try {
+        const result = {
+            ...initialVars,
+            ...JSON.parse(j)
+        };
+        console.log('loadCSSVars from storage', result);
+        return result;
+    }
+    catch (error) {
+        console.error('load css vars with error', error);
+        return initialVars;
+    }
+}
+function renderCSSVars(vars, style) {
+    const allDefine = Object.keys(vars).map(k => {
+        const v = vars[k];
+        const cssValue = typeof v === 'number' ? `${v}px` : v;
+        return `--${k}:${cssValue};`;
+    }).join('\n');
+    if (style) {
+        style.innerHTML = `:root { ${allDefine} }`;
+    }
+    else {
+        console.error(`style#CSS_VARS NotFound !`);
+    }
+}
+function initialCSSVars() {
+    let rem = 16;
+    // 移动端
+    if (typeof window !== 'undefined' && window.innerWidth <= 500) {
+        rem = Number(((window.innerWidth - 20) / 42).toFixed(1));
+        console.log('mobile calculated rem =>', rem);
+    }
+    return {
+        rem,
+        enableSmallerFont: false,
+        fontSmcp: 'source serif pro, serif',
+        fontCode: 'consolas, Menlo, monospace',
+        fontTitle: 'Noto Serif SC, serif',
+        fontArticle: 'source serif pro, LXGW WenKai',
+        fontSansSerif: 'sans-serif',
+    };
+}
+window.__initialCSSVars = loadCSSVars();
+renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
+})();
+</script>
+
+<!-- 站点自带的 Tailwind CSS CDN 全量加载，等价于 https://cdn.tailwindcss.com -->
+<script src="/cdn.tailwindcss.com/3.4.17.js"></script>
+<!-- MathJax 3 配置：TeX 输入 + SVG 输出 -->
+<script>
+  window.MathJax = {
+    loader: {load: ['[tex]/bbox']},
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      processEscapes: true,
+      packages: {'[+]': ['bbox']},
+    },
+    svg: {
+      fontCache: 'local',
+      scale: 1
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+      ignoreHtmlClass: '.*',
+      processHtmlClass: 'math-content',
+      enableAssistiveMml: false,
+      menuOptions: {
+        settings: {
+          assistiveMml: false,
+          collapsible: false,
+          explorer: false
+        }
+      }
+    },
+    startup: {
+      typeset: false
+    }
+  };
+</script>
+<!-- 站点自带的 MathJax 3: 实现公式渲染 -->
+<script src="/cdn.jsdelivr.net/mathjax/tex-svg.0516.js"></script>
+<!-- 站点自带的 Prism.js: 代码高亮：只引入核心 + 语言组件；主题使用本文件内定制的 Stone + Amber 配色 -->
+<script src="/cdn.jsdelivr.net/prismjs/prism-core.min.js"></script>
+<script src="/cdn.jsdelivr.net/prismjs/prism-clike.min.js"></script>
+<script src="/cdn.jsdelivr.net/prismjs/prism-javascript.min.js"></script>
+<script src="/cdn.jsdelivr.net/prismjs/prism-typescript.min.js"></script>
+<script src="/cdn.jsdelivr.net/prismjs/prism-bash.min.js"></script>
+
+<style>
+  /* ===========================================================
+      Prism 定制主题：Stone + Amber
+      - 与正文暖灰衬线风统一；所有颜色取自 Tailwind stone/amber/sky/emerald/rose
+      - 不设定 <pre> 的背景/内边距/圆角，交给页面里 Tailwind 的 <pre> 控制
+      =========================================================== */
+  code[class*="language-"],
+  pre[class*="language-"] {
+    color: #f5f5f4;                                             /* stone-100 */
+    text-shadow: none;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    /* font-size: inherit; */
+    line-height: 1.6;
+    tab-size: 2;
+    white-space: pre;
+  }
+  pre[class*="language-"],
+  pre > code[class*="language-"],
+  code[class*="language-"] {
+    /* background: transparent; */
+    /* padding: 0;
+    margin: 0; */
+  }
+
+  /* --- token 颜色 --- */
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata          { color: #78716c; font-style: italic; }   /* stone-500 */
+  .token.punctuation,
+  .token.operator       { color: #a8a29e; }                        /* stone-400 */
+  .token.keyword,
+  .token.boolean,
+  .token.atrule,
+  .token.important,
+  .token.selector       { color: #7dd3fc; }                        /* sky-300 */
+  .token.string,
+  .token.char,
+  .token.regex,
+  .token.attr-value     { color: #6ee7b7; }                        /* emerald-300 */
+  .token.number,
+  .token.constant,
+  .token.symbol         { color: #fcd34d; }                        /* amber-300 */
+  .token.function,
+  .token.function-name  { color: #fde68a; }                        /* amber-200 */
+  .token.class-name,
+  .token.builtin,
+  .token.tag            { color: #fda4af; }                        /* rose-300 */
+  .token.variable,
+  .token.parameter      { color: #f5f5f4; }                        /* stone-100 */
+  .token.property,
+  .token.attr-name      { color: #7dd3fc; }                        /* sky-300 */
+  .token.deleted        { color: #fb7185; }                        /* rose-400 */
+  .token.inserted       { color: #34d399; }                        /* emerald-400 */
+  .token.url            { color: #fcd34d; text-decoration: underline; }
+  .token.italic         { font-style: italic; }
+  .token.bold           { font-weight: 700; }
+</style>
+<style>
+  .math-content { display: inline; }
+  .math-content svg { width: 100%; }
+  .math-content[data-display="1"] { display: block; text-align: center; margin: 2.5rem 0; font-size: 135%; text-align: center; }
+  .math-content[data-display="1"] > * { display: inline-block; }
+  .MathJax[display="true"] { display: flex; justify-content: center;}
+
+  table caption {
+    caption-side: bottom;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+  }
+
+  body {
+    padding: 0 .75rem;
+  }
+
+  @media (min-width: 80rem) {
+    main {
+      margin-left: calc(50vw - 28rem + 8rem) !important;
+      margin-right: auto !important;
+    }
+  }
+
+  @media (min-width: 80rem) {
+    aside {
+      left: auto !important;
+      right: calc(50vw + 28rem - 8rem + 0.75rem) !important;
+    }
+  }
+  aside {
+    scrollbar-width: none;
+  }
+
+</style>
+</head>
+<body class="text-stone-800 font-serif">
+<!-- ============ 粘性导航（两个按钮：首页 | 返回） ============ -->
+<nav class="sticky top-0 z-40 bg-stone-50/90 backdrop-blur border-b border-stone-200">
+  <div class="max-w-4xl mx-auto px-6 py-3 flex items-center justify-center gap-4 text-sm">
+    <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-stone-600 hover:text-amber-800 hover:bg-amber-100 transition-all duration-150">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg>
+      首页
+    </a>
+    <span class="text-stone-300">|</span>
+    <a href="javascript:history.back()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-stone-600 hover:text-amber-800 hover:bg-amber-100 transition-all duration-150">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      返回
+    </a>
+  </div>
+</nav>
+
+<!-- ============ 左侧 fixed 目录（由 JS 根据正文 <h2> 动态生成） ============ -->
+<aside class="hidden xl:block fixed top-1/2 -translate-y-1/2 z-30 w-56 max-h-[80vh] overflow-y-auto pr-2 border-r border-stone-200"></aside>
+<main class="max-w-4xl mx-auto mt-16 px-6 pb-24 text-stone-800 leading-relaxed">
+  <!-- ====== Header ====== -->
+  <header id="top" class="pt-16 pb-10">
+    <h1 data-no-numbering class="font-serif text-6xl font-semibold tracking-tight text-stone-900 leading-tight">得分与注意力</h1>
+    <div class="mt-2 flex items-center gap-2 text-sm text-stone-500">
+      <span>阅读 ≈ 10 mins</span>
+      <span class="text-stone-300">·</span>
+      <span>推荐使用 Mac 阅读</span>
+      <span class="text-stone-300">·</span>
+      <span>powered by ecznlai</span>
+      <span class="text-stone-300">·</span>
+      <span>2026-05-27</span>
+    </div>
+  </header>
+
+  <p class="mt-6">Q/K/V 给人一种强烈的诱导，让人不得不去设想一个 “查-键-值” 的数据库搜索过程，似乎在暗示一种语言内在的语法规则，学得越多越困惑，靠字面的 query key value 的自然语言说法是理解不了 LLM 如何建模语言的，必须拆开实际的计算过程才能明白为什么。</p>
+
+  <h1 class="mt-16 mb-4 text-3xl font-bold text-stone-900">Q/K/V 的诱导</h1>
+  <p class="mt-6">
+    任何一个初学者，都会被 Q/K/V 的命名所吸引，并会构想：Q 为什么是 query、K 为什么是 key、V 为什么是 value，然后会持续追问 <span class="math-content">QK^T</span> 在查询什么？最后点乘一个 <span class="math-content">V</span> 又代表什么？<strong>总之，这会陷入一个还原论的怪圈：这些计算是否代表了某种特定的 “语法过程” ？</strong>比如注意力是注意到其中的主谓宾语法关系？
+  </p>
+  <p class="mt-6">
+    虽然模型内部分注意力头确实具备某些语法结构的偏好，但那是梯度下降的结果，要想全面理解 QKV 必须要抛弃字面意思，只从纯粹的矩阵计算（张量计算）看看其过程细节，只有在这个层面上才能真正理解注意力机制如何实现 token 间俩俩互相看看并给出语义的建模过程，以下是今天要讨论的内容，首先 Q K V 三个由可学习的矩阵投影而来，然后是自注意力公式、及其构件： 
+  </p>
+
+  <div class="math-content" data-display="1">
+    \begin{aligned}
+    \operatorname{Attention}(Q, K, V) &= \operatorname{softmax}(\frac{QK^T}{\sqrt{d}} + M)V \\[6pt]
+                 scores &= \frac{QK^T}{\sqrt{d}} \\[6pt]
+                 maskedScores &= scores + M \\[6pt]
+                 M \, 代表因果掩&码矩阵,\, 具体怎么个加法 ? \\[6pt]
+                 \operatorname{softmax}(masked&Scores) 具体计算是怎样的 ? \\[6pt]
+                 \operatorname{softmax}(masked&Scores) \cdot V 代表了什么 ?
+    \end{aligned}
+  </div>
+
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">建模：token 间俩俩相互看看</h1>
+  <p class="mt-6">
+    LLM 是自回归输出的，每次生成 nextToken 都要回头看看当前的 “上下文”，怎么看呢？最直接的方式就是弄一个方阵，row 行代表 token 下标，col 列代表 row 对 col 的 “关注度得分” 或者说 “注意力得分”，为了让建模能实现 token 只关注历史 token，需要对每行未来的注意力得分掩盖为 <span class="math-content">-\infty</span> 代表不需要关注，即需要盖住 i 行 > j 列的格子：
+  </p>
+  <div class="math-content" data-display="1">
+    maskedScores = \begin{bmatrix}
+      1 & 2 & 3 & 4 \\
+      1 & 2 & 3 & 4 \\
+      1 & 2 & 3 & 4 \\
+      1 & 2 & 3 & 4 \\
+    \end{bmatrix} +
+    \underbrace{\begin{bmatrix}
+    0 & -\infty & -\infty & -\infty \\
+    0 & 0 & -\infty & -\infty \\
+    0 & 0 & 0 & -\infty \\
+    0 & 0 & 0 & 0 \\
+    \end{bmatrix}}_{因果掩码矩阵 \,\, M}
+    =
+    \begin{bmatrix}
+    1 & -\infty & -\infty & -\infty \\
+    1 & 2 & -\infty & -\infty \\
+    1 & 2 & 3 & -\infty \\
+    1 & 2 & 3 & 4 \\
+    \end{bmatrix}
+  </div>
+
+  <p class="mt-6">
+    正是因为要实现 token 间俩俩相互看看，最直接且覆盖最全面的方式就是通过一个 <span class="math-content">\mathbb{R}^{T \times T}</span> 的方阵直接表达，T 代表总长度，每行代表对应 token 下标对其他 token 的 “注意力得分”，并通过设置 <span class="math-content">-\infty</span> 的方式实现对后续 token 的屏蔽
+  </p>
+
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">好，那么：注意力得分方阵如何拿到？</h1>
+  <p class="mt-6">最基础的方式，你不是要 <span class="math-content">\mathbb{R}^{T \times T}</span> 方阵吗，直接用嵌入后的 <span class="math-content">X \in \mathbb{R}^{T \times d}</span> 凑一个出来不就行了: (d 是词嵌入维度)</p>
+  <div class="math-content" data-display="1">
+    \begin{aligned}
+      maskedScore &= X \cdot X^T + M \\[6pt]
+      &= \underbrace{\begin{bmatrix}
+        t_0 \\
+        t_1 \\
+        t_2 \\
+        t_3 \\
+      \end{bmatrix} \cdot \begin{bmatrix}
+        t_0 & t_1 & t_2 & t_3 \\[6pt]
+      \end{bmatrix}}_{
+        [T \times d] \cdot [d \times T] = [T \times T]
+      } + M \\[6pt]
+
+                  &= \begin{bmatrix}
+                    t_0 \cdot t_0 & -\infty & -\infty & -\infty \\
+                    t_1 \cdot t_0 & t_1 \cdot t_1 & -\infty & -\infty \\
+                    t_2 \cdot t_0 & t_2 \cdot t_1 & t_2 \cdot t_2 & -\infty \\
+                    t_3 \cdot t_0 & t_3 \cdot t_1 & t_3 \cdot t_2 & t_3 \cdot t_3 \\
+                  \end{bmatrix} \in \mathbb{R}^{T \times T}
+    \end{aligned}
+  </div>
+  <p class="mt-6">
+    这种方式可以是可以，但会有很多问题，比如点积运算的最大特点就是跟自己越像的值越大，这种方式会让模型更关注跟自己长得像的词，其次是语言是有序的：“我/爱/打/游戏” 中的 <span class="math-content">(我_{t_0} \to 爱_{t_1})</span> 跟 <span class="math-content">(爱_{t_1} \to 我_{t_0})</span> 的语义截然不同，但点积运算满足交换律，导致这种方阵并不能准确理解位置和语义：
+  </p>
+
+  <div class="math-content" data-display="1">
+    我_{t_0} \cdot 爱_{t_1} = 爱_{t_1} \cdot 我_{t_0}
+  </div>
+
+  <p class="mt-6">
+    虽然可以通过位置编码解决这类问题，但这只是给 token 下标做了建模，远不足以表达一个 token 看另外一个 token 的语言关系，因此需要给每个 token 配备两套不同的投影以适配它们在注意力看与被看的角色切换：分别对应 <span class="math-content">Q</span> 和 <span class="math-content">K</span>，它们通过可学习的投影矩阵 <span class="math-content">W_Q</span> 和 <span class="math-content">W_K</span> 得到。
+  </p>
+
+  <div class="math-content" data-display="1">
+    \begin{aligned}
+      Q = X \cdot W_Q = \begin{bmatrix}
+        q_0 \\
+        q_1 \\
+        q_2 \\
+        q_3 \\
+      \end{bmatrix}
+      \qquad & \text{—— “各 token 主动看什么” （发起注意）}   \\[6pt]
+
+      K = X \cdot W_K = \begin{bmatrix}
+        k_0 \\
+        k_1 \\
+        k_2 \\
+        k_3 \\
+      \end{bmatrix}
+      \qquad & \text{—— “各 token 能提供什么” （接受注意）}
+    \end{aligned}
+  </div>
+
+  <p class="mt-4">
+    这样一来，<span class="math-content">(我_{t_0} \to 爱_{t_1})</span> 的注意力得分就变成了 <span class="math-content">q_{t_0} \cdot k_{t_1}</span>，而 <span class="math-content">(爱_{t_1} \to 我_{t_0})</span> 变成了 <span class="math-content">q_{t_1} \cdot k_{t_0}</span>。因为 <span class="math-content">W_Q \neq W_K</span>，token “主动看”和“被动看”被建模成两个可学习的投影矩阵，通过训练塑造成完全不同的角色模式（梯度）
+  </p>
+  
+  <p class="mt-6">
+    <span class="math-content">Q</span> 和 <span class="math-content">K</span> 的形状都是 <span class="math-content">\mathbb{R}^{T \times d}</span>，因此乘积 <span class="math-content">QK^T</span> 的形状为 <span class="math-content">\mathbb{R}^{T \times T}</span>，这种内积运算能让 Q 的每一行跟 K 的每一行直接算内积相似度作为注意力得分
+    最后加上因果掩码，得到的 masked scores（注意力得分，假设 T = 4）
+  </p>
+
+  <div class="math-content" data-display="1">
+    maskedScores = \begin{bmatrix}
+      1 & 2 & 3 & 4 \\
+      1 & 2 & 3 & 4 \\
+      1 & 2 & 3 & 4 \\
+      1 & 2 & 3 & 4 \\
+    \end{bmatrix} +
+    \begin{bmatrix}
+    0 & -\infty & -\infty & -\infty \\
+    0 & 0 & -\infty & -\infty \\
+    0 & 0 & 0 & -\infty \\
+    0 & 0 & 0 & 0 \\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    1 & -\infty & -\infty & -\infty \\
+    1 & 2 & -\infty & -\infty \\
+    1 & 2 & 3 & -\infty \\
+    1 & 2 & 3 & 4 \\
+    \end{bmatrix}
+  </div>
+
+  <p class="mt-6">
+    最后，不同量级数值容易造成数值爆炸或消失的问题，因此需要对注意力得分做归一化处理，把一个词看其他词的总注意力当作单位 1，然后按其具体得分进行分配，最经典的方式是 softmax，一方面他永远大于 0 避免负值注意力得分的解释问题，另外一方面它使输出光滑限定在 <span class="math-content">[0, 1]</span> 内：
+  </p>
+  <div class="math-content" data-display="1">
+    \begin{aligned}
+    \operatorname{softmax}( scores + M ) = \frac{e^{scores + M}}{\sum_{i=1}^T e^{scores + M}}
+    \end{aligned}
+  </div>
+
+  <div class="math-content" data-display="1">
+    \begin{aligned}
+    \operatorname{softmax}( scores + M ) = \begin{bmatrix}
+      1.0 & 0.0 & 0.0 & 0.0 \\
+      0.269 & 0.731 & 0.0 & 0.0 \\
+      0.090 & 0.245 & 0.665 & 0.0 \\
+      0.032 & 0.087 & 0.237 & 0.644 \\
+    \end{bmatrix}
+    \end{aligned}
+  </div>
+
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">如何解释注意力得分方阵？</h1>
+  <p class="mt-6">
+    注意力得分只描述了 token 间的关注度，并没有指出这种关注度应该是怎样的语义，因此需要通过一个可学习的矩阵直接投影得到 <span class="math-content">V = X \cdot W_V</span> 最后计算 <span class="math-content">scores \cdot V</span>，行列扫过每一个 V 实现加权分配以表达：这样的注意力得分能代表什么信息：
+  </p>
+  <div class="math-content" data-display="1">
+    \begin{aligned}
+      \operatorname{softmax}( scores + M ) \cdot V &= \begin{bmatrix}
+        \bbox[#FFF3E0,2pt]{1.0} & \bbox[#FFE0B2,2pt]{0.0} & \bbox[#FFCC80,2pt]{0.0} & \bbox[#FFB74D,2pt]{0.0} \\
+        \bbox[#E6F5E6,2pt]{0.269} & \bbox[#C8E6C9,2pt]{0.731} & \bbox[#A5D6A7,2pt]{0.0} & \bbox[#81C784,2pt]{0.0} \\
+
+        0.090 & 0.245 & 0.665 & 0.0 \\
+        0.032 & 0.087 & 0.237 & 0.644 \\
+      \end{bmatrix} \cdot
+      \begin{bmatrix}
+        \bbox[#FFF3E0,3pt]{\bbox[#E6F5E6,1pt]{v0}} \\
+        \bbox[#FFE0B2,3pt]{\bbox[#C8E6C9,1pt]{v1}} \\
+        \bbox[#FFE0B2,3pt]{\bbox[#A5D6A7,1pt]{v2}} \\
+        \bbox[#FFB74D,3pt]{\bbox[#81C784,1pt]{v3}} \\
+      \end{bmatrix} \\[6pt]
+      \operatorname{Attention}(Q, K, V) &= \begin{bmatrix}
+        \bbox[#FFE0B2,2pt]{1.0 * v0 + \underbrace{0 * v1 + 0 * v2 + 0 * v3}_{后面的看不到了}} \\
+        \bbox[#A5D6A7,2pt]{0.269 * v0 + 0.731 * v1 + \underbrace{0 * v2 + 0 * v3}_{后面的看不到了}} \\
+        0.090 * v0 + 0.245 * v1 + 0.665 * v2 + 0 * v3 \\
+        0.032 * v0 + 0.087 * v1 + 0.237 * v2 + 0.644 * v3 \\
+      \end{bmatrix}
+    \end{aligned}
+  </div>
+
+  <p class="mt-6">
+    即用 scores 点乘扫一遍 V，依据 scores 内的行权重代表某 token 应该对其他 token 的关注量，0~1 的系数，在这个层面上实现了 token 对 token 的注意力分配，以及这样的注意力分配能得到什么，复杂度 O(n^2)，比如第一行是第一个 token 通常是 bos，启动只需要关注它自己，因此只有 <span class="math-content">v0</span> 有注意力分配，其他都是 0，第二行则关注自己和前一个，通过因果编码让它不要注意到未来的 token，依次类推，从这个角度实现了语义的捕捉和映射，达成了 token 间俩俩互相看看并依据看看的结果得到注意到的语义，以 scores 表达 token 间的注意力分配系数、以最后的点乘 V 得到注意到的语义，最后通过梯度塑造 <span class="math-content">W_Q \, W_K \, W_V</span>  
+  </p>
+
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">为什么一定要 V ？不可以直接 V = X 吗？</h1>
+  <p class="mt-6">如果 V 是 X，那么 attention 就变成了:</p>
+  <div class="math-content" data-display="1">
+    \operatorname{Attention}(Q, K, X) = \operatorname{softmax}( maskedScores ) \cdot X
+  </div>
+  <p class="mt-6">
+    如果 V 还是原来输入的 X 那注意力得分方阵的含义就会变成加权调整输入的 X 了，这只能得到 X 的凸包，表达能力严重受限，即解空间太小了远比不上 <span class="math-content">V = X \cdot W_V</span> 这里展开解释一下凸包：
+  </p>
+  <p class="mt-6">
+    当 <span class="math-content">V = X</span> 时，我们只能得到这样的输出： 
+  </p>
+  <div class="math-content" data-display="1">
+    O_i = \sum_{j=1}^{n} a_{ij} \cdot X_j \quad , \qquad a_{ij} \in [0, 1] \,\,且\,\, \sum_{j=1}^{n} a_{ij} = 1
+  </div>
+
+  <p class="mb-6">
+    这个公式表达了 <span class="math-content">O_{i}</span> 必定位于所有输入的 <span class="math-content">X_i</span> 所围成的凸包之内，意味着：
+  </p>
+
+  <ul class="mt-4 space-y-2 list-disc pl-6 leading-relaxed">
+    <li>
+      模型所能创造的任何 <span class="math-content">O_{i}</span> 输出，都只能是已有词向量 <span class="math-content">X_{i}</span> 之间的词加权 “混合物” （想象一个简化的二维凸包 {(0, 1), (1, 1), (1, 0)} 这三个向量构成的一个凸包就是一个三角形，输出只能在这个三角形内）
+    </li>
+    <li>
+      表达能力被当前上下文长度限制住，如果输入序列只有“我/爱/打/游戏”这4个词，那模型的输出，只能落在这 4 个词的词向量围成的那个凸包空间里。
+    </li>
+    <li>
+      深层网络失去意义，无论堆叠12层还是120层，模型只能反复地对同一个输入 X 内做凸组合输出，输出永远被困在这个凸包里，scaling 失效
+    </li>
+  </ul>
+  <p class="mt-6">
+    所以引入 <span class="math-content">W_K</span> 是必要且必须的，它将真正代表注意力分数代表的语义，而不是简单的“关注度”，关注度只是从这个语义里加权抽取出来，这也是它为啥叫做 Value 的原因。
+  </p>
+
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">不要神化 “注意力” 这个词，更应该关注数学与建模</h1>
+  <p class="mt-6">
+    “注意力” 这个词只是一个比喻，用于解释上面的加权分配是一种好理解的说法，它完全可以是 “对其他 token 的重视度” “语义关联” 等等什么别的都行，最重要的是，用数学表达建模才是最重要的：
+  </p>
+
+  <ul class="mt-4 space-y-2 list-disc pl-6 leading-relaxed">
+    <li>建模某个 token 应该如何关注其他 token 的方式最直接的方式就是方阵和因果掩码，但代价是 <span class="math-content">O(N^2)</span> 的复杂度 </li>
+    <li>masked 掩码设计实现让 token 不能关注到未来的 token，也就是对未来的 token 的注意力分配直接设置为 <span class="math-content">-\infty</span></li>
+    <li>
+      如何定义注意力得分呢？通过 <span class="math-content">Q \cdot K^T</span> 进行，分别通过 W_Q W_K 投影实现主动看和被动看的建模
+    </li>
+    <li>
+      绞尽脑汁地去详细拆解 Attention "自然语言过程" 以及什么 "比喻直觉" 并没有多大意义，很容易陷入馋妄，这类思考不能让你明辨模型的构造和解释
+    </li>
+    <li>大模型为什么能成是因为对 nextToken 问题的正确建模，以及理论和工程均堪称优雅的交叉熵损失函数和梯度 <span class="math-content">\dfrac{\partial \mathcal{L}}{\partial z_k} \,\, = \,\, q_k - p_k</span>，以其作为反向传播的信号起点，依靠残差流梯度，实现深网损失的稳定下降</li>
+  </ul>
+  <p class="mt-6">
+    由于注意力机制在设计上非常简洁，且其主要运算集中在 MatMul，非常适合 GPU 实现大规模 scale，能达到骇人的参数量和推理效果。（大概率几年内估计都没新的架构能直接替代了，资源虹吸太厉害了，其他结构的研究更难拿到经费和算力）
+  </p>
+
+
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">结语</h1>
+  <p class="mt-6">
+    从纯粹的语义过程来看：注意力机制通过加权求和的方式实现了 token 间互相看看的建模，这个看是在词向量空间内的看，不是自然语言的那种主谓宾的看，最后通过 V 将这份得分转为 hidden_state 代表高维语义。
+  </p>
+  <p class="mt-6">
+    从纯粹的计算角度来看：上下文越长，分配的注意力越容易稀疏，这个稀疏在数学上指的是 softmax 的项增多后更容易造成熵增，这会给模型聚焦关键信息带来困难，是“长度外推”和“长文本”能力的一个核心挑战；另外，历史计算过的 K V 未来可以不用在算，这是 KV-Cache 的优化原理
+  </p>
+
+  <!-- giscus 占位符 -->
+  <div style="margin: 0 auto; max-width: 50rem; padding: 1rem; margin-top: 4rem;"><script src="https://giscus.app/client.js"
+          data-repo="eczn/eczn.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnk3OTQ1NjQ4OQ=="
+          data-category="文章评论区"
+          data-category-id="DIC_kwDOBLxo6c4CZPA4"
+          data-mapping="specific"
+          data-term="Article Discusstions: scores-and-attention"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="1"
+          data-input-position="top"
+          data-theme="preferred_color_scheme"
+          data-lang="zh-CN"
+          crossorigin="anonymous"
+          data-loading="lazy"
+          async></script></div>
+</main>
+
+<script class="r-link" src="./init-math-prism.js"></script>
+<script class="r-link" src="./aside.js"></script>
+<script> createAside(document.querySelector('main'), document.querySelector('aside')); </script>
+<script class="r-link" src="./numbering.js"></script>
+
+</body>
+</html>
