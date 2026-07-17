@@ -43,7 +43,7 @@ System.register(['react', './substitution-demo/substitution-demo.js', './substit
           author: 'eczn',
           category: '计算机科学',
           intro: genIntro(),
-          time: new Date('2026-07-15 00:00'),
+          time: new Date('2026-07-16 01:00'),
           bookLayout: 'full',
       }));
       async function initialProps(context) {
