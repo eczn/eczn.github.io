@@ -13,6 +13,7 @@ System.register([], (function (exports, module) {
 			module.import('./css-matrix3d-calc/index.blog.js');
 			module.import('./drawing-250101/index.blog.js');
 			module.import('./eczn-home-intro/index.blog.js');
+			module.import('./eczn-preface-for-sicp/index.blog.js');
 			module.import('./ecznscript-dev-250325/index.blog.js');
 			module.import('./ecznscript/index.blog.js');
 			module.import('./he-learn-eda-teacher-jiehang/index.blog.js');

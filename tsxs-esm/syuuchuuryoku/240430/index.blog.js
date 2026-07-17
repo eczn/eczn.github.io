@@ -25,7 +25,6 @@ System.register(['react', 'rally/@@', './sub.js'], (function (exports) {
                 author: 'eczn',
                 category: '注意力训练',
                 time: new Date('2024-04-30 07:14'),
-                isDraft: true,
             }));
             async function initialProps(context) {
                 return {

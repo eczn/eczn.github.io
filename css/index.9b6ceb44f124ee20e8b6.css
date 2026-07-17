@@ -1567,10 +1567,15 @@ h6.std-title {
 .std-footnote-ref .std-ref-link:active {
   opacity: 0.5;
 }
+.std-footnote-ref .std-ref-link.__inactive {
+  color: #0000ae;
+  transform: translateY(0.25em);
+}
 .std-footnote-ref .std-ref-link.__active {
   color: red;
   background-color: yellow;
   opacity: 1;
+  transform: translateY(0em);
 }
 .std-ref-content {
   display: block;

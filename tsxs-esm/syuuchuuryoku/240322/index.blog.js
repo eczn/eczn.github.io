@@ -33,7 +33,6 @@ System.register(['react', 'rally/@@', './base64-alphabet-defined.png.js', './ecz
                 author: 'eczn',
                 category: '注意力训练',
                 time: new Date('2024-03-22 23:44'),
-                isDraft: true,
             }));
             async function initialProps(context) {
                 return {

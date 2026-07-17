@@ -23,7 +23,6 @@ System.register(['react', 'rally/@@', './bigint-add.js'], (function (exports) {
                 author: 'eczn',
                 category: '注意力训练',
                 time: new Date('2024-05-08 22:20'),
-                isDraft: true,
             }));
             async function initialProps(context) {
                 return {
