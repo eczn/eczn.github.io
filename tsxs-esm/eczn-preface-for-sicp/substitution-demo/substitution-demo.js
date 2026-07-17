@@ -27,13 +27,13 @@ System.register(['react', './demo-code.js', './demo-controls.js', './demo-intro.
                     intro: '从 (car _123) 开始，依据前面提到的代换 (Substitution) 化简这个式子。建议你最好纸笔试过、或者跟着这里一步一步推导。',
                 },
                 {
-                    title: '第二步：展开 car 的定义',
+                    title: '第二步：找到和展开 car 的定义',
                     sexp: compile('((lambda (z) (@nobreak (z (lambda (p q) p)))) (@inlayHint z _123))'),
                     intro: '根据 car 的定义 (define (car z) (z (lambda (p q) p)))，将 car 替换为它的 lambda 形式。_123 作为实参传入，形参 z 绑定到 _123。',
                 },
                 {
                     title: '第三步：参数代入展开',
-                    sexp: compile('((@inlayHint z _123) (@nobreak (lambda (p q) p)))'),
+                    sexp: compile('((@inlayHint z _123) (@nobreak (@inlayHint 给定pq返回p (lambda (p q) p))))'),
                     intro: '将形式参数 z 替换为实际参数 _123，原式化简为 (_123 (lambda (p q) p))。接下来处理 _123 就行',
                 },
                 {
@@ -134,6 +134,7 @@ System.register(['react', './demo-code.js', './demo-controls.js', './demo-intro.
         .scheme-inlay-hint {
           position: relative;
           display: inline-block;
+          white-space: nowrap;
         }
         .scheme-inlay-hint::after {
           content: attr(data-hint);
@@ -151,14 +152,14 @@ System.register(['react', './demo-code.js', './demo-controls.js', './demo-intro.
       ` } }),
                     React.createElement(DemoCode, { code: render2jsx(cur.sexp) }),
                     React.createElement("div", { style: {
-                            padding: '1.5rem 0px',
+                            padding: '1.5rem 0rem',
                             backgroundColor: '#fafbfc',
                             borderLeft: '1px solid #e0e0e0',
                             borderRight: '1px solid #e0e0e0',
-                            overflowX: 'auto',
+                            overflowX: 'scroll',
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'center',
+                            justifyContent: 'safe center',
                             minHeight: '80px',
                             boxSizing: 'border-box',
                             fontSize: '12px',

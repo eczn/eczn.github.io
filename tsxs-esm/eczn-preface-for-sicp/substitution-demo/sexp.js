@@ -13,6 +13,7 @@ System.register(['react'], (function (exports) {
                 compile: compile
             });
 
+            // 构造并解释 sexp 使其适配不同的渲染模式
             const CTX0 = { isFuncPos: false, isLambdaParam: false };
             // ── 分类 ──────────────────────────────────────────────────
             function clsOf(tok, c) {
@@ -226,7 +227,8 @@ System.register(['react'], (function (exports) {
                                     backgroundColor: '#ffffff',
                                     display: 'flex',
                                     alignItems: 'center',
-                                } }, SexpCell({ sexp: sexp[2] }))));
+                                } },
+                                React.createElement(SexpCell, { sexp: sexp[2] }))));
                     default:
                         break;
                 }
@@ -240,43 +242,14 @@ System.register(['react'], (function (exports) {
                     React.createElement(SexpCell, { sexp: $0 }))));
                 return (React.createElement("div", { className: "main-cell", style: {
                         display: 'inline-flex',
+                        flexWrap: 'nowrap',
                         flexDirection: 'row',
                         border: `2px solid ${CONS_CELL_BORDER}`,
                         borderRadius: '2px',
-                        overflow: 'hidden',
                         fontFamily: 'Consolas, Monaco, Menlo, monospace',
                         lineHeight: 1.6,
                     } }, jsxs));
             }
-            // 废案
-            // return (
-            //   <div className="main-cell" style={{
-            //     display: 'inline-flex',
-            //     flexDirection: 'row',
-            //     border: `2px solid ${CONS_CELL_BORDER}`,
-            //     borderRadius: '4px',
-            //     overflow: 'hidden',
-            //     fontFamily: 'Consolas, Monaco, Menlo, monospace',
-            //     fontSize: '14px',
-            //     lineHeight: 1.6,
-            //   }}>
-            //     <div style={{
-            //       padding: '4px 10px',
-            //       backgroundColor: '#e8ecf1',
-            //       color: '#1a1a2e',
-            //       whiteSpace: 'nowrap',
-            //       display: 'flex',
-            //       alignItems: 'center',
-            //     }}>{car}</div>
-            //     {cdr && <div style={{
-            //       padding: '4px 10px',
-            //       borderLeft: `2px solid ${CONS_CELL_BORDER}`,
-            //       backgroundColor: '#ffffff',
-            //       display: 'flex',
-            //       alignItems: 'center',
-            //     }}>{cdr}</div>}
-            //   </div>
-            // );
 
         })
     };

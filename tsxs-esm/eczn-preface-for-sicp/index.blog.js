@@ -216,7 +216,7 @@ System.register(['react', './substitution-demo/substitution-demo.js', './substit
 ; (lambda (p q) q) 代表有两个参数 p q, 代换成 q 返回 (返回右边的)
     `.trim() }),
               React.createElement(P, null, "\u8981\u7406\u89E3\u4E0A\u8FF0\u8FC7\u7A0B\uFF0C\u5173\u952E\u5728\u4E8E\u4EE3\u6362\uFF0C\u7ED9\u4E2A\u4F8B\u5B50\uFF0C\u4F60\u53EF\u4EE5\u5B9A\u4E49\u8FD9\u79CD\u7ED3\u6784\uFF0C\u6BD4\u5982\u4E00\u4E2A\u94FE\u8868 `1 \u2192 2 \u2192 3 \u2192 nil`\uFF1A"),
-              React.createElement(P, null,
+              React.createElement(P, { center: true },
                   React.createElement(SexpCell, { sexp: compile('(cons 1 (cons 2 (cons 3 nil)))') })),
               React.createElement(Hr, null),
               React.createElement(Code, { lang: "scheme", source: `
@@ -230,7 +230,7 @@ System.register(['react', './substitution-demo/substitution-demo.js', './substit
             ; 再次强调，你一定要拿出纸笔一层层化简/代换
             ; 才能知道这里到底在做什么，否则后面文章不用看了
     `.trim() }),
-              React.createElement("textarea", { placeholder: "\u8FD9\u91CC\u7ED9\u4F60\u51C6\u5907\u597D\u4E86\u8349\u7A3F\u7EB8\uFF0C\u4F60\u53EF\u4EE5\u5728\u8FD9\u91CC\u76F4\u63A5\u6572\u4F60\u7684\u63A8\u5BFC", style: {
+              React.createElement("textarea", { placeholder: "\u8FD9\u91CC\u7ED9\u4F60\u51C6\u5907\u597D\u4E86\u8349\u7A3F\u7EB8\uFF0C\u4F60\u53EF\u4EE5\u5728\u8FD9\u91CC\u76F4\u63A5\u6572\u4F60\u7684\u63A8\u5BFC\uFF0C\u6216\u8DDF\u968F\u4E0B\u9762\u7684\u4EA4\u4E92\u5F0F\u4EE3\u6362\u6F14\u793A\u6765\u7406\u89E3 cons \u7684\u4EE3\u6362\u8FC7\u7A0B", style: {
                       width: '100%',
                       minHeight: '15rem',
                       boxSizing: 'border-box',
@@ -286,7 +286,7 @@ System.register(['react', './substitution-demo/substitution-demo.js', './substit
       `.trim() }),
                   React.createElement(ImgDynamic, { file: imagePairsListsObject })),
               React.createElement(P, null, "\u8FD9\u4E9B\u65B0\u8BED\u6CD5\u5F88\u5927\u7A0B\u5EA6\u4E0A\u88AB\u62EC\u53F7\u548C\u524D\u7F00\u8868\u8FBE\u7EDF\u4E00\u5728\u4E00\u8D77\u4E86\uFF0C\u5B83\u4EEC\u8DDF define \u5730\u4F4D\u7C7B\u4F3C\u4E86\uFF0C\u662F\u5173\u952E\u5B57\uFF1B\u4E8B\u5B9E\u4E0A define \u4E5F\u53EF\u4EE5\u662F\u4E00\u4E2A\u51FD\u6570\u4EE3\u6362... \u7279\u522B\u4F60\u771F\u7684\u5728\u505A\u81EA\u4E3E\u7684\u65F6\u5019\u4F60\u4F1A\u53D1\u73B0 define \u5C31\u662F\u4E00\u4E2A\u4EE3\u6362\uFF0C\u751A\u81F3\u5F53\u4F60\u91CD\u65B0\u5BA1\u89C6 (+ 1 2) \u7684\u65F6: \u6709\u6CA1\u6709\u53EF\u80FD + \u53F7\u53EF\u4EE5\u4EE3\u6362\u5220\u6389? \u7F16\u7A0B\u8BED\u8A00\u751A\u81F3\u53EF\u4EE5\u6CA1\u6709 + \u53F7\uFF01\uFF1F\uFF1F"),
-              React.createElement(P, null, "\u6700\u540E\uFF0C\u56DE\u5230\u5177\u4F53\u7684\u5B9E\u73B0\u4E0A\uFF0C\u4F60\u53EA\u9700\u8981\u89E3\u91CA `(struct User a b c)` \u5BF9\u4F60\u800C\u8A00\u4E0D\u8FC7\u662F\u4E00\u79CD cons \u6784\u9020\uFF0C\u4F60\u53EA\u9700\u904D\u5386\u5B83\u5E76\u5C06\u5176\u4EE3\u6362\u4E3A\u53E6\u5916\u4E00\u79CD cons \u6784\u9020\uFF1A `(define (create-user a b c) ... )`\u3001\u540C\u7406 `(new User a b c)` \u4E5F\u4EE3\u6362\u4E3A `(create-user a b c)` \u5C31\u884C\uFF0C\u6BD4\u5982\u4E0A\u8FF0\u7684\u4EE3\u7801\u7ECF\u8FC7\u4F60\u7684\u5B9A\u5236\u5316\u7684 `myEval` \u540E\u5E94\u8BE5\u4EA7\u751F\u5982\u4E0B\u7ED3\u679C\uFF08\u968F\u624B\u5199\u7684\uFF0C\u4E0D\u4FDD\u8BC1\u5BF9\uFF0C\u5F88\u4E45\u6CA1\u78B0\u4E86\uFF09\uFF1A"),
+              React.createElement(P, null, "\u6700\u540E\uFF0C\u56DE\u5230\u5177\u4F53\u7684\u5B9E\u73B0\u4E0A\uFF0C\u5728\u8FD9\u4E2A\u89C6\u89D2\u4E0B `(struct User a b c)` \u4E0D\u8FC7\u662F\u4E00\u79CD cons \u6784\u9020\uFF0C\u4F60\u53EA\u9700\u904D\u5386\u5B83\u5E76\u5C06\u5176\u4EE3\u6362\u4E3A\u53E6\u5916\u4E00\u79CD cons \u6784\u9020\uFF1A`(define (create-user a b c) ... )`\u3001\u540C\u7406 `(new User a b c)` \u4E5F\u4EE3\u6362\u4E3A `(create-user a b c)` \u5C31\u884C\uFF0C\u6BD4\u5982\u4E0A\u8FF0\u7684\u4EE3\u7801\u7ECF\u8FC7\u4F60\u7684\u5B9A\u5236\u5316\u7684 `myEval` \u4EE3\u6362\u540E\u5E94\u8BE5\u4EA7\u751F\u5982\u4E0B\u7ED3\u679C\uFF08\u968F\u624B\u5199\u7684\uFF0C\u4E0D\u4FDD\u8BC1\u5BF9\uFF0C\u5F88\u4E45\u6CA1\u78B0\u4E86\uFF09\uFF1A"),
               React.createElement("style", null, `
       .intro-my-eval {
         position: relative;
