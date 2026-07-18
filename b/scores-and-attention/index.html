@@ -14,7 +14,7 @@
 (function() {
 console.log('INIT CSS VAR');
 function loadCSSVars() {
-    const j = localStorage.getItem("CSS_VARS_3" /* STORAGE_KEY.CSS_VARS */);
+    const j = localStorage.getItem("CSS_VARS_4" /* STORAGE_KEY.CSS_VARS */);
     const initialVars = initialCSSVars();
     if (!j)
         return initialVars;
@@ -57,7 +57,7 @@ function initialCSSVars() {
         fontSmcp: 'source serif pro, serif',
         fontCode: 'consolas, Menlo, monospace',
         fontTitle: 'Noto Serif SC, serif',
-        fontArticle: 'source serif pro, LXGW WenKai',
+        fontArticle: 'source serif pro, Noto Serif SC, serif',
         fontSansSerif: 'sans-serif',
     };
 }
