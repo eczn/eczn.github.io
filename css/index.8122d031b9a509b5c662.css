@@ -1917,13 +1917,21 @@ h6.std-title {
   margin-bottom: 0.8rem;
 }
 .rally-book-full-page .rally-full-title {
+  position: relative;
   font-family: 'Playfair Display', Georgia, 'Noto Serif SC', serif;
-  font-size: 3rem;
+  font-size: 2.75rem;
   font-weight: 900;
   line-height: 1.15;
+  max-width: 80%;
   color: #292524;
   letter-spacing: 0.02em;
   margin: 0 0 1rem;
+}
+.rally-book-full-page .rally-full-title[data-leading-punct='full'] {
+  text-indent: -1em;
+}
+.rally-book-full-page .rally-full-title[data-leading-punct='half'] {
+  text-indent: -0.5em;
 }
 .rally-book-full-page .rally-full-rule {
   width: 5rem;
@@ -1934,7 +1942,7 @@ h6.std-title {
 .rally-book-full-page .rally-full-intro {
   font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, 'Noto Serif SC', 'Source Han Serif SC', serif;
   font-size: 1.05rem;
-  line-height: 1.75;
+  line-height: 2;
   color: #78716c;
   max-width: 70%;
   margin-bottom: 1.2rem;
@@ -1965,6 +1973,16 @@ h6.std-title {
 }
 .rally-blog-counter::after {
   content: counter(rally-blog-counter);
+}
+.rally-blog-post-qr {
+  position: absolute;
+  left: 100%;
+  top: 0;
+}
+.rally-blog-post-qr > img {
+  display: block;
+  width: 9rem;
+  height: 9rem;
 }
 .rally-book-full-page .rally-blog-counter {
   position: absolute;

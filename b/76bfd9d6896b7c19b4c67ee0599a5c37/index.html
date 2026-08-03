@@ -12,7 +12,7 @@
 (function() {
 console.log('INIT CSS VAR');
 function loadCSSVars() {
-    const j = localStorage.getItem("CSS_VARS_4" /* STORAGE_KEY.CSS_VARS */);
+    const j = localStorage.getItem("CSS_VARS_5" /* STORAGE_KEY.CSS_VARS */);
     const initialVars = initialCSSVars();
     if (!j)
         return initialVars;
@@ -43,7 +43,7 @@ function renderCSSVars(vars, style) {
     }
 }
 function initialCSSVars() {
-    let rem = 16;
+    let rem = 18;
     // 移动端
     if (typeof window !== 'undefined' && window.innerWidth <= 500) {
         rem = Number(((window.innerWidth - 20) / 42).toFixed(1));
@@ -64,7 +64,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 })();
 </script>
 
-<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.ee2f4293.js"></script><script defer="defer" src="/js/chunk-lib.049b0f28.js"></script><link href="/css/index.9b6ceb44f124ee20e8b6.css" rel="stylesheet"><link href="/css/chunk-lib.c5f6ab8c14f9071a2adb.css" rel="stylesheet"></head>
+<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.b868a226.js"></script><script defer="defer" src="/js/chunk-lib.049b0f28.js"></script><link href="/css/index.8122d031b9a509b5c662.css" rel="stylesheet"><link href="/css/chunk-lib.c5f6ab8c14f9071a2adb.css" rel="stylesheet"></head>
 <body x-apple-data-detectors="none">
 <noscript>当前浏览器不支持 JavaScript, 建议使用支持 JavaScript 的浏览器来访问此网站 !</noscript>
 <div id="rally-bg" style="opacity:0"></div>
@@ -72,7 +72,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">最近在为这个破站做 SEO<sub more="搜索引擎优化"></sub>，而SEO首先要做的事情就是在开发的时候要注意 html语义化，即用语义化标签来写html，我曾提到过：</div>
 <blockquote lang="en" class="std-quote"><span class="std-quote-text">
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">网页即组件树，是一类带权html树<br/>
-<a target="_blank" href="/b/d172c2b201e7c70142bd6daf3f672ba2/" style="background-color:#f9eeed" class="std-link --fontSansSerif  _line" data-minimap-color="#f9eeed"><span class="std-link-icon r-link" data-src="/get-favicon/eczn.github.io?h=11653062652" style="background-image:url(&quot;/get-favicon/eczn.github.io?h=11653062652&quot;)"></span><span class="std-link-txt">eczn’s blog -《网页即组件树》</span></a></div>
+<a target="_blank" href="/b/d172c2b201e7c70142bd6daf3f672ba2/" style="background-color:#f9eeed" class="std-link --fontSansSerif  _line" data-minimap-color="#f9eeed"><span class="std-link-icon r-link" data-src="/get-favicon/blog.eczn.me?h=11653062652" style="background-image:url(&quot;/get-favicon/blog.eczn.me?h=11653062652&quot;)"></span><span class="std-link-txt">eczn’s blog -《网页即组件树》</span></a></div>
 </span></blockquote>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">语义化标签其实就是上面提到的带权结点，而这里的权并不是指 <code>CSS</code> 纬度上的，而是对于爬虫的内容优先权。</div>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">如果页面都是嵌套的 <code>div</code>，这对开发来说也不会怎样，但是对于爬虫来说就麻烦了，它不知道这些div的权重，但是如果使用了语义化标签，比如 <code>&lt;summary&gt;</code> <code>&lt;article&gt;</code>，爬虫肯定能知道 article 是正文，而 summary 是摘要，显然，摘要是浓缩后的文段，或者具有启发性的，所以它可能会认为，摘要的权更高，搜索的时候应该优先在摘要里面找。<br/>

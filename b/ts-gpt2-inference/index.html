@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,minimal-ui"/>
 <meta name="format-detection" content="telephone=no" />
 <title>实现 GPT-2 的推理 | Eczn's Home</title>
-<meta name="description" content="以 GPT-2 为对象，用纯 TypeScript 从零手写完整推理过程，从 tokenizer 到 embedding，从 attention 到 softmax，不依赖任何推理框架，在 V8 + Float32Array 内跑通 38.6M 参数的模型前向传播以及相关的张量操作" />
+<meta name="description" content="以 GPT-2 为对象，用纯 TypeScript 从零手写完整推理过程，从 .safetensors 权重到张量，从 tokenizer 到 embedding，从 attention 到 softmax，不依赖任何推理框架，在 V8 + Float32Array 内跑通 38.6M 参数的模型前向传播以及相关的张量操作，逐步勾勒出完整的 GPT-2 推理管线，并讨论其中的一些数学性质和处理细节，有大量配图和公式细节拆解【超长文警告、可能是我写过最长的文章】" />
 <link rel="icon" href="/favicon.png">
 
 <style id="CSS_VARS"></style>
@@ -14,7 +14,7 @@
 (function() {
 console.log('INIT CSS VAR');
 function loadCSSVars() {
-    const j = localStorage.getItem("CSS_VARS_4" /* STORAGE_KEY.CSS_VARS */);
+    const j = localStorage.getItem("CSS_VARS_5" /* STORAGE_KEY.CSS_VARS */);
     const initialVars = initialCSSVars();
     if (!j)
         return initialVars;
@@ -45,7 +45,7 @@ function renderCSSVars(vars, style) {
     }
 }
 function initialCSSVars() {
-    let rem = 16;
+    let rem = 18;
     // 移动端
     if (typeof window !== 'undefined' && window.innerWidth <= 500) {
         rem = Number(((window.innerWidth - 20) / 42).toFixed(1));

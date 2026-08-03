@@ -12,7 +12,7 @@
 (function() {
 console.log('INIT CSS VAR');
 function loadCSSVars() {
-    const j = localStorage.getItem("CSS_VARS_4" /* STORAGE_KEY.CSS_VARS */);
+    const j = localStorage.getItem("CSS_VARS_5" /* STORAGE_KEY.CSS_VARS */);
     const initialVars = initialCSSVars();
     if (!j)
         return initialVars;
@@ -43,7 +43,7 @@ function renderCSSVars(vars, style) {
     }
 }
 function initialCSSVars() {
-    let rem = 16;
+    let rem = 18;
     // 移动端
     if (typeof window !== 'undefined' && window.innerWidth <= 500) {
         rem = Number(((window.innerWidth - 20) / 42).toFixed(1));
@@ -64,7 +64,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 })();
 </script>
 
-<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.ee2f4293.js"></script><script defer="defer" src="/js/chunk-lib.049b0f28.js"></script><link href="/css/index.9b6ceb44f124ee20e8b6.css" rel="stylesheet"><link href="/css/chunk-lib.c5f6ab8c14f9071a2adb.css" rel="stylesheet"></head>
+<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.b868a226.js"></script><script defer="defer" src="/js/chunk-lib.049b0f28.js"></script><link href="/css/index.8122d031b9a509b5c662.css" rel="stylesheet"><link href="/css/chunk-lib.c5f6ab8c14f9071a2adb.css" rel="stylesheet"></head>
 <body x-apple-data-detectors="none">
 <noscript>当前浏览器不支持 JavaScript, 建议使用支持 JavaScript 的浏览器来访问此网站 !</noscript>
 <div id="rally-bg" style="opacity:0"></div>
@@ -74,7 +74,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">刚学前端的时候我就做过随机字符串的 <code>打字</code> 显示。</div>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC"><div class="std-img"><img class="std-img-bg r-link" data-minimap="Rect" src="/images/randstr001.jpg" alt="随机字符串"/><div class="std-img-text">随机字符串</div></div></div>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">当时只是普通的字符串输出，现在如果将输出的字符串应用到css上就又有一番风味了。</div>
-<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">demo: <a target="_blank" href="/kurorekishi/demos/randstr/index.html" class="std-link --fontSansSerif r-link _line" style="background-color:#f7f9df" data-minimap-color="#f7f9df"><span class="std-link-icon r-link" data-src="/get-favicon/eczn.github.io?h=-19543229205" style="background-image:url(&quot;/get-favicon/eczn.github.io?h=-19543229205&quot;)"></span><span class="std-link-txt">rand_number_v3.js</span></a></div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">demo: <a target="_blank" href="/kurorekishi/demos/randstr/index.html" class="std-link --fontSansSerif r-link _line" style="background-color:#f7f9df" data-minimap-color="#f7f9df"><span class="std-link-icon r-link" data-src="/get-favicon/blog.eczn.me?h=-19543229205" style="background-image:url(&quot;/get-favicon/blog.eczn.me?h=-19543229205&quot;)"></span><span class="std-link-txt">rand_number_v3.js</span></a></div>
 <h1 id="实现这个简历" class="std-title --fontTitle"><a target="_blank" href="#实现这个简历" class="markdownIt-Anchor">#</a> 实现这个简历<i data-minimap="Ignore"> ↵ </i></h1>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">这种简历我是受 <a target="_blank" href="https://github.com/jirengu-inc/animating-resume" style="background-color:#e6ebf0" class="std-link --fontSansSerif  _line" data-minimap-color="#e6ebf0"><span class="std-link-icon r-link" data-src="/get-favicon/github.com?h=7711916378" style="background-image:url(&quot;/get-favicon/github.com?h=7711916378&quot;)"></span><span class="std-link-txt">Github - animating-resume</span></a> 的启发而做的。</div>
 <h2 id="ws" class="std-title --fontTitle"><a target="_blank" href="#ws" class="markdownIt-Anchor">#</a> Ws</h2>

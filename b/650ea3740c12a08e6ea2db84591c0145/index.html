@@ -12,7 +12,7 @@
 (function() {
 console.log('INIT CSS VAR');
 function loadCSSVars() {
-    const j = localStorage.getItem("CSS_VARS_4" /* STORAGE_KEY.CSS_VARS */);
+    const j = localStorage.getItem("CSS_VARS_5" /* STORAGE_KEY.CSS_VARS */);
     const initialVars = initialCSSVars();
     if (!j)
         return initialVars;
@@ -43,7 +43,7 @@ function renderCSSVars(vars, style) {
     }
 }
 function initialCSSVars() {
-    let rem = 16;
+    let rem = 18;
     // 移动端
     if (typeof window !== 'undefined' && window.innerWidth <= 500) {
         rem = Number(((window.innerWidth - 20) / 42).toFixed(1));
@@ -64,7 +64,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 })();
 </script>
 
-<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.ee2f4293.js"></script><script defer="defer" src="/js/chunk-lib.049b0f28.js"></script><link href="/css/index.9b6ceb44f124ee20e8b6.css" rel="stylesheet"><link href="/css/chunk-lib.c5f6ab8c14f9071a2adb.css" rel="stylesheet"></head>
+<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.b868a226.js"></script><script defer="defer" src="/js/chunk-lib.049b0f28.js"></script><link href="/css/index.8122d031b9a509b5c662.css" rel="stylesheet"><link href="/css/chunk-lib.c5f6ab8c14f9071a2adb.css" rel="stylesheet"></head>
 <body x-apple-data-detectors="none">
 <noscript>当前浏览器不支持 JavaScript, 建议使用支持 JavaScript 的浏览器来访问此网站 !</noscript>
 <div id="rally-bg" style="opacity:0"></div>
@@ -159,7 +159,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">当函数作为函数值返回的时候，我们可以实现 偏函数<sub more="Partial Function"></sub></div>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">偏函数其实就是固定 (或者说预置) 参数</div>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">———— 或者说对于二元函数 f(x, y) 让 y 恒等于 k，从而得到: f(x, k) 这是数学上的偏函数</div>
-<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">我在 <a target="_blank" href="/blog/all/This,%20Function.html" style="background-color:#eee0eb" class="std-link --fontSansSerif  _line" data-minimap-color="#eee0eb"><span class="std-link-icon r-link" data-src="/get-favicon/eczn.github.io?h=-5779608928" style="background-image:url(&quot;/get-favicon/eczn.github.io?h=-5779608928&quot;)"></span><span class="std-link-txt">This, Function</span></a> 曾提到过的偏函数 logger：</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">我在 <a target="_blank" href="/blog/all/This,%20Function.html" style="background-color:#eee0eb" class="std-link --fontSansSerif  _line" data-minimap-color="#eee0eb"><span class="std-link-icon r-link" data-src="/get-favicon/blog.eczn.me?h=-5779608928" style="background-image:url(&quot;/get-favicon/blog.eczn.me?h=-5779608928&quot;)"></span><span class="std-link-txt">This, Function</span></a> 曾提到过的偏函数 logger：</div>
 <div class="std-code"><pre class="prismjs js rally-runner  "><span style="user-select:none" class="line-numbers-rows">00</span><span class="token keyword">function</span> <span class="token function">logger</span><span class="token punctuation">(</span><span class="token parameter">logType</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
 <span style="user-select:none" class="line-numbers-rows">01</span>    <span class="token keyword">return</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>console<span class="token punctuation">,</span> logType<span class="token punctuation">)</span><span class="token punctuation">;</span> 
 <span style="user-select:none" class="line-numbers-rows">02</span><span class="token punctuation">}</span>

@@ -12,7 +12,7 @@
 (function() {
 console.log('INIT CSS VAR');
 function loadCSSVars() {
-    const j = localStorage.getItem("CSS_VARS_4" /* STORAGE_KEY.CSS_VARS */);
+    const j = localStorage.getItem("CSS_VARS_5" /* STORAGE_KEY.CSS_VARS */);
     const initialVars = initialCSSVars();
     if (!j)
         return initialVars;
@@ -43,7 +43,7 @@ function renderCSSVars(vars, style) {
     }
 }
 function initialCSSVars() {
-    let rem = 16;
+    let rem = 18;
     // 移动端
     if (typeof window !== 'undefined' && window.innerWidth <= 500) {
         rem = Number(((window.innerWidth - 20) / 42).toFixed(1));
@@ -64,7 +64,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 })();
 </script>
 
-<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.ee2f4293.js"></script><script defer="defer" src="/js/chunk-lib.049b0f28.js"></script><link href="/css/index.9b6ceb44f124ee20e8b6.css" rel="stylesheet"><link href="/css/chunk-lib.c5f6ab8c14f9071a2adb.css" rel="stylesheet"></head>
+<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.b868a226.js"></script><script defer="defer" src="/js/chunk-lib.049b0f28.js"></script><link href="/css/index.8122d031b9a509b5c662.css" rel="stylesheet"><link href="/css/chunk-lib.c5f6ab8c14f9071a2adb.css" rel="stylesheet"></head>
 <body x-apple-data-detectors="none">
 <noscript>当前浏览器不支持 JavaScript, 建议使用支持 JavaScript 的浏览器来访问此网站 !</noscript>
 <div id="rally-bg" style="opacity:0"></div>
@@ -100,7 +100,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">(微信开发) 一个重要的问题就是线下和线上的不同，微信开发里面几乎很少照顾到线下（非公网IP）的集成开发，年初的时候我用 node 开发过一个简单的营销页的后台，因为项目不算复杂，两张表的数据库还有一些微信登录相关的操作，因此我所有的后台代码，都是在线上的 Linux 服务器上用 SSH + Vim 的方式书写的，还好前端代码是在本地完成，并在 localhost 上开一个端口进行开发，前端会调用远在服务器的跨域 API 执行业务代码。</div>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">实话说，这很不好，真的很麻烦，写起来也不方便做这样那样的调试，而且 SSH 时不时会掉线，又要重新登陆。</div>
 </span></blockquote>
-<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">以上摘抄于我先前写的 <a target="_blank" href="/b/the-best-conf-for-wechat-dev/" style="background-color:#e4e4ec" class="std-link --fontSansSerif  _line" data-minimap-color="#e4e4ec"><span class="std-link-icon r-link" data-src="/get-favicon/eczn.github.io?h=6065704005" style="background-image:url(&quot;/get-favicon/eczn.github.io?h=6065704005&quot;)"></span><span class="std-link-txt">《微信开发的最佳配置》</span></a>，修改了局域网的 HOSTS 和本机的反向代理解决了这个问题。</div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">以上摘抄于我先前写的 <a target="_blank" href="/b/the-best-conf-for-wechat-dev/" style="background-color:#e4e4ec" class="std-link --fontSansSerif  _line" data-minimap-color="#e4e4ec"><span class="std-link-icon r-link" data-src="/get-favicon/blog.eczn.me?h=6065704005" style="background-image:url(&quot;/get-favicon/blog.eczn.me?h=6065704005&quot;)"></span><span class="std-link-txt">《微信开发的最佳配置》</span></a>，修改了局域网的 HOSTS 和本机的反向代理解决了这个问题。</div>
 <h1 id="部署的问题" class="std-title --fontTitle"><a target="_blank" href="#部署的问题" class="markdownIt-Anchor">#</a> 部署的问题<i data-minimap="Ignore"> ↵ </i></h1>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">许愿墙前端是用 vue-cli 起的，他已经写好了编译脚本用于产生生产环境的代码：</div>
 <div class="std-code"><pre class="prismjs bash rally-runner  "><span style="user-select:none" class="line-numbers-rows">00</span>$ <span class="token function">npm</span> run build</pre></div>
@@ -194,7 +194,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 </ol>
 <h3 id="怎么搞定乐库" class="std-title --fontTitle"><a target="_blank" href="#怎么搞定乐库" class="markdownIt-Anchor">#</a> 怎么搞定乐库</h3>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">要点歌最麻烦的还是乐库了，没有乐库点个毛线歌，可是乐库这种东西谁会公开呀，经过多方寻找，终于找到了酷狗有两个接口是公众可以访问的，一个用于搜索歌曲，另外一个用于获取歌曲详细信息。</div>
-<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">我对它具体的实现请见 <a target="_blank" href="/b/1c036d874a8a331ee80bff44b515f1e1/" style="background-color:#e2e9eb" class="std-link --fontSansSerif  _line" data-minimap-color="#e2e9eb"><span class="std-link-icon r-link" data-src="/get-favicon/eczn.github.io?h=11953795892" style="background-image:url(&quot;/get-favicon/eczn.github.io?h=11953795892&quot;)"></span><span class="std-link-txt">《jsonp、跨域和同源策略》</span></a></div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">我对它具体的实现请见 <a target="_blank" href="/b/1c036d874a8a331ee80bff44b515f1e1/" style="background-color:#e2e9eb" class="std-link --fontSansSerif  _line" data-minimap-color="#e2e9eb"><span class="std-link-icon r-link" data-src="/get-favicon/blog.eczn.me?h=11953795892" style="background-image:url(&quot;/get-favicon/blog.eczn.me?h=11953795892&quot;)"></span><span class="std-link-txt">《jsonp、跨域和同源策略》</span></a></div>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">来说说要点：</div>
 <ol class="std-list">
 <li>接口是跨域的，因此要使用 jsonp</li>
@@ -286,7 +286,7 @@ duration: 一首歌的持续时间</div>
 <h3 id="怎么做一个播放器" class="std-title --fontTitle"><a target="_blank" href="#怎么做一个播放器" class="markdownIt-Anchor">#</a> 怎么做一个播放器</h3>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">播放器做了很多了，可以看看这篇：</div>
 <blockquote lang="en" class="std-quote"><span class="std-quote-text">
-<div class="std-para --fontArticle" data-minimap-color="#CCCCCC"><a target="_blank" href="/b/9a985c5c3746b2145458fd5ce30fb9a6/" style="background-color:#e6e6f5" class="std-link --fontSansSerif  _line" data-minimap-color="#e6e6f5"><span class="std-link-icon r-link" data-src="/get-favicon/eczn.github.io?h=2480559449" style="background-image:url(&quot;/get-favicon/eczn.github.io?h=2480559449&quot;)"></span><span class="std-link-txt">eczn’s blog: 关于音乐播放器的前后端实现的思考</span></a></div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC"><a target="_blank" href="/b/9a985c5c3746b2145458fd5ce30fb9a6/" style="background-color:#e6e6f5" class="std-link --fontSansSerif  _line" data-minimap-color="#e6e6f5"><span class="std-link-icon r-link" data-src="/get-favicon/blog.eczn.me?h=2480559449" style="background-image:url(&quot;/get-favicon/blog.eczn.me?h=2480559449&quot;)"></span><span class="std-link-txt">eczn’s blog: 关于音乐播放器的前后端实现的思考</span></a></div>
 </span></blockquote>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">因为这次是微信网页上的播放器，稍微有些不一样，在 iOS 上的歌曲绝不会执行一下 music.play 就自动播放，必须借助事件才能播放 （在点击事件的回调里面执行 play）</div>
 <h3 id="怎么做弹幕系统" class="std-title --fontTitle"><a target="_blank" href="#怎么做弹幕系统" class="markdownIt-Anchor">#</a> 怎么做弹幕系统</h3>
@@ -304,7 +304,7 @@ duration: 一首歌的持续时间</div>
 <hr class="std-hr"/>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">对 Mongoose 的利用可以看我的这篇博客：</div>
 <blockquote lang="en" class="std-quote"><span class="std-quote-text">
-<div class="std-para --fontArticle" data-minimap-color="#CCCCCC"><a target="_blank" href="/b/d93263b0ddb121ff4b449cc06f202a58/" style="background-color:#dcdef2" class="std-link --fontSansSerif  _line" data-minimap-color="#dcdef2"><span class="std-link-icon r-link" data-src="/get-favicon/eczn.github.io?h=2746946817" style="background-image:url(&quot;/get-favicon/eczn.github.io?h=2746946817&quot;)"></span><span class="std-link-txt">eczn’s blog: 使用 Mongoose 的各种好处</span></a></div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC"><a target="_blank" href="/b/d93263b0ddb121ff4b449cc06f202a58/" style="background-color:#dcdef2" class="std-link --fontSansSerif  _line" data-minimap-color="#dcdef2"><span class="std-link-icon r-link" data-src="/get-favicon/blog.eczn.me?h=2746946817" style="background-image:url(&quot;/get-favicon/blog.eczn.me?h=2746946817&quot;)"></span><span class="std-link-txt">eczn’s blog: 使用 Mongoose 的各种好处</span></a></div>
 </span></blockquote>
 <hr class="std-hr"/>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">缓存的话使用的是 redis，用来做… 做各种缓存…</div>

@@ -39,6 +39,7 @@ System.register([], (function (exports, module) {
 			module.import('./the-structure-and-interpretation-of-std-unicode-and-its-utf-encodings/index.blog.js');
 			module.import('./three-body-emulator/index.blog.js');
 			module.import('./tool-use-impl/index.blog.js');
+			module.import('./tts-please-input/index.blog.js');
 			module.import('./typescript-52000-checker-ts/index.blog.js');
 			module.import('./v8-asm-detail-of-inline-caches/index.blog.js');
 			module.import('./what-is-llm-inference/index.blog.js');

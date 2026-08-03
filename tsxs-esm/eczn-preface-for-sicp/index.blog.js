@@ -1,6 +1,6 @@
-System.register(['react', './substitution-demo/substitution-demo.js', './substitution-demo/sexp.js', 'rally/@@', './sicp-cover.png.js', './sicp-eval.png.js', './pairs-lists-object.png.js', './state-vs-symbol.png.js', './sicp-book-1.png.js', './eval-apply-ouroboros.png.js', './cons.png.js'], (function (exports) {
+System.register(['react', './substitution-demo/substitution-demo.js', './substitution-demo/sexp.js', 'rally/@@', './sicp-cover.png.js', './sicp-eval.png.js', './pairs-lists-object.png.js', './state-vs-symbol.png.js', './sicp-book-1.png.js', './eval-apply-ouroboros.png.js', './cons.png.js', '../tts-please-input/audio-player.js', '../tts-please-input/tts-test/text/nen_03.wav.js', '../tts-please-input/tts-test/text/nen_04.wav.js'], (function (exports) {
   'use strict';
-  var React, SubstitutionDemo, SexpCell, compile, P, Link, Code, ImgDynamic, Numbering, Footnote, Col, metaBeauty, imageSicpCover, imageSicpEval, imagePairsListsObject, imageStateVSSymbol, imageSicpBook1, imageEvalApplyOuroboros, imageCons;
+  var React, SubstitutionDemo, SexpCell, compile, P, Link, Code, ImgDynamic, Numbering, Footnote, Col, metaBeauty, imageSicpCover, imageSicpEval, imagePairsListsObject, imageStateVSSymbol, imageSicpBook1, imageEvalApplyOuroboros, imageCons, AudioPlayer, wavTextNen03, wavTextNen04;
   return {
     setters: [function (module) {
       React = module.default;
@@ -32,6 +32,12 @@ System.register(['react', './substitution-demo/substitution-demo.js', './substit
       imageEvalApplyOuroboros = module.default;
     }, function (module) {
       imageCons = module.default;
+    }, function (module) {
+      AudioPlayer = module.AudioPlayer;
+    }, function (module) {
+      wavTextNen03 = module.default;
+    }, function (module) {
+      wavTextNen04 = module.default;
     }],
     execute: (function () {
 
@@ -348,7 +354,20 @@ myEval 处理这段 cons 结构：
                               React.createElement("td", { style: { padding: '10px 14px', color: '#444' } }, "cons \u662F\u4EC0\u4E48\uFF0C\u4EE5\u53CA\u5982\u4F55\u6784\u9020\u5BF9\u8C61")),
                           React.createElement("tr", { style: { borderBottom: '1px solid #f0f0f0' } },
                               React.createElement("td", { style: { padding: '10px 14px', color: '#444' } }, "\u7B2C\u56DB / \u7B2C\u4E94\u7AE0\uFF1A\u5143\u8BED\u8A00\u7F16\u7A0B / \u5BC4\u5B58\u5668\u673A"),
-                              React.createElement("td", { style: { padding: '10px 14px', color: '#444' } }, "\u6784\u9020\u548C\u89E3\u91CA\u7F16\u8BD1\u5668\u9B54\u6CD5\uFF0C\u4EE5\u53CA\u9762\u5BF9\u8FD9\u95E8\u8BED\u8A00\u7684\u7EC8\u6781\u5BBF\u547D\uFF1A\u6784\u9020\u548C\u89E3\u91CA\u81EA\u5DF1"))))));
+                              React.createElement("td", { style: { padding: '10px 14px', color: '#444' } }, "\u6784\u9020\u548C\u89E3\u91CA\u7F16\u8BD1\u5668\u9B54\u6CD5\uFF0C\u4EE5\u53CA\u9762\u5BF9\u8FD9\u95E8\u8BED\u8A00\u7684\u7EC8\u6781\u5BBF\u547D\uFF1A\u6784\u9020\u548C\u89E3\u91CA\u81EA\u5DF1"))))),
+              React.createElement(P, { style: { marginTop: '4rem' } },
+                  "2608 updated\uFF0C\u5728\u5176\u4ED6\u6587\u7AE0\u6709\u65B0\u521B\u4F5C\u5F15\u7528\u4E86\u8FD9\u91CC\u7684\u51E0\u6BB5\u8BDD ",
+                  React.createElement(Link, { href: "/b/tts-please-input/" }, "\u8C08\u8C08 TTS \u7684\u751F\u6210\u6548\u679C")),
+              React.createElement("div", { style: {
+                      display: 'flex',
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      gap: '1rem',
+                      justifyContent: 'space-around',
+                      alignItems: 'flex-start',
+                  } },
+                  React.createElement(AudioPlayer, { src: wavTextNen03, text: '\u5982\u679C\u80FD\u770B\u4E0B\u6765\u5E76\u611F\u5230\u6709\u610F\u601D\uFF0C\u90A3\u4E48\u4F60\u5F88\u53EF\u80FD\u662F\u8FD9\u672C\u4E66\u6700\u9002\u5408\u9605\u8BFB\u7684\u4EBA\u7FA4\uFF1B\u53CD\u4E4B\u5982\u679C\u4F60\u8BA4\u4E3A\u6CA1\u610F\u601D\uFF0C\u6B64\u4E66\u53EF\u80FD\u4E0D\u9002\u5408\u4F60\uFF0C\u4F5C\u5E8F\u7684\u76EE\u6807\u5C31\u5728\u4E8E\u6B64\uFF1A', title: "\u5B81\u5B81\u7ED9\u4F60\u4ECB\u7ECD\u672C\u6587 1", noCenter: true }),
+                  React.createElement(AudioPlayer, { src: wavTextNen04, text: '\u7528\u5341\u4E94\u5206\u949F\u770B\u5B8C\u5E8F\u6765\u5224\u65AD\u8FD9\u672C\u4E66\u9002\u4E0D\u9002\u5408\u4F60\uFF0C\u503C\u4E0D\u503C\u5F97\u82B1\u8D39\u51E0\u5341\u751A\u81F3\u6570\u767E\u4E2A\u5C0F\u65F6\u7684\u6295\u5165', title: "\u5B81\u5B81\u7ED9\u4F60\u4ECB\u7ECD\u672C\u6587 2", noCenter: true })));
       });
 
     })

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,minimal-ui"/>
 <meta name="format-detection" content="telephone=no" />
 <title>大模型与交叉熵 | Eczn's Home</title>
-<meta name="description" content="今天补充一篇关于训练的，介绍大模型损失函数内最重要的一个数学对象：交叉熵，来源于信息论，在大模型中应用广泛，可以说是除了注意力机制之外最核心的数学建模了。然而市面上关于交叉熵的文章多数在堆砌概念，看了只会让我感到不安，靠比喻是没有形成自洽且体系化理解的。" />
+<meta name="description" content="今天补充一篇关于训练的，介绍大模型损失函数内最重要的一个数学对象：交叉熵，来源于信息论，在大模型中应用广泛，可以说是除了注意力机制之外最核心的数学建模了。然而市面上关于交叉熵的文章多数在堆砌概念，看了只会让我感到不安，靠比喻是没有形成自洽且体系化理解的。本文将从几个基本直觉出发，逐步推导信息论里的基础命题和结论，给出信息量和信息熵的定义，最后引出交叉熵并解释为什么它是针对大模型 nextToken 预测任务最理想的损失函数。" />
 <link rel="icon" href="/favicon.png">
 
 <style id="CSS_VARS"></style>
@@ -14,7 +14,7 @@
 (function() {
 console.log('INIT CSS VAR');
 function loadCSSVars() {
-    const j = localStorage.getItem("CSS_VARS_4" /* STORAGE_KEY.CSS_VARS */);
+    const j = localStorage.getItem("CSS_VARS_5" /* STORAGE_KEY.CSS_VARS */);
     const initialVars = initialCSSVars();
     if (!j)
         return initialVars;
@@ -45,7 +45,7 @@ function renderCSSVars(vars, style) {
     }
 }
 function initialCSSVars() {
-    let rem = 16;
+    let rem = 18;
     // 移动端
     if (typeof window !== 'undefined' && window.innerWidth <= 500) {
         rem = Number(((window.innerWidth - 20) / 42).toFixed(1));
@@ -365,8 +365,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
   <h1 class="mt-16 mb-4 text-3xl font-bold text-stone-900">本文目标说明</h1>
   <p class="mt-6">交叉熵这个概念来源于信息论，在大模型中应用广泛，可以说是除了注意力机制之外最核心的数学建模了。然而市面上关于交叉熵的文章多数在堆砌概念，看了只会让我感到<strong>不安</strong>，靠比喻是没有形成自洽且体系化理解的。</p>
   <p class="mt-6">我将从几个基本直觉出发，逐步推导信息论里的基础命题和结论，给出信息量和信息熵的定义，最后引出交叉熵并解释为什么它是针对大模型 nextToken 预测任务最理想的损失函数。</p>
-  <p class="mt-6">本文目标：阐释损失函数的构造和解释，本文推导路线为直觉 → 概率 → 信息量 → 信息熵 → 交叉熵 → KL 散度 → 分类即分布逼近 → softmax + 交叉熵 → 方案对比和梯度 → 反向传播。</p>
-
+  <p class="mt-6">本文目标：阐释损失函数的构造和解释，本文推导路线为直觉 → 概率 → 信息量 → 信息熵 → 交叉熵 → KL 散度 → 分类即分布逼近 → 交叉熵梯度 → 方案对比 → softmax 的价值 → 反向传播。</p>
   <!-- ====== 信息论与信息量 ====== -->
   <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">信息论与信息量</h1>
 
@@ -1214,7 +1213,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 
   <div class="math-content" data-display="1">\frac{\partial f}{\partial x_i} \rightarrow \infty \quad \Rightarrow \quad \text{梯度爆炸}</div>
 
-  <p class="mt-6">后文将会揭示，交叉熵很好了避免了梯度消失和爆炸的问题，成为大模型训练的最佳实践。</p>
+  <p class="mt-6">后文将会揭示，交叉熵/KL 散度损失，以及配合 softmax 计算梯度的最佳实践。</p>
 
   <!-- ====== 回到交叉熵：为什么是它？ ====== -->
   <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">回到交叉熵：为什么是它？</h1>
@@ -1268,7 +1267,9 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
       </div>
       <p class="text-lg font-semibold text-stone-800 my-0">KL 散度</p>
       <p class="text-xs text-stone-600 my-0 leading-relaxed"><span class="math-content">\sum p_i \log \frac{p_i}{q_i}</span></p>
-      <p class="text-xs text-stone-500 my-0 border-t border-stone-200 pt-2">理论可行但含分母 <span class="math-content">q_i</span>；当 <span class="math-content">q_i \to 0</span> 时损失与梯度双双爆炸</p>
+      <p class="text-xs text-stone-500 my-0 border-t border-stone-200 pt-2">
+        含分母 <span class="math-content">q_i</span>；当 <span class="math-content">q_i \to 0</span> 时损失与梯度双双爆炸吗 ?
+      </p>
     </div>
     <div class="border border-indigo-400 bg-indigo-50 px-4 py-4 flex flex-col gap-2">
       <div class="flex items-baseline justify-between">
@@ -1306,10 +1307,10 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 
   <div class="math-content" data-display="1">\mathcal{L}_{MAE} \,\, = \,\, \sum_{i=1}^{n} |q_i - p_i|</div>
 
-  <p class="mt-6">看起来似乎挺好的，但是跟均方差是一个毛病，也是几何视角，并不涉及概率的信息论本质，而且绝对值函数在 0 处不连续不可导，梯度只有 <span class="math-content">\pm 1</span>，在数值优化里非常粗糙，这会导致梯度下降时来回跳动，因为我们期望越靠近极小值时梯度能越来越小以方便更好的逼近极小值。</p>
+  <p class="mt-6">看起来似乎挺好的，但是跟均方差是一个毛病，也是几何视角，并不涉及概率的信息论本质，而且绝对值函数在 0 处连续不可导，梯度只有 <span class="math-content">\pm 1</span>，在梯度调整的时候比较粗糙，会导致梯度下降来回跳，因为我们期望越靠近极小值时梯度能越来越小以方便更好的逼近极小值。</p>
 
   <!-- ====== KL 散度（作为损失函数） ====== -->
-  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">KL 散度</h1>
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">KL 散度 ❓</h1>
 
   <p class="mt-6">前面已经说明了，KL 散度确实是一个诱人的方向，理论上是完全可行的但其数学构造会导致梯度消失和爆炸：</p>
 
@@ -1321,12 +1322,14 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 
   <div class="math-content" data-display="1">\begin{aligned} \frac{p_i}{q_i} \;\; &\to \;\; +\infty \\ \\ \log_2 \frac{p_i}{q_i} \;\; &\to \;\; +\infty \\ \\ p_i \cdot \log_2 \frac{p_i}{q_i} \;\; &\to \;\; +\infty \end{aligned}</div>
 
-  <p class="mt-6">损失函数直接飞了，更难受的是反向传播时对 <span class="math-content">q_i</span> 求梯度会出现 <span class="math-content">\frac{p_i}{q_i}</span> 这一项，<span class="math-content">q_i \to 0</span> 时梯度直接爆炸，参数更新一步就把网络打飞。当然对于这种带分母项的问题，工程上也有一些解决办法，但总的来说会让整体训练过程变得更加复杂，那就只剩下交叉熵了。</p>
+  <p class="mt-6">损失函数看起来直接飞了，更难受的是反向传播时对 <span class="math-content">q_i</span> 求梯度会出现 <span class="math-content">\frac{p_i}{q_i}</span> 这一类不好处理的项，<span class="math-content">q_i \to 0</span> 时梯度直接爆炸，参数更新一步就把网络打飞... 看起来似乎受限了，先看看交叉熵方案吧</p>
 
   <!-- ====== 交叉熵（最终方案推导） ====== -->
-  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">✅ 交叉熵</h1>
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">交叉熵 ✅</h1>
 
-  <p class="mt-6">现在只剩下交叉熵方案，对于大模型来说最后输出的是 logits 然后通过 softmax 的方式将其压成一个概率分布，因此计算其偏导时，需要把前面构造的基于交叉熵损失函数完全展开：</p>
+  <p class="mt-6">
+    交叉熵如果单独做求导，也会出现跟 KL 散度一样的问题（有不好处理的项），但对于大模型来说最后输出的是 logits 然后通过 softmax 的方式将其压成一个概率分布，因此计算损失时，可以把 softmax 和交叉熵完全展开一起求导：
+  </p>
 
   <div class="math-content" data-display="1">\begin{aligned} \mathcal{L} &= - \sum_{i=1}^{n} p_i \log q_i \quad , \qquad q_i = \frac{e^{z_i}}{\sum_{j} e^{z_j}} \\ \\ &= - \sum_{i=1}^{n} p_i \log \frac{e^{z_i}}{\sum_{j} e^{z_j}} \qquad 带入 \, q_i \\ \\ &= - \sum_{i=1}^{n} p_i \left( \log e^{z_i} \,\, - \,\, \log \sum_{j=1}^{n} e^{z_j} \right) \qquad 按分母拆开 \log \\ \\ &= - \sum_{i=1}^{n} p_i \, z_i \,\, + \,\, \underbrace{\left( \sum_{i=1}^{n} p_i \right)}_{ \substack{对所有事件\\概率求和 \, = \, 1} } \cdot \log \sum_{j=1}^{n} e^{z_j} \qquad 展开求和 \\ \\ \mathcal{L} &= - \sum_{i=1}^{n} p_i \, z_i \,\, + \,\, \log \sum_{j=1}^{n} e^{z_j} \qquad \mathcal{L} \; 最终化简为两个加和项 \end{aligned}</div>
 
@@ -1436,10 +1439,91 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
     <figcaption class="mt-2 text-sm text-stone-500 text-center italic">梯度 q_k - p_k 的意义就是「各项概率偏差」</figcaption>
   </figure>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- ====== 交叉熵（最终方案推导） ====== -->
+  <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">等等，那 KL 散度也配合 Softmax 一起求导呢？</h1>
+  <p class="mt-6">
+    (2026.07 updated) 我这几天在看蒸馏的理论，特别是 logit-based 的蒸馏，里面用的都是 KL 散度做的损失，这立刻让我重新打开了这篇文章，因为我先前给的结论是 KL 散度不行，但是从损失来看 KL 散度和交叉熵是完全等价的，特别是 one-hot 的时候等式完全相等（在蒸馏场景则相差一个常数）因此没理由得到不同的梯度，根源在于我没有带上 softmax 联立 KL 散度导致。所以，这里继续展开 KL + softmax 的联合求导，不然我对蒸馏的理论会感到很不安：
+  </p>
+
+  <p class="mt-6">
+    KL 散度定义如下，其中 <span class="math-content">P</span> 是训练数据给出的固定分布（不参与对模型参数的求导）：
+  </p>
+
+  <div class="math-content" data-display="1">\begin{aligned}
+  \mathcal{L}_{KL} = D_{KL}(P \parallel Q) = \sum_{i=1}^{n} p_i \log \frac{p_i}{q_i}
+  \end{aligned}</div>
+
+  <div class="math-content" data-display="1">\begin{aligned}
+  \mathcal{L}_{KL}
+  &= \sum_{i=1}^{n} p_i \log p_i \;-\; \sum_{i=1}^{n} p_i \log q_i \\[4pt]
+  &= \underbrace{\Bigl(\sum_{i=1}^{n} p_i \log p_i\Bigr)}_{\text{常数 } C \text{（对 } z_k \text{ 导数为 } 0\text{）}} \;-\; \sum_{i=1}^{n} p_i \log q_i
+  \end{aligned}</div>
+
+  <p class="mt-6">
+    去掉常数项 <span class="math-content">C</span> 后，剩余部分正是交叉熵损失：
+  </p>
+
+  <div class="math-content" data-display="1">\begin{aligned}
+  \mathcal{L}_{\text{eff}} = - \sum_{i=1}^{n} p_i \log q_i
+  \end{aligned}</div>
+
+  <p class="mt-6">
+    现在代入 softmax 定义，对 logits <span class="math-content">z_k</span> 求偏导（完全重复前面交叉熵的化简步骤）：
+  </p>
+
+  <div class="math-content" data-display="1">\begin{aligned}
+  \mathcal{L}_{\text{eff}} &= - \sum_{i=1}^{n} p_i \log \frac{e^{z_i}}{\sum_{j} e^{z_j}} \\
+  &= - \sum_{i=1}^{n} p_i z_i \;+\; \log \sum_{j=1}^{n} e^{z_j}
+  \end{aligned}</div>
+
+  <div class="math-content" data-display="1">\begin{aligned}
+  \frac{\partial \mathcal{L}_{KL}}{\partial z_k}
+  &= \frac{\partial}{\partial z_k} \Bigl( - \sum_{i} p_i z_i \Bigr)
+    + \frac{\partial}{\partial z_k} \Bigl( \log \sum_{j} e^{z_j} \Bigr) \\[4pt]
+  &= -\,p_k \;+\; \frac{e^{z_k}}{\sum_{j} e^{z_j}} \\[4pt]
+  &= q_k - p_k
+  \end{aligned}</div>
+
+  <!-- 梯度结果框 -->
+  <div class="mt-6 border border-indigo-400 px-6 py-5 rounded-lg" style="background: repeating-linear-gradient(135deg, #eef2ff, #eef2ff 8px, #e0e7ff 8px, #e0e7ff 10px)">
+    <div class="text-center text-xs font-serif font-semibold tracking-widest text-indigo-700 mb-3">Softmax + KL 散度 的梯度</div>
+    <p class="text-center text-3xl text-stone-800 my-8"><span class="math-content">\dfrac{\partial \mathcal{L}_{KL}}{\partial z_k} \,\, = \,\, q_k - p_k</span></p>
+    <div class="text-xs text-stone-600 leading-relaxed border-t border-indigo-200 pt-3 mt-3 text-center">
+      与「Softmax + 交叉熵」的梯度<strong>完全一致</strong>。所谓 <span class="math-content">p_i/q_i</span> 发散项在联立 softmax 后彻底消失。
+    </div>
+  </div>
+
+  <p class="mt-6">
+    因此在大模型梯度这个语境下，看起来对立的 KL 散度和交叉熵，在大模型训练这个场景下被 softmax 统合起来了，他们的梯度是完全等价的，都可以得到优雅的 <span class="math-content">q_k - p_k</span> 梯度结果，从这个角度来说 softmax 真是太好用了，处理分布问题的优质数学工具，在 softmax 的视角下：交叉熵和 KL 散度是等价的。
+  </p>
+
+
+
   <!-- ====== 大模型的反向传播 ====== -->
   <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">大模型的反向传播</h1>
 
-  <p class="mt-6">从前面的讨论中，我们已经确认了交叉熵配合 softmax 作为损失函数的方式是分类任务的最佳实践，本节进一步展开具体的反向传播过程。</p>
+  <p class="mt-6">从前面的讨论中，我们已经确认了交叉熵/KL 散度都是不错的最佳实践，本节进一步展开具体的反向传播过程。</p>
 
   <p class="mt-6">损失函数对 <strong>logits</strong> <span class="math-content">z_k</span> 的偏导 <span class="math-content">\frac{\partial \mathcal{L}}{\partial z_k} = q_k - p_k</span> 是链条的起点，<span class="math-content">z_k</span> 本身来自最后一层的线性变换 <span class="math-content">z_k = \mathbf{w}_k^\top \mathbf{h} + b_k</span>，所以梯度要继续沿链式法则向下游传递，最终落在真正可训练的参数上：</p>
 
@@ -1460,7 +1544,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 
   <div class="math-content" data-display="1">\nabla \mathcal{L} \;=\; \begin{pmatrix} \frac{\partial \mathcal{L}}{\partial w_{11}} & \cdots & \frac{\partial \mathcal{L}}{\partial w_{1n}} \\ \vdots & \ddots & \vdots \\ \frac{\partial \mathcal{L}}{\partial w_{m1}} & \cdots & \frac{\partial \mathcal{L}}{\partial w_{mn}} \end{pmatrix} \;\in\; \mathbb{R}^{m \times n} \quad \text{与权重矩阵 } W \text{ 同形}</div>
 
-  <p class="mt-6">综合已有的几个候选方案来看，针对大模型 nextToken 预测任务最理想的损失函数显然是交叉熵 (Cross Entropy)，<strong>当任务被建模为分布逼近、输出层用 softmax 时，交叉熵是唯一能让"信息论意义"与"工程梯度"同时优雅的损失函数</strong>。</p>
+  <p class="mt-6">综合已有的几个候选方案来看，针对大模型 nextToken 预测任务最理想的损失函数显然是交叉熵（在 one-hot 下跟 KL 散度 等价、在蒸馏场景则只差一个常数）<strong>当任务被建模为分布逼近、输出层用 softmax 时，交叉熵/KL 散度是唯一能让"信息论意义"与"工程梯度"同时优雅的损失函数</strong>。</p>
 
   <!-- 梯度更新流程 SVG -->
   <figure class="mt-8">
@@ -1554,9 +1638,9 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
   <h1 class="mt-20 mb-4 text-3xl font-bold text-stone-900">结语</h1>
   <img class="r-link max-w-64 float-right" src="./lgtm.jpg" data-width="400" data-height="370" />
 
-  <p class="mt-6">一开始还感觉交叉熵会是很重的构造，大模型选它准是有过人的想法，结果求导出来才发现这种模式下的梯度就是预测概率和真实概率的差值，这一下子撞到对概率分布的直觉上：你不是想知道两个分布之间的差异吗？直接减法不就行了，可以很符合我对机器学习的想象，有种好像绕了一圈回来发现哦原来就这样的感觉。</p>
+  <p class="mt-6">一开始还感觉交叉熵会是很重的构造，大模型选它准是有过人的想法，虽然直接求导不行，但配合 softmax 求导才发现这种模式下的梯度就是预测概率和真实概率的差值，这一下子撞到对概率分布的直觉上：你不是想知道两个分布之间的差异吗？直接减法不就行了，可以很符合我对机器学习的想象，有种好像绕了一圈回来发现哦原来就这样的感觉。</p>
 
-  <p class="mt-6">通过大量的推导，至此我所有的不安都已解除，整体推导路线 review：<br/>直觉 → 概率 → 信息量 → 信息熵 → 交叉熵 → KL 散度 → 分类即分布逼近 → softmax + 交叉熵 → 方案对比和梯度 → 反向传播</p>
+  <p class="mt-6">通过大量的推导，至此我所有的不安都已解除，整体推导路线 review：<br/>直觉 → 概率 → 信息量 → 信息熵 → 交叉熵 → KL 散度 → 分类即分布逼近 → 交叉熵梯度 → 方案对比 → softmax 的价值 → 反向传播</p>
 
   <blockquote class="my-8 border-l-4 border-amber-700 pl-5 text-stone-700 italic leading-relaxed">
     &lt;|endoftext|&gt;

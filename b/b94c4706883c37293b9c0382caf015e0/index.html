@@ -12,7 +12,7 @@
 (function() {
 console.log('INIT CSS VAR');
 function loadCSSVars() {
-    const j = localStorage.getItem("CSS_VARS_4" /* STORAGE_KEY.CSS_VARS */);
+    const j = localStorage.getItem("CSS_VARS_5" /* STORAGE_KEY.CSS_VARS */);
     const initialVars = initialCSSVars();
     if (!j)
         return initialVars;
@@ -43,7 +43,7 @@ function renderCSSVars(vars, style) {
     }
 }
 function initialCSSVars() {
-    let rem = 16;
+    let rem = 18;
     // 移动端
     if (typeof window !== 'undefined' && window.innerWidth <= 500) {
         rem = Number(((window.innerWidth - 20) / 42).toFixed(1));
@@ -64,7 +64,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 })();
 </script>
 
-<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.ee2f4293.js"></script><script defer="defer" src="/js/chunk-lib.049b0f28.js"></script><link href="/css/index.9b6ceb44f124ee20e8b6.css" rel="stylesheet"><link href="/css/chunk-lib.c5f6ab8c14f9071a2adb.css" rel="stylesheet"></head>
+<link rel="icon" href="/favicon.png"><script defer="defer" src="/js/index.b868a226.js"></script><script defer="defer" src="/js/chunk-lib.049b0f28.js"></script><link href="/css/index.8122d031b9a509b5c662.css" rel="stylesheet"><link href="/css/chunk-lib.c5f6ab8c14f9071a2adb.css" rel="stylesheet"></head>
 <body x-apple-data-detectors="none">
 <noscript>当前浏览器不支持 JavaScript, 建议使用支持 JavaScript 的浏览器来访问此网站 !</noscript>
 <div id="rally-bg" style="opacity:0"></div>
@@ -98,7 +98,7 @@ renderCSSVars(__initialCSSVars, document.querySelector('#CSS_VARS'));
 <span style="user-select:none" class="line-numbers-rows">12</span>obj<span class="token punctuation">.</span><span class="token function">sayName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token string">&#x27;obj inner&#x27;</span></pre></div>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">以上结果表明， <code>this</code> 指的就是那个调用他的对象<sub more="跟 Java 的 this 有些一样但又差的很远"></sub>。</div>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">更进一步的说， <code>this</code> 是根据它的调用栈来定自己的值的，它的值等于调用位置，而调用位置就是调用栈的第二个位置。</div>
-<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">this 能节省很多代码量，有时候需要自己为函数指定 this 指向谁，因此也就有了 call bind apply 方法，讨论这些偏离了这篇博文的中心内容，请移步下一篇 <a target="_blank" href="/还没写完" style="background-color:#e4edee" class="std-link --fontSansSerif  _line" data-minimap-color="#e4edee"><span class="std-link-icon r-link" data-src="/get-favicon/eczn.github.io?h=1167824715" style="background-image:url(&quot;/get-favicon/eczn.github.io?h=1167824715&quot;)"></span><span class="std-link-txt">this 和 call, apply, bind</span></a></div>
+<div class="std-para --fontArticle" data-minimap-color="#CCCCCC">this 能节省很多代码量，有时候需要自己为函数指定 this 指向谁，因此也就有了 call bind apply 方法，讨论这些偏离了这篇博文的中心内容，请移步下一篇 <a target="_blank" href="/还没写完" style="background-color:#e4edee" class="std-link --fontSansSerif  _line" data-minimap-color="#e4edee"><span class="std-link-icon r-link" data-src="/get-favicon/blog.eczn.me?h=1167824715" style="background-image:url(&quot;/get-favicon/blog.eczn.me?h=1167824715&quot;)"></span><span class="std-link-txt">this 和 call, apply, bind</span></a></div>
 <h1 id="闭包" class="std-title --fontTitle"><a target="_blank" href="#闭包" class="markdownIt-Anchor">#</a> 闭包<i data-minimap="Ignore"> ↵ </i></h1>
 <div class="std-para --fontArticle" data-minimap-color="#CCCCCC">考察以下代码：</div>
 <div class="std-code"><pre class="prismjs js rally-runner  "><span style="user-select:none" class="line-numbers-rows">00</span><span class="token keyword">function</span> <span class="token function">a</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
