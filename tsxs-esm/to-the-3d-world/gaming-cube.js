@@ -124,7 +124,7 @@ System.register(['react', './mat.js', './cube2.js', './vec2.js', './drag-state/u
                     resetEye.trigger();
                     resetTarget.trigger();
                 };
-                return (React.createElement("div", { ref: ref, className: "gc-root" },
+                return (React.createElement("div", { className: "gc-root" },
                     React.createElement("style", null, `
         .cube-ani {
           transition: opacity 200ms ease;
@@ -191,7 +191,7 @@ System.register(['react', './mat.js', './cube2.js', './vec2.js', './drag-state/u
         }
       `),
                     React.createElement("div", { className: "gc-stage" },
-                        React.createElement("svg", { viewBox: VIEWBOX, preserveAspectRatio: "xMidYMid meet" },
+                        React.createElement("svg", { ref: ref, viewBox: VIEWBOX, preserveAspectRatio: "xMidYMid meet" },
                             React.createElement(RenderCube, { final: final, eye: finalEye, M: M }),
                             renderTarget(final, target())),
                         React.createElement("div", { className: "gc-hud" },
