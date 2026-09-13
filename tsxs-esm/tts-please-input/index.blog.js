@@ -119,6 +119,7 @@ System.register(['react', 'rally/@@', './ghidra.png.js', './re-file.png.js', './
                             display: 'block', margin: '0 auto', width: '22rem',
                             // marginRight: '-2rem',
                             float: 'right',
+                            // 备注: 数值 by ningning 完成
                             shapeOutside: `
           polygon(
              1% 64%,

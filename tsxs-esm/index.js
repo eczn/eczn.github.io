@@ -16,6 +16,7 @@ System.register([], (function (exports, module) {
 			module.import('./eczn-preface-for-sicp/index.blog.js');
 			module.import('./ecznscript-dev-250325/index.blog.js');
 			module.import('./ecznscript/index.blog.js');
+			module.import('./float-center/index.blog.js');
 			module.import('./he-learn-eda-teacher-jiehang/index.blog.js');
 			module.import('./hello-css-vars/index.blog.js');
 			module.import('./ipod-spin-gesture/index.blog.js');
@@ -38,6 +39,7 @@ System.register([], (function (exports, module) {
 			module.import('./the-math-editor/index.blog.js');
 			module.import('./the-structure-and-interpretation-of-std-unicode-and-its-utf-encodings/index.blog.js');
 			module.import('./three-body-emulator/index.blog.js');
+			module.import('./to-the-3d-world/index.blog.js');
 			module.import('./tool-use-impl/index.blog.js');
 			module.import('./tts-please-input/index.blog.js');
 			module.import('./typescript-52000-checker-ts/index.blog.js');
